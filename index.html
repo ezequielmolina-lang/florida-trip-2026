@@ -4,23 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Florida Family Trip - Hotel Comparison Dashboard</title>
-<script>
-document.addEventListener("DOMContentLoaded",function(){if(sessionStorage.getItem("florida-trip-auth")==="true"){document.getElementById("password-gate").remove();document.body.classList.remove("locked");return;}document.body.classList.add("locked");});
-function checkPassword(){var i=document.getElementById("gate-input");var e=document.getElementById("gate-error");if(i.value.replace(/s/g,"").toLowerCase()==="florida2026"){sessionStorage.setItem("florida-trip-auth","true");document.getElementById("password-gate").remove();document.body.classList.remove("locked");}else{i.classList.add("error");e.style.display="block";setTimeout(function(){i.classList.remove("error");},500);}}
-</script>
-<style>
-#password-gate{position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#0c4a6e,#0f172a,#164e63);font-family:sans-serif;}
-#password-gate .gate-box{background:white;border-radius:1.5rem;padding:3rem;max-width:420px;width:90%;box-shadow:0 25px 50px rgba(0,0,0,0.3);text-align:center;}
-#password-gate h1{color:#0c4a6e;font-size:1.5rem;font-weight:800;margin-bottom:0.5rem;}
-#password-gate p{color:#6b7280;font-size:0.875rem;margin-bottom:1.5rem;}
-#password-gate input{width:100%;padding:0.75rem;border:2px solid #e5e7eb;border-radius:0.75rem;font-size:1rem;text-align:center;outline:none;}
-#password-gate input:focus{border-color:#0c4a6e;}
-#password-gate input.error{border-color:#ef4444;animation:shake 0.5s;}
-#password-gate button{margin-top:1rem;width:100%;padding:0.75rem;background:#22d3ee;color:#0f172a;font-weight:700;border:none;border-radius:0.75rem;font-size:1rem;cursor:pointer;}
-#password-gate .error-msg{color:#ef4444;font-size:0.8rem;margin-top:0.5rem;display:none;}
-@keyframes shake{0%,100%{transform:translateX(0);}25%{transform:translateX(-8px);}75%{transform:translateX(8px);}}
-body.locked > *:not(#password-gate){display:none !important;}
-</style>
+<script>document.addEventListener("DOMContentLoaded",function(){if(sessionStorage.getItem("florida-trip-auth")==="true"){var g=document.getElementById("password-gate");if(g)g.remove();document.body.classList.remove("locked");return;}document.body.classList.add("locked");});function checkPassword(){var i=document.getElementById("gate-input");var e=document.getElementById("gate-error");if(i.value.replace(/s/g,"").toLowerCase()==="florida2026"){sessionStorage.setItem("florida-trip-auth","true");document.getElementById("password-gate").remove();document.body.classList.remove("locked");}else{i.classList.add("error");e.style.display="block";setTimeout(function(){i.classList.remove("error");},500);}}</script><style>#password-gate{position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#0c4a6e,#0f172a,#164e63);font-family:sans-serif;}#password-gate .gate-box{background:white;border-radius:1.5rem;padding:3rem;max-width:420px;width:90%;box-shadow:0 25px 50px rgba(0,0,0,0.3);text-align:center;}#password-gate h1{color:#0c4a6e;font-size:1.5rem;font-weight:800;margin-bottom:0.5rem;}#password-gate p{color:#6b7280;font-size:0.875rem;margin-bottom:1.5rem;}#password-gate input{width:100%;padding:0.75rem;border:2px solid #e5e7eb;border-radius:0.75rem;font-size:1rem;text-align:center;outline:none;}#password-gate input:focus{border-color:#0c4a6e;}#password-gate input.error{border-color:#ef4444;animation:shake 0.5s;}#password-gate button{margin-top:1rem;width:100%;padding:0.75rem;background:#22d3ee;color:#0f172a;font-weight:700;border:none;border-radius:0.75rem;font-size:1rem;cursor:pointer;}#password-gate .error-msg{color:#ef4444;font-size:0.8rem;margin-top:0.5rem;display:none;}@keyframes shake{0%,100%{transform:translateX(0);}25%{transform:translateX(-8px);}75%{transform:translateX(8px);}}body.locked>*:not(#password-gate){display:none!important;}</style>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background: #0f172a; color: #e2e8f0; line-height: 1.6; }
@@ -829,7 +813,7 @@ body.locked > *:not(#password-gate){display:none !important;}
     <span class="tag tag-beach">Playa</span> <span class="tag tag-activity">Actividad</span>
     <div class="activity"><span class="time">Manana</span><span class="desc">Manejar a <a href="https://maps.google.com/?q=Sanibel+Island+FL" target="_blank">Sanibel Island</a> - famosa mundial por <strong>shelling</strong>. Playa en <a href="https://maps.google.com/?q=Bowman's+Beach+Sanibel" target="_blank">Bowman's Beach</a> (una de las mejores de Florida, vale la pena ir aunque tengan playa en el hotel).</span></div>
     <div class="drive">Edgewater a Sanibel: ~50 min (incluye puente, peaje ~$6).</div>
-    <div class="activity"><span class="time">Actividad</span><span class="desc"><a href="https://www.shellmuseum.org/" target="_blank">Bailey-Matthews National Shell Museum</a> - interactivo, touch tanks. Genial para 9 y 11 anos.</span></div>
+    <div class="activity"><span class="time">Actividad</span><span class="desc"><strong>Opcional:</strong> <a href="https://www.shellmuseum.org/" target="_blank">Bailey-Matthews Shell Museum</a> - tiene touch tanks pero puede aburrir a chicos de 9 y 11. Si no les copa, mas tiempo en Bowman's Beach buscando conchas en la arena (eso si les va a gustar).</span></div>
     <div class="activity"><span class="time">Almuerzo</span><span class="desc"><strong>The Island Cow</strong> en Sanibel - muy family-friendly, porciones grandes.</span></div>
     <div class="activity"><span class="time">Tarde</span><span class="desc">Volver al Edgewater para pileta y playa. Aprovechar la playa del Golfo al atardecer (los sunsets del Golfo son espectaculares).</span></div>
     <div class="activity"><span class="time">Cena</span><span class="desc">Ultima noche en Naples. <a href="https://maps.google.com/?q=USS+Nemo+Naples+FL" target="_blank">USS Nemo</a> (seafood upscale kid-friendly) o cena especial en la suite con lo que quedo en la heladera.</span></div>
