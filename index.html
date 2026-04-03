@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Florida Family Trip - Hotel Comparison Dashboard</title>
+<script>document.addEventListener("DOMContentLoaded",function(){if(sessionStorage.getItem("fta")==="1"){var g=document.getElementById("password-gate");if(g)g.remove();document.body.classList.remove("locked");return;}document.body.classList.add("locked");});function checkPw(){var i=document.getElementById("gi");var e=document.getElementById("ge");if(i.value.replace(/\s/g,"").toLowerCase()==="florida2026"){sessionStorage.setItem("fta","1");document.getElementById("password-gate").remove();document.body.classList.remove("locked");}else{i.classList.add("error");e.style.display="block";setTimeout(function(){i.classList.remove("error");},500);}}</script><style>#password-gate{position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#0c4a6e,#0f172a,#164e63);font-family:sans-serif}#password-gate .gb{background:#fff;border-radius:1.5rem;padding:3rem;max-width:420px;width:90%;box-shadow:0 25px 50px rgba(0,0,0,.3);text-align:center}#password-gate h1{color:#0c4a6e;font-size:1.5rem;font-weight:800;margin-bottom:.5rem}#password-gate p{color:#6b7280;font-size:.875rem;margin-bottom:1.5rem}#password-gate input{width:100%;padding:.75rem;border:2px solid #e5e7eb;border-radius:.75rem;font-size:1rem;text-align:center;outline:0}#password-gate input.error{border-color:#ef4444;animation:shake .5s}#password-gate button{margin-top:1rem;width:100%;padding:.75rem;background:#22d3ee;color:#0f172a;font-weight:700;border:0;border-radius:.75rem;font-size:1rem;cursor:pointer}#password-gate .em{color:#ef4444;font-size:.8rem;margin-top:.5rem;display:none}@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}body.locked>*:not(#password-gate){display:none!important}</style>
 <script>document.addEventListener("DOMContentLoaded",function(){if(sessionStorage.getItem("florida-trip-auth")==="true"){var g=document.getElementById("password-gate");if(g)g.remove();document.body.classList.remove("locked");return;}document.body.classList.add("locked");});function checkPassword(){var i=document.getElementById("gate-input");var e=document.getElementById("gate-error");if(i.value.replace(/s/g,"").toLowerCase()==="florida2026"){sessionStorage.setItem("florida-trip-auth","true");document.getElementById("password-gate").remove();document.body.classList.remove("locked");}else{i.classList.add("error");e.style.display="block";setTimeout(function(){i.classList.remove("error");},500);}}</script><style>#password-gate{position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#0c4a6e,#0f172a,#164e63);font-family:sans-serif;}#password-gate .gate-box{background:white;border-radius:1.5rem;padding:3rem;max-width:420px;width:90%;box-shadow:0 25px 50px rgba(0,0,0,0.3);text-align:center;}#password-gate h1{color:#0c4a6e;font-size:1.5rem;font-weight:800;margin-bottom:0.5rem;}#password-gate p{color:#6b7280;font-size:0.875rem;margin-bottom:1.5rem;}#password-gate input{width:100%;padding:0.75rem;border:2px solid #e5e7eb;border-radius:0.75rem;font-size:1rem;text-align:center;outline:none;}#password-gate input:focus{border-color:#0c4a6e;}#password-gate input.error{border-color:#ef4444;animation:shake 0.5s;}#password-gate button{margin-top:1rem;width:100%;padding:0.75rem;background:#22d3ee;color:#0f172a;font-weight:700;border:none;border-radius:0.75rem;font-size:1rem;cursor:pointer;}#password-gate .error-msg{color:#ef4444;font-size:0.8rem;margin-top:0.5rem;display:none;}@keyframes shake{0%,100%{transform:translateX(0);}25%{transform:translateX(-8px);}75%{transform:translateX(8px);}}body.locked>*:not(#password-gate){display:none!important;}</style>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -76,47 +77,16 @@
   .lightbox.show { display: flex; }
   .lightbox img { max-width: 92%; max-height: 92%; border-radius: 8px; }
   .lightbox-close { position: absolute; top: 20px; right: 30px; color: #fff; font-size: 2.5rem; cursor: pointer; }
-  
-    /* Enhanced mobile responsive */
-    @media (max-width: 768px) {
-      .header h1 { font-size: 1.4rem; }
-      .header .dates { font-size: 0.9rem; }
-      .tabs { gap: 0.3rem; padding: 0.5rem; }
-      .tab { padding: 0.5rem 0.8rem; font-size: 0.8rem; }
-      .section { padding: 0.8rem; }
-      .hotel-photos { grid-template-columns: repeat(2, 1fr); }
-      .hotel-details { grid-template-columns: 1fr; }
-      .hotel-header h2 { font-size: 1.1rem; }
-      .pros-cons { grid-template-columns: 1fr; }
-      .comparison-table { font-size: 0.65rem; }
-      .comparison-table td, .comparison-table th { padding: 4px 3px; }
-      .resto-card { grid-template-columns: 1fr; }
-      .resto-card img.resto-photo { width: 100%; height: 150px; float: none; margin: 0 0 8px 0; }
-      .resto-right { text-align: left; }
-      .town-card { grid-template-columns: 1fr; }
-      .town-img { height: 120px; }
-      .combo-box { padding: 1rem; }
-      .combo-row { flex-direction: column; gap: 0.3rem; }
-      .summary-grid { grid-template-columns: 1fr; }
-      .price-box .per-night { font-size: 1.6rem; }
-      .day-card .activity { flex-direction: column; gap: 0.2rem; }
-      .day-card .time { min-width: auto; }
-      .trivia-card h3 { font-size: 0.9rem; }
-      .trivia-btn { font-size: 0.8rem; padding: 8px 12px; }
-      .link-section { padding: 1rem; }
-      .link-item { flex-direction: column; gap: 0.3rem; }
-      #password-gate .gate-box { padding: 2rem 1.5rem; }
-    }
-    @media (max-width: 480px) {
-      .tabs { gap: 0.2rem; }
-      .tab { padding: 0.4rem 0.6rem; font-size: 0.7rem; }
-      .hotel-photos { grid-template-columns: 1fr; }
-      .hotel-photos img, .hotel-photos a { height: 180px; }
-    }
-
+  @media (max-width: 768px) {
+    .hotel-details, .pros-cons { grid-template-columns: 1fr; }
+    .hotel-photos { grid-template-columns: repeat(2, 1fr); }
+    .comparison-table { font-size: 0.7rem; }
+    .comparison-table td, .comparison-table th { padding: 6px 4px; }
+  }
 </style>
 </head>
 <body>
+<div id="password-gate"><div class="gb"><h1>Florida Family Trip 2026</h1><p>Ingresa el password</p><input type="password" id="gi" placeholder="Password" onkeydown="if(event.key==='Enter')checkPw()"><button onclick="checkPw()">Entrar</button><div class="em" id="ge">Password incorrecto</div></div></div>
 <div id="password-gate"><div class="gate-box"><h1>Florida Family Trip 2026</h1><p>Ingresa el password para continuar</p><input type="password" id="gate-input" placeholder="Password" onkeydown="if(event.key==='Enter')checkPassword()"><button onclick="checkPassword()">Entrar</button><div class="error-msg" id="gate-error">Password incorrecto</div></div></div>
 
 <div class="header">
@@ -126,13 +96,15 @@
 </div>
 
 <div class="tabs">
-  <div class="tab active" onclick="showSection('naples',this)">Naples (Base 1)</div>
-  <div class="tab" onclick="showSection('east',this)">Costa Este (Base 2)</div>
+  <div class="tab active" onclick="showSection('naples',this)">Naples</div>
+  <div class="tab" onclick="showSection('east',this)">Costa Este</div>
   <div class="tab" onclick="showSection('comparison',this)">Comparativa</div>
   <div class="tab" onclick="showSection('restaurants',this)">Restaurantes</div>
   <div class="tab" onclick="showSection('itinerary',this)">Itinerario</div>
-  <div class="tab" onclick="showSection('towns',this)">Pueblitos Lindos</div>
-  <div class="tab" onclick="showSection('extras',this)">Trivia + Tips</div>
+  <div class="tab" onclick="showSection('towns',this)">Pueblitos</div>
+  <div class="tab" onclick="showSection('combos',this)">Budget</div>
+  <div class="tab" onclick="showSection('trivia',this)">Trivia</div>
+  <div class="tab" onclick="showSection('links',this)">Links</div>
 </div>
 
 <!-- =================== COMPARISON TABLE =================== -->
@@ -301,9 +273,6 @@
   <div class="note-box">
     <h3>Nota sobre el JW Marriott</h3>
     <p style="color:#e2e8f0; margin-top:0.5rem;">El JW Marriott SI tiene una <strong>Two-Bedroom Lanai Suite</strong> (111 m2, planta baja con acceso directo a playa, wraparound balcon). Es una suite premium excelente. Sin embargo: es el mas caro con diferencia (~$1,000-1,300/noche total con fees), el resort tiene 726 habitaciones (mega-resort), muchos huespedes con puntos Bonvoy, y los fees ocultos suman ~$100/noche. Para tu perfil (independiente, chico, sin loyalty inflation), las otras opciones encajan mejor.</p>
-  </div>
-  <div style="text-align:center;margin-top:1.5rem;">
-    <a href="#" onclick="showSection('combos',this);return false;" style="display:inline-block;padding:12px 30px;background:#22d3ee;color:#0f172a;border-radius:8px;font-weight:700;text-decoration:none;font-size:1rem;">Ver Combos y Presupuesto Total</a>
   </div>
 </div>
 
@@ -810,7 +779,7 @@
     <div class="date">Miercoles 29 julio</div>
     <span class="tag tag-beach">Playa</span> <span class="tag tag-food">Comida</span> <span class="tag tag-shop">Shopping</span>
     <div class="activity"><span class="time">Manana</span><span class="desc"><strong>Playa del Edgewater</strong> - 7 millas de arena blanca sobre el Golfo de Mexico. Agua calma y tibia, perfecta para los chicos. Kayak y paddleboard incluidos en la estadia.</span></div>
-    <div class="activity"><span class="time">Almuerzo</span><span class="desc"><a href="https://maps.google.com/?q=The+Dock+at+Crayton+Cove+Naples" target="_blank">The Dock at Crayton Cove</a> (mariscos, waterfront, ~15 min) o <a href="https://maps.google.com/?q=Brooks+Burgers+Naples" target="_blank">Brooks Burgers</a> downtown (<a href="https://www.brooksburgers.com/menu" target="_blank" style="color:#22d3ee;">Menu</a>).</span></div>
+    <div class="activity"><span class="time">Almuerzo</span><span class="desc"><a href="https://maps.google.com/?q=The+Dock+at+Crayton+Cove+Naples" target="_blank">The Dock at Crayton Cove</a> (mariscos, waterfront, ~15 min) o <a href="https://maps.google.com/?q=Brooks+Burgers+Naples" target="_blank">Brooks Burgers</a> downtown (casual, chicos lo aman).</span></div>
     <div class="drive">Edgewater a downtown Naples: ~10 min.</div>
     <div class="activity"><span class="time">Tarde</span><span class="desc">Caminar <a href="https://www.fifthavenuesouth.com/" target="_blank">5th Avenue South</a> + <a href="https://maps.google.com/?q=3rd+Street+South+Naples" target="_blank">3rd Street South</a> - tiendas, heladerias, galerias. Hay <strong>TJ Maxx y Marshalls</strong> en Tamiami Trail (~10 min).</span></div>
     <div class="activity"><span class="time">Cena</span><span class="desc"><a href="https://www.opentable.com/r/mediterrano-naples" target="_blank">Mediterrano</a> (mediterraneo, #1 en Naples, RESERVAR) o <a href="https://resy.com/cities/naples-fl/venues/osteria-tulia" target="_blank">Osteria Tulia</a> (italiano, pasta casera, RESERVAR) o cocinar algo rico en la suite.</span></div>
@@ -849,7 +818,7 @@
     <div class="activity"><span class="time">Actividad</span><span class="desc"><strong>Opcional:</strong> <a href="https://www.shellmuseum.org/" target="_blank">Bailey-Matthews Shell Museum</a> - tiene touch tanks pero puede aburrir a chicos de 9 y 11. Si no les copa, mas tiempo en Bowman's Beach buscando conchas en la arena (eso si les va a gustar).</span></div>
     <div class="activity"><span class="time">Almuerzo</span><span class="desc"><strong>The Island Cow</strong> en Sanibel - muy family-friendly, porciones grandes.</span></div>
     <div class="activity"><span class="time">Tarde</span><span class="desc">Volver al Edgewater para pileta y playa. Aprovechar la playa del Golfo al atardecer (los sunsets del Golfo son espectaculares).</span></div>
-    <div class="activity"><span class="time">Cena</span><span class="desc">Ultima noche en Naples. <a href="https://maps.google.com/?q=USS+Nemo+Naples+FL" target="_blank">USS Nemo</a> (seafood upscale, <a href="https://www.ussnemorestaurant.com/menu" target="_blank" style="color:#22d3ee;">Menu</a>) o cena especial en la suite con lo que quedo en la heladera.</span></div>
+    <div class="activity"><span class="time">Cena</span><span class="desc">Ultima noche en Naples. <a href="https://maps.google.com/?q=USS+Nemo+Naples+FL" target="_blank">USS Nemo</a> (seafood upscale kid-friendly) o cena especial en la suite con lo que quedo en la heladera.</span></div>
   </div>
 
   <div class="phase-header">
@@ -864,7 +833,7 @@
     <div class="activity"><span class="time">Manana</span><span class="desc">Check-out <strong>Edgewater Beach Hotel</strong>. Manejan por I-75 East (Alligator Alley) hacia costa este.</span></div>
     <div class="drive">Edgewater a Sawgrass Mills: ~1h45. Sawgrass a Opal Grand: ~40 min.</div>
     <div class="activity"><span class="time">Mediodia</span><span class="desc"><a href="https://www.simon.com/mall/sawgrass-mills" target="_blank">Sawgrass Mills</a> - 350+ tiendas! <strong>The Colonnade Outlets</strong> (marcas premium), <strong>The Oasis</strong> (al aire libre). Nike, Adidas, Sephora, Coach, Tommy, Ralph Lauren, Puma. Planear 3-4 horas.</span></div>
-    <div class="activity"><span class="time">Almuerzo</span><span class="desc"><a href="https://maps.google.com/?q=Rainforest+Cafe+Sawgrass+Mills" target="_blank">Rainforest Cafe</a> dentro de Sawgrass (chicos lo aman) o <a href="https://www.seasons52.com/menu" target="_blank" style="color:#22d3ee;">Seasons 52</a>.</span></div>
+    <div class="activity"><span class="time">Almuerzo</span><span class="desc"><a href="https://maps.google.com/?q=Rainforest+Cafe+Sawgrass+Mills" target="_blank">Rainforest Cafe</a> dentro de Sawgrass (chicos lo aman) o <strong>Seasons 52</strong>.</span></div>
     <div class="activity"><span class="time">Tarde</span><span class="desc">Check-in <strong>Opal Grand Oceanfront Resort</strong>, Delray Beach. Suite 2-BR King/King Oceanfront (1,800 sq ft!). Pileta oceanfront. Comprar provisiones si la suite tiene cocina:<br>
       - <a href="https://maps.google.com/?q=Publix+1538+S+Federal+Hwy+Delray+Beach+FL" target="_blank" style="color:#22d3ee;"><strong>Publix</strong></a> - 1538 S Federal Hwy (~7 min del hotel)<br>
       - <a href="https://maps.google.com/?q=Whole+Foods+680+Linton+Blvd+Delray+Beach+FL" target="_blank" style="color:#22d3ee;"><strong>Whole Foods Market</strong></a> - 680 Linton Blvd (~10 min del hotel, abierto 8am-10pm)<br>
@@ -948,35 +917,9 @@
   </div>
 </div>
 
-<!-- =================== TRIVIA GAME =================== -->
-<div id="extras" class="section">
-  <h2 style="color:#fff; margin-bottom:0.5rem;">Trivia: Cuanto Saben de Florida?</h2>
-  <p style="color:#94a3b8; margin-bottom:1.5rem;">Jueguen en familia antes o durante el viaje. Click en la respuesta que crean correcta!</p>
-
-  <style>
-    .trivia-card { background:#1e293b; border-radius:12px; padding:1.5rem; margin-bottom:1rem; }
-    .trivia-card h3 { color:#22d3ee; font-size:1rem; margin-bottom:1rem; }
-    .trivia-card .q-num { color:#a78bfa; font-weight:800; font-size:0.85rem; }
-    .trivia-btn { display:block; width:100%; text-align:left; padding:10px 16px; margin:4px 0; background:#334155; border:2px solid #475569; border-radius:8px; color:#e2e8f0; cursor:pointer; font-size:0.9rem; transition: all 0.3s; }
-    .trivia-btn:hover { border-color:#22d3ee; background:#1e3a5f; }
-    .trivia-btn.correct { background:#065f46; border-color:#4ade80; color:#4ade80; }
-    .trivia-btn.wrong { background:#7c2d12; border-color:#f87171; color:#f87171; }
-    .trivia-fact { display:none; background:#164e63; padding:12px; border-radius:8px; margin-top:8px; color:#e2e8f0; font-size:0.85rem; }
-    .trivia-fact.show { display:block; }
-    .trivia-score { background:linear-gradient(135deg,#1e3a5f,#164e63); padding:1.5rem; border-radius:12px; text-align:center; margin-bottom:1.5rem; }
-    .trivia-score .score-num { font-size:2.5rem; font-weight:800; color:#22d3ee; }
-    .trivia-score .score-label { color:#94a3b8; }
-  </style>
-
-  <div class="trivia-score">
-    <div class="score-label">Puntaje</div>
-    <div class="score-num" id="trivia-score">0 / 10</div>
-    <button onclick="resetTrivia()" style="margin-top:10px; padding:8px 20px; background:#22d3ee; color:#0f172a; border:none; border-radius:8px; font-weight:700; cursor:pointer;">Reiniciar</button>
-
-<!-- LINKS + TIPS -->
-<div style="margin-top:2rem;">
+<!-- =================== LINKS + TIPS =================== -->
+<div id="links" class="section">
   <h2 style="color:#fff; margin-bottom:1.5rem;">Links Utiles + Tips para el Viaje</h2>
-  <p style="color:#94a3b8;margin-bottom:1rem;">Organizados por zona para encontrar rapido lo que necesites.</p>
 
   <style>
     .link-section { background:#1e293b; border-radius:12px; padding:1.5rem; margin-bottom:1rem; }
@@ -1124,6 +1067,8 @@
       </div>
       <div class="resto-desc">Ranked #1 en Naples en TripAdvisor. Mezze para compartir, paella, branzino, pulpo. Familias con chicos bienvenidas. Outdoor seating. RESERVAR.</div>
       <div class="resto-links">
+        <a class="resto-link" href="https://maps.google.com/?q=Mediterrano+336+13th+Ave+S+Naples+FL" target="_blank">Google Maps</a>
+        <a class="resto-link" href="https://www.tripadvisor.com/Restaurant_Review-g34467-d7790843-Reviews-Mediterrano-Naples_Florida.html" target="_blank">TripAdvisor + Fotos</a>
         <a class="resto-link" href="https://www.opentable.com/r/mediterrano-naples" target="_blank" style="background:#065f46;color:#4ade80;">RESERVAR OpenTable</a>
         <a class="resto-link" href="https://www.mediterrano-naples.com/menus" target="_blank" style="background:#451a03;color:#fed7aa;">📋 Ver Menu</a>
       </div>
@@ -1143,6 +1088,8 @@
       </div>
       <div class="resto-desc">Mejor italiano de Naples. Pasta hecha a mano, pizza a la lena. Kids menu ($10-17). Ambiente ruidoso naturalmente = perfecto para familias. En 5th Avenue South. RESERVAR.</div>
       <div class="resto-links">
+        <a class="resto-link" href="https://maps.google.com/?q=Osteria+Tulia+466+5th+Ave+S+Naples+FL" target="_blank">Google Maps</a>
+        <a class="resto-link" href="https://www.tripadvisor.com/Restaurant_Review-g34467-d3566490-Reviews-Osteria_Tulia-Naples_Florida.html" target="_blank">TripAdvisor + Fotos</a>
         <a class="resto-link" href="https://resy.com/cities/naples-fl/venues/osteria-tulia" target="_blank" style="background:#065f46;color:#4ade80;">RESERVAR Resy</a>
         <a class="resto-link" href="https://osteriatulia.com/menus/" target="_blank" style="background:#451a03;color:#fed7aa;">📋 Ver Menu</a>
       </div>
@@ -1162,6 +1109,8 @@
       </div>
       <div class="resto-desc">Waterfront sobre Naples Bay desde 1976. Casual, affordable. Seafood, sandwiches, ribs. Chicos miran botes mientras comen. Genial para almuerzo o sunset dinner.</div>
       <div class="resto-links">
+        <a class="resto-link" href="https://maps.google.com/?q=The+Dock+at+Crayton+Cove+Naples+FL" target="_blank">Google Maps</a>
+        <a class="resto-link" href="https://www.tripadvisor.com/Restaurant_Review-g34467-d479085-Reviews-The_Dock_at_Crayton_Cove-Naples_Florida.html" target="_blank">TripAdvisor + Fotos</a>
         <a class="resto-link" href="https://www.dockcraytoncove.com/menu" target="_blank" style="background:#451a03;color:#fed7aa;">📋 Ver Menu</a>
       </div>
     </div>
@@ -1181,6 +1130,7 @@
       </div>
       <div class="resto-desc">Kebabs, hummus, falafel, pita. Casual y affordable. Hidden gem, uno de los mejores kid-friendly de Naples. Chico y acogedor, ir temprano.</div>
       <div class="resto-links">
+        <a class="resto-link" href="https://maps.google.com/?q=Simit+Fresh+Mediterranean+1230+Airport+Pulling+Rd+Naples+FL" target="_blank">Google Maps</a>
         <a class="resto-link" href="https://maps.google.com/?q=Simit+Fresh+Mediterranean+Naples+FL" target="_blank" style="background:#451a03;color:#fed7aa;">📋 Google Maps + Fotos</a>
       </div>
     </div>
@@ -1199,6 +1149,7 @@
       </div>
       <div class="resto-desc">Chips y guacamole frescos, tortillas hechas a mano. Dueno visita las mesas. Chicos aman las quesadillas y tacos. Cerrado lunes.</div>
       <div class="resto-links">
+        <a class="resto-link" href="https://maps.google.com/?q=Salsa+Brava+Mexican+Grill+Naples+FL" target="_blank">Google Maps</a>
         <a class="resto-link" href="https://maps.google.com/?q=Salsa+Brava+Mexican+Grill+Naples+FL" target="_blank" style="background:#451a03;color:#fed7aa;">📋 Google Maps + Fotos</a>
       </div>
     </div>
@@ -1218,6 +1169,7 @@
       </div>
       <div class="resto-desc">2355 Vanderbilt Beach Rd, Suite 110. Perfecto para desayuno rapido o post-playa. Chicos pueden armar sus propios bowls.</div>
       <div class="resto-links">
+        <a class="resto-link" href="https://maps.google.com/?q=Playa+Bowls+2355+Vanderbilt+Beach+Rd+Naples+FL" target="_blank">Google Maps</a>
         <a class="resto-link" href="https://www.playabowls.com/menu" target="_blank" style="background:#451a03;color:#fed7aa;">📋 Ver Menu</a>
       </div>
     </div>
@@ -1239,6 +1191,8 @@
       </div>
       <div class="resto-desc">LITERALMENTE al lado del Opal Grand. Vista al oceano. Chefs italianos, pasta casera. Kids menu. Abierto 7AM-9:30PM. Restaurant of the Year Delray Beach x2. Perfecto para la primera noche sin manejar.</div>
       <div class="resto-links">
+        <a class="resto-link" href="https://maps.google.com/?q=Caffe+Luna+Rosa+34+S+Ocean+Blvd+Delray+Beach+FL" target="_blank">Google Maps</a>
+        <a class="resto-link" href="https://www.tripadvisor.com/Restaurant_Review-g34179-d421703-Reviews-Caffe_Luna_Rosa-Delray_Beach_Florida.html" target="_blank">TripAdvisor + Fotos</a>
         <a class="resto-link" href="tel:+15612749404" style="background:#065f46;color:#4ade80;">RESERVAR: (561) 274-9404</a>
         <a class="resto-link" href="https://www.caffelunarosa.com/" target="_blank" style="background:#451a03;color:#fed7aa;">📋 Ver Menu</a>
       </div>
@@ -1259,6 +1213,7 @@
       </div>
       <div class="resto-desc">TU ZAYTINIA EN DELRAY. Sharing plates, hummus fresco, naan, kebabs, salmon. Happy hour excelente. Decoracion linda. Genial para cena familiar especial.</div>
       <div class="resto-links">
+        <a class="resto-link" href="https://maps.google.com/?q=Amar+Mediterranean+25+SE+6th+Ave+Delray+Beach+FL" target="_blank">Google Maps</a>
         <a class="resto-link" href="https://www.opentable.com/r/amar-mediterranean-kitchen-and-bar-delray-beach" target="_blank" style="background:#065f46;color:#4ade80;">RESERVAR OpenTable</a>
         <a class="resto-link" href="https://amardelray.com/" target="_blank" style="background:#451a03;color:#fed7aa;">📋 Ver Menu</a>
       </div>
@@ -1278,6 +1233,8 @@
       </div>
       <div class="resto-desc">Top-rated seafood en Delray. Ostras, sushi, seafood fresco. Opciones de pescado frito y pasta para chicos. Outdoor seating en Atlantic Ave para people-watching.</div>
       <div class="resto-links">
+        <a class="resto-link" href="https://maps.google.com/?q=City+Oyster+213+E+Atlantic+Ave+Delray+Beach+FL" target="_blank">Google Maps</a>
+        <a class="resto-link" href="https://www.tripadvisor.com/Restaurant_Review-g34179-d494697-Reviews-City_Oyster_Sushi_Bar-Delray_Beach_Florida.html" target="_blank">TripAdvisor + Fotos</a>
         <a class="resto-link" href="https://www.opentable.com/r/city-oyster-and-sushi-bar-delray-beach" target="_blank" style="background:#065f46;color:#4ade80;">RESERVAR OpenTable</a>
         <a class="resto-link" href="https://www.cityoysterdelray.com/dinner" target="_blank" style="background:#451a03;color:#fed7aa;">📋 Ver Menu</a>
       </div>
@@ -1297,6 +1254,7 @@
       </div>
       <div class="resto-desc">Todo hecho desde cero incluyendo tortillas. Tacos, quesadillas, chips/guac para chicos. Margaritas y fajitas para adultos. Vibra fun. Abierto hasta 2AM.</div>
       <div class="resto-links">
+        <a class="resto-link" href="https://maps.google.com/?q=El+Camino+15+NE+2nd+Ave+Delray+Beach+FL" target="_blank">Google Maps</a>
         <a class="resto-link" href="https://www.elcaminodelray.com/" target="_blank" style="background:#451a03;color:#fed7aa;">📋 Ver Menu</a>
       </div>
     </div>
@@ -1314,7 +1272,8 @@
         <span class="resto-tag tag-dist">2 min caminando!</span>
       </div>
       <div class="resto-desc">Pasos del Opal Grand, sobre el oceano. Burgers, seafood, sandwiches con vista al mar. Super casual, chicos en malla bienvenidos. Live music. 35+ anos en Delray.</div>
-      
+      <div class="resto-links">
+        <a class="resto-link" href="https://maps.google.com/?q=Boston's+on+the+Beach+40+S+Ocean+Blvd+Delray+Beach+FL" target="_blank">Google Maps</a></div>
     </div>
     <div class="resto-right"><span style="color:#fbbf24;font-size:1.5rem;font-weight:800;">4.0</span></div>
   </div>
@@ -1331,6 +1290,7 @@
       </div>
       <div class="resto-desc">Intracoastal waterfront. Burgers, wings, seafood, sushi. Chicos miran botes. Live music. Weekend brunch genial. Clasico familiar de Delray.</div>
       <div class="resto-links">
+        <a class="resto-link" href="https://maps.google.com/?q=Deck+84+840+E+Atlantic+Ave+Delray+Beach+FL" target="_blank">Google Maps</a>
         <a class="resto-link" href="https://www.deck84.com/menu" target="_blank" style="background:#451a03;color:#fed7aa;">📋 Ver Menu</a>
       </div>
     </div>
@@ -1350,6 +1310,7 @@
       </div>
       <div class="resto-desc">Dos canchas de putting de 18 hoyos disenadas por Tiger Woods + burgers + heladeria. Chicos de 9 y 11 lo van a AMAR. Perfecto para noche de actividad familiar.</div>
       <div class="resto-links">
+        <a class="resto-link" href="https://maps.google.com/?q=PopStroke+1314+N+Federal+Hwy+Delray+Beach+FL" target="_blank">Google Maps</a>
         <a class="resto-link" href="https://www.popstroke.com/" target="_blank">Sitio oficial</a>
         <a class="resto-link" href="https://www.popstroke.com/" target="_blank" style="background:#451a03;color:#fed7aa;">📋 Ver Menu + Info</a>
       </div>
@@ -1369,6 +1330,7 @@
       </div>
       <div class="resto-desc">1134 E Atlantic Ave - sobre Atlantic Ave, caminable del Opal Grand. Perfecto para desayuno o post-playa. Abierto 8AM-8PM.</div>
       <div class="resto-links">
+        <a class="resto-link" href="https://maps.google.com/?q=Playa+Bowls+1134+E+Atlantic+Ave+Delray+Beach+FL" target="_blank">Google Maps</a>
         <a class="resto-link" href="https://www.playabowls.com/menu" target="_blank" style="background:#451a03;color:#fed7aa;">📋 Ver Menu</a>
       </div>
     </div>
@@ -1379,18 +1341,18 @@
   <div class="resto-phase" style="background:linear-gradient(135deg,#831843,#1e293b);"><h2 style="color:#f9a8d4;">HELADERIAS + DESAYUNOS + STARBUCKS</h2></div>
   <div style="background:#1e293b;border-radius:12px;padding:1rem 1.5rem;margin-bottom:1rem;border-left:4px solid #f9a8d4;">
     <h3 style="color:#f9a8d4;margin-bottom:0.8rem;">Heladerias - Naples</h3>
-    <div class="resto-card" style="border-left-color:#f9a8d4;"><div><h4 style="color:#f9a8d4;">Gelato &amp; Co. (5th Ave)</h4><div class="resto-meta"><span class="resto-tag tag-rating">4.5</span><span class="resto-tag tag-price">$$</span><span class="resto-tag tag-dist">5 min</span></div><div class="resto-desc">483 5th Ave S. Gelato italiano artesanal, 24+ sabores rotativos.</div></div><div class="resto-right"><span style="color:#f9a8d4;font-size:1.3rem;font-weight:800;">4.5</span></div></div>
-    <div class="resto-card" style="border-left-color:#f9a8d4;"><div><h4 style="color:#f9a8d4;">Royal Scoop Homemade Ice Cream</h4><div class="resto-meta"><span class="resto-tag tag-rating">4.8</span><span class="resto-tag tag-price">$</span><span class="resto-tag tag-dist">4 min</span></div><div class="resto-desc">829 Vanderbilt Beach Rd. Helado casero old-fashioned. Muy kid-friendly.</div></div><div class="resto-right"><span style="color:#f9a8d4;font-size:1.3rem;font-weight:800;">4.8</span></div></div>
+    <div class="resto-card" style="border-left-color:#f9a8d4;"><div><h4 style="color:#f9a8d4;">Gelato &amp; Co. (5th Ave)</h4><div class="resto-meta"><span class="resto-tag tag-rating">4.5</span><span class="resto-tag tag-price">$$</span><span class="resto-tag tag-dist">5 min</span></div><div class="resto-desc">483 5th Ave S. Gelato italiano artesanal, 24+ sabores rotativos.</div><div class="resto-links"><a class="resto-link" href="https://maps.google.com/?q=Gelato+Co+483+5th+Ave+S+Naples+FL" target="_blank">Maps</a></div></div><div class="resto-right"><span style="color:#f9a8d4;font-size:1.3rem;font-weight:800;">4.5</span></div></div>
+    <div class="resto-card" style="border-left-color:#f9a8d4;"><div><h4 style="color:#f9a8d4;">Royal Scoop Homemade Ice Cream</h4><div class="resto-meta"><span class="resto-tag tag-rating">4.8</span><span class="resto-tag tag-price">$</span><span class="resto-tag tag-dist">4 min</span></div><div class="resto-desc">829 Vanderbilt Beach Rd. Helado casero old-fashioned. Muy kid-friendly.</div><div class="resto-links"><a class="resto-link" href="https://maps.google.com/?q=Royal+Scoop+Ice+Cream+Naples+FL" target="_blank">Maps</a></div></div><div class="resto-right"><span style="color:#f9a8d4;font-size:1.3rem;font-weight:800;">4.8</span></div></div>
     <h3 style="color:#f9a8d4;margin:1rem 0 0.8rem;">Heladerias - Delray Beach</h3>
-    <div class="resto-card" style="border-left-color:#f9a8d4;"><div><h4 style="color:#f9a8d4;">Sloan's Ice Cream (IMPERDIBLE!)</h4><div class="resto-meta"><span class="resto-tag tag-rating">4.3</span><span class="resto-tag tag-price">$$</span><span class="resto-tag tag-dist">3 min caminando!</span><span class="resto-tag tag-fav">Kids wonderland</span></div><div class="resto-desc">111 E Atlantic Ave. Heladeria + candy shop. Caramelos, peluches + helado creativo. A PASOS del Opal Grand.</div><div class="resto-links"><a class="resto-link" href="https://www.google.com/search?tbm=isch&q=Sloans+Ice+Cream+Delray+Beach+inside" target="_blank">Ver fotos</a></div></div><div class="resto-right"><span style="color:#f9a8d4;font-size:1.3rem;font-weight:800;">4.3</span></div></div>
-    <div class="resto-card" style="border-left-color:#f9a8d4;"><div><h4 style="color:#f9a8d4;">Gelato-Go (Atlantic Ave)</h4><div class="resto-meta"><span class="resto-tag tag-rating">4.3</span><span class="resto-tag tag-price">$$</span><span class="resto-tag tag-dist">5 min caminando</span></div><div class="resto-desc">411 E Atlantic Ave. Gelateria italiana. Te dejan probar antes de comprar.</div></div><div class="resto-right"><span style="color:#f9a8d4;font-size:1.3rem;font-weight:800;">4.3</span></div></div>
+    <div class="resto-card" style="border-left-color:#f9a8d4;"><div><h4 style="color:#f9a8d4;">Sloan's Ice Cream (IMPERDIBLE!)</h4><div class="resto-meta"><span class="resto-tag tag-rating">4.3</span><span class="resto-tag tag-price">$$</span><span class="resto-tag tag-dist">3 min caminando!</span><span class="resto-tag tag-fav">Kids wonderland</span></div><div class="resto-desc">111 E Atlantic Ave. Heladeria + candy shop. Caramelos, peluches + helado creativo. A PASOS del Opal Grand.</div><div class="resto-links"><a class="resto-link" href="https://maps.google.com/?q=Sloans+Ice+Cream+Delray+Beach" target="_blank">Maps</a><a class="resto-link" href="https://www.google.com/search?tbm=isch&q=Sloans+Ice+Cream+Delray+Beach+inside" target="_blank">Ver fotos</a></div></div><div class="resto-right"><span style="color:#f9a8d4;font-size:1.3rem;font-weight:800;">4.3</span></div></div>
+    <div class="resto-card" style="border-left-color:#f9a8d4;"><div><h4 style="color:#f9a8d4;">Gelato-Go (Atlantic Ave)</h4><div class="resto-meta"><span class="resto-tag tag-rating">4.3</span><span class="resto-tag tag-price">$$</span><span class="resto-tag tag-dist">5 min caminando</span></div><div class="resto-desc">411 E Atlantic Ave. Gelateria italiana. Te dejan probar antes de comprar.</div><div class="resto-links"><a class="resto-link" href="https://maps.google.com/?q=Gelato-Go+Delray+Beach" target="_blank">Maps</a></div></div><div class="resto-right"><span style="color:#f9a8d4;font-size:1.3rem;font-weight:800;">4.3</span></div></div>
   </div>
   <div style="background:#1e293b;border-radius:12px;padding:1rem 1.5rem;margin-bottom:1rem;border-left:4px solid #fbbf24;">
     <h3 style="color:#fbbf24;margin-bottom:0.8rem;">Desayunos / Brunch</h3>
-    <div class="resto-card" style="border-left-color:#fbbf24;"><div><h4 style="color:#fbbf24;">Naples Brunch (Naples)</h4><div class="resto-meta"><span class="resto-tag tag-rating">4.8</span><span class="resto-tag tag-price">$$</span><span class="resto-tag tag-dist">3 min</span><span class="resto-tag tag-fav">Pancake flights!</span></div><div class="resto-desc">1575 Pine Ridge Rd. PANCAKE FLIGHTS - los chicos eligen sabores! Fluffy pancakes, avocado toast, skillets.</div></div><div class="resto-right"><span style="color:#fbbf24;font-size:1.3rem;font-weight:800;">4.8</span></div></div>
-    <div class="resto-card" style="border-left-color:#fbbf24;"><div><h4 style="color:#fbbf24;">EJ's Bayfront Cafe (Naples) <a href="https://www.ejsbayfront.com/" target="_blank" style="color:#fbbf24;font-size:0.7rem;">Menu</a></h4><div class="resto-meta"><span class="resto-tag tag-rating">4.7</span><span class="resto-tag tag-price">$$</span><span class="resto-tag tag-dist">3 min</span></div><div class="resto-desc">469 Bayfront Pl. Desayuno waterfront, vista marina. 7:30am-3pm.</div></div><div class="resto-right"><span style="color:#fbbf24;font-size:1.3rem;font-weight:800;">4.7</span></div></div>
-    <div class="resto-card" style="border-left-color:#fbbf24;"><div><h4 style="color:#fbbf24;">Lulu's Cafe (Delray) <a href="https://www.luluscafedelray.com/" target="_blank" style="color:#fbbf24;font-size:0.7rem;">Menu</a></h4><div class="resto-meta"><span class="resto-tag tag-rating">4.3</span><span class="resto-tag tag-price">$$</span><span class="resto-tag tag-dist">5 min</span></div><div class="resto-desc">189 NE 2nd Ave (Pineapple Grove). Featured PBS. Brunch 8am-3:30pm.</div></div><div class="resto-right"><span style="color:#fbbf24;font-size:1.3rem;font-weight:800;">4.3</span></div></div>
-    <div class="resto-card" style="border-left-color:#fbbf24;"><div><h4 style="color:#fbbf24;">Caffe Luna Rosa (Delray - tambien desayuno!)</h4><div class="resto-meta"><span class="resto-tag tag-rating">4.5</span><span class="resto-tag tag-price">$$$</span><span class="resto-tag tag-dist">1 min caminando!</span></div><div class="resto-desc">Al lado del Opal Grand. Abre 7AM. Desayuno italiano con vista al oceano.</div></div><div class="resto-right"><span style="color:#fbbf24;font-size:1.3rem;font-weight:800;">4.5</span></div></div>
+    <div class="resto-card" style="border-left-color:#fbbf24;"><div><h4 style="color:#fbbf24;">Naples Brunch (Naples)</h4><div class="resto-meta"><span class="resto-tag tag-rating">4.8</span><span class="resto-tag tag-price">$$</span><span class="resto-tag tag-dist">3 min</span><span class="resto-tag tag-fav">Pancake flights!</span></div><div class="resto-desc">1575 Pine Ridge Rd. PANCAKE FLIGHTS - los chicos eligen sabores! Fluffy pancakes, avocado toast, skillets.</div><div class="resto-links"><a class="resto-link" href="https://maps.google.com/?q=Naples+Brunch+Pine+Ridge+Rd+Naples" target="_blank">Maps</a></div></div><div class="resto-right"><span style="color:#fbbf24;font-size:1.3rem;font-weight:800;">4.8</span></div></div>
+    <div class="resto-card" style="border-left-color:#fbbf24;"><div><h4 style="color:#fbbf24;">EJ's Bayfront Cafe (Naples)</h4><div class="resto-meta"><span class="resto-tag tag-rating">4.7</span><span class="resto-tag tag-price">$$</span><span class="resto-tag tag-dist">3 min</span></div><div class="resto-desc">469 Bayfront Pl. Desayuno waterfront, vista marina. 7:30am-3pm.</div><div class="resto-links"><a class="resto-link" href="https://maps.google.com/?q=EJs+Bayfront+Cafe+Naples" target="_blank">Maps</a></div></div><div class="resto-right"><span style="color:#fbbf24;font-size:1.3rem;font-weight:800;">4.7</span></div></div>
+    <div class="resto-card" style="border-left-color:#fbbf24;"><div><h4 style="color:#fbbf24;">Lulu's Cafe (Delray Beach)</h4><div class="resto-meta"><span class="resto-tag tag-rating">4.3</span><span class="resto-tag tag-price">$$</span><span class="resto-tag tag-dist">5 min</span></div><div class="resto-desc">189 NE 2nd Ave (Pineapple Grove). Featured PBS. Brunch 8am-3:30pm.</div><div class="resto-links"><a class="resto-link" href="https://maps.google.com/?q=Lulus+Cafe+Delray+Beach" target="_blank">Maps</a></div></div><div class="resto-right"><span style="color:#fbbf24;font-size:1.3rem;font-weight:800;">4.3</span></div></div>
+    <div class="resto-card" style="border-left-color:#fbbf24;"><div><h4 style="color:#fbbf24;">Caffe Luna Rosa (Delray - tambien desayuno!)</h4><div class="resto-meta"><span class="resto-tag tag-rating">4.5</span><span class="resto-tag tag-price">$$$</span><span class="resto-tag tag-dist">1 min caminando!</span></div><div class="resto-desc">Al lado del Opal Grand. Abre 7AM. Desayuno italiano con vista al oceano.</div><div class="resto-links"><a class="resto-link" href="https://maps.google.com/?q=Caffe+Luna+Rosa+Delray+Beach" target="_blank">Maps</a></div></div><div class="resto-right"><span style="color:#fbbf24;font-size:1.3rem;font-weight:800;">4.5</span></div></div>
   </div>
   <div style="background:#1e293b;border-radius:12px;padding:1rem 1.5rem;margin-bottom:1rem;border-left:4px solid #4ade80;">
     <h3 style="color:#4ade80;margin-bottom:0.8rem;">Starbucks + Cafe Local</h3>
@@ -1448,33 +1410,51 @@
 
   <div class="town-card">
     <div>
-      <a href="https://www.google.com/search?tbm=isch&q=5th+Avenue+South+Naples+Florida" target="_blank"><img class="town-img" src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/46/Naples_Players_Sugden_Community_Theatre_701_5th_Avenue_South_2010.jpg/600px-Naples_Players_Sugden_Community_Theatre_701_5th_Avenue_South_2010.jpg" alt="5th Avenue South Naples"></a>
+      <a class="town-img-fallback" href="https://www.google.com/search?tbm=isch&q=5th Avenue South Naples+Florida" target="_blank">Ver fotos de este lugar en Google</a>
       <h3>5th Avenue South, Naples</h3>
       <div class="town-loc">10 min del Edgewater</div>
       <div class="town-desc">La calle principal de Naples. Arquitectura mediterranea, galerias de arte, boutiques, heladerias, restaurantes con mesas en la vereda. Ambiente elegante pero relajado. Los chicos pueden tomar helado mientras ustedes pasean. Hay un pier (muelle) al final donde se ven atardeceres increibles.</div>
       <div class="town-tips"><strong>Tip:</strong> Ir al atardecer. El Naples Pier es imperdible para fotos del sunset.</div>
+      <div class="town-links">
+        <a class="town-link" href="https://maps.google.com/?q=5th+Avenue+South+Naples+FL" target="_blank">Google Maps</a>
+        <a class="town-link" href="https://www.fifthavenuesouth.com/" target="_blank">Sitio oficial</a>
+        <a class="town-link" href="https://maps.google.com/?q=Naples+Pier+FL" target="_blank">Naples Pier</a>
+        <a class="town-link" href="https://www.tripadvisor.com/Attraction_Review-g34467-d207643-Reviews-Fifth_Avenue_South-Naples_Florida.html" target="_blank">Fotos TripAdvisor</a>
+      </div>
     </div>
     <div>
-      <a href="https://www.google.com/search?tbm=isch&q=3rd+Street+South+Naples+Florida" target="_blank"><img class="town-img" src="img/3rd-street-south.png" alt="3rd Street South Naples"></a>
+      <a class="town-img-fallback" href="https://www.google.com/search?tbm=isch&q=3rd Street South Naples+Florida" target="_blank">Ver fotos de este lugar en Google</a>
       <h3>3rd Street South, Naples</h3>
       <div class="town-loc">10 min del Edgewater</div>
       <div class="town-desc">Mas intima que 5th Avenue. Tiendas de arte, joyerias artesanales, boutiques de ropa. Hay un farmers market los sabados por la manana. Calles arboladas con banyan trees enormes. Se siente como un pueblo chico dentro de la ciudad.</div>
       <div class="town-tips"><strong>Tip:</strong> Farmers market sabado 7:30am-11:30am en invierno (verificar si funciona en julio).</div>
+      <div class="town-links">
+        <a class="town-link" href="https://maps.google.com/?q=3rd+Street+South+Naples+FL" target="_blank">Google Maps</a>
+        <a class="town-link" href="https://www.tripadvisor.com/Attraction_Review-g34467-d4890462-Reviews-Third_Street_South-Naples_Florida.html" target="_blank">Fotos TripAdvisor</a>
+      </div>
     </div>
   </div>
 
   <div class="town-card">
     <div>
-      <a href="https://www.google.com/search?tbm=isch&q=Crayton+Cove+Naples+Florida" target="_blank"><img class="town-img" src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/1d/Historic_Naples_FA.JPG/600px-Historic_Naples_FA.JPG" alt="Crayton Cove Naples"></a>
+      <a class="town-img-fallback" href="https://www.google.com/search?tbm=isch&q=Crayton Cove Naples waterfront+Florida" target="_blank">Ver fotos de este lugar en Google</a>
       <h3>Crayton Cove, Naples</h3>
       <div class="town-loc">12 min del Edgewater</div>
       <div class="town-desc">Barrio de pescadores reconvertido en zona artistica. Galerias de arte, el restaurante The Dock con vista a la bahia, botes amarrados. Muy fotografico. Se siente autentico, no turistico. Pueden ver pelicanos y delfines desde el muelle.</div>
+      <div class="town-links">
+        <a class="town-link" href="https://maps.google.com/?q=Crayton+Cove+Naples+FL" target="_blank">Google Maps</a>
+        <a class="town-link" href="https://maps.google.com/?q=The+Dock+at+Crayton+Cove+Naples" target="_blank">The Dock restaurant</a>
+      </div>
     </div>
     <div>
-      <a href="https://www.google.com/search?tbm=isch&q=Old+Naples+Palm+Cottage+Florida" target="_blank"><img class="town-img" src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/21/Naples_FL_Palm_Cottage01.jpg/600px-Naples_FL_Palm_Cottage01.jpg" alt="Old Naples Palm Cottage"></a>
+      <a class="town-img-fallback" href="https://www.google.com/search?tbm=isch&q=Old Naples Palm Cottage historic+Florida" target="_blank">Ver fotos de este lugar en Google</a>
       <h3>Old Naples / Historic District</h3>
       <div class="town-loc">10 min del Edgewater</div>
       <div class="town-desc">Calles con casas estilo Florida de los anos 50-60 rodeadas de palmeras y buganvilias. Caminable, tranquilo, fotografico. Muy diferente a los mega-developments modernos. Se puede combinar con 5th Ave y el Pier en un mismo paseo.</div>
+      <div class="town-links">
+        <a class="town-link" href="https://maps.google.com/?q=Old+Naples+Historic+District+FL" target="_blank">Google Maps</a>
+        <a class="town-link" href="https://www.visitnaplesfl.com/downtown-naples" target="_blank">Visit Naples</a>
+      </div>
     </div>
   </div>
 
@@ -1482,46 +1462,69 @@
 
   <div class="town-card">
     <div>
-      <a href="https://www.google.com/search?tbm=isch&q=Atlantic+Avenue+Delray+Florida" target="_blank"><img class="town-img" src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/7c/Delray_Beach_FL_Marina_Historic_District_02.JPG/600px-Delray_Beach_FL_Marina_Historic_District_02.JPG" alt="Atlantic Avenue Delray"></a>
+      <a class="town-img-fallback" href="https://www.google.com/search?tbm=isch&q=Atlantic Avenue Delray Beach+Florida" target="_blank">Ver fotos de este lugar en Google</a>
       <h3>Atlantic Avenue, Delray Beach</h3>
       <div class="town-loc">Caminable desde el Opal Grand!</div>
       <div class="town-desc">La calle mas linda de la costa este de Florida. 80+ restaurantes, heladerias, boutiques, galerias. Se extiende desde el oceano hasta el Intracoastal. Ambiente vibrante pero no abrumador. Musicos callejeros los fines de semana. Los chicos pueden ir a Icy Bean (Hawaiian shave ice) o a las tiendas de souvenirs.</div>
       <div class="town-tips"><strong>Tip:</strong> Van a pasar por aca todos los dias porque esta al lado del hotel. Prueben un restaurante diferente cada noche.</div>
+      <div class="town-links">
+        <a class="town-link" href="https://maps.google.com/?q=Atlantic+Avenue+Delray+Beach+FL" target="_blank">Google Maps</a>
+        <a class="town-link" href="https://downtowndelraybeach.com/" target="_blank">Sitio oficial</a>
+        <a class="town-link" href="https://downtowndelraybeach.com/dining" target="_blank">Restaurantes</a>
+        <a class="town-link" href="https://www.tripadvisor.com/Attraction_Review-g34179-d207642-Reviews-Delray_Beach_Downtown-Delray_Beach_Florida.html" target="_blank">Fotos TripAdvisor</a>
+      </div>
     </div>
     <div>
-      <a href="https://www.google.com/search?tbm=isch&q=Pineapple+Grove+Delray+Florida" target="_blank"><img class="town-img" src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/7c/Delray_Beach_FL_Marina_Historic_District_02.JPG/600px-Delray_Beach_FL_Marina_Historic_District_02.JPG" alt="Pineapple Grove Delray"></a>
+      <a class="town-img-fallback" href="https://www.google.com/search?tbm=isch&q=Pineapple Grove Delray Beach+Florida" target="_blank">Ver fotos de este lugar en Google</a>
       <h3>Pineapple Grove Arts District, Delray Beach</h3>
       <div class="town-loc">Caminable desde el Opal Grand (~10 min)</div>
       <div class="town-desc">Barrio artistico al norte de Atlantic Avenue. Murales enormes (no se pierdan "Dancing Pineapples" en 2 NE 2nd Ave), galerias, estudios de artistas, cafes independientes. Se siente como un mini Wynwood (Miami) pero mas tranquilo y familiar. Genial para fotos con los murales.</div>
+      <div class="town-links">
+        <a class="town-link" href="https://maps.google.com/?q=Pineapple+Grove+Arts+District+Delray+Beach" target="_blank">Google Maps</a>
+        <a class="town-link" href="https://www.visitdelraybeach.org/plays/pineapple-grove-arts-district/" target="_blank">Guia oficial</a>
+        <a class="town-link" href="https://www.thepalmbeaches.com/explore-cities/pineapple-arts-district" target="_blank">Palm Beaches</a>
+      </div>
     </div>
   </div>
 
   <div class="town-card">
     <div>
-      <a href="https://www.google.com/search?tbm=isch&q=Worth+Avenue+Palm+Beach+Florida" target="_blank"><img class="town-img" src="img/worth-avenue.jpg" alt="Worth Avenue Palm Beach"></a>
-      <h3>Worth Avenue + Palm Beach Island</h3>
+      <a class="town-img-fallback" href="https://www.google.com/search?tbm=isch&q=Worth Avenue Palm Beach+Florida" target="_blank">Ver fotos de este lugar en Google</a>
+      <h3>Worth Avenue + Palm Beach <a href="https://www.luxurytravelmagazine.com/news-articles/worth-avenue-palm-beach-the-ultimate-guide" target="_blank" style="color:#a78bfa;font-size:0.7rem;">(Guia)</a></h3>
       <div class="town-loc">25 min del Opal Grand</div>
       <div class="town-desc">La "Rodeo Drive" de Florida. Arquitectura estilo mediterraneo de los anos 20 disenada por Addison Mizner. Tiendas de ultra-lujo (Chanel, Gucci, Louis Vuitton) - no para comprar sino para pasear y ver. El <strong>Palm Beach Lake Trail</strong> tiene vistas a mansiones de millonarios (incluyendo Mar-a-Lago). Los chicos pueden contar yates.</div>
       <div class="town-tips"><strong>Tip:</strong> Combinar con almuerzo en Rosemary Square al cruzar el puente.</div>
+      <div class="town-links">
+        <a class="town-link" href="https://maps.google.com/?q=Worth+Avenue+Palm+Beach+FL" target="_blank">Google Maps Worth Ave</a>
+        <a class="town-link" href="https://maps.google.com/?q=Palm+Beach+Lake+Trail" target="_blank">Lake Trail</a>
+        <a class="town-link" href="https://maps.google.com/?q=Rosemary+Square+West+Palm+Beach" target="_blank">Rosemary Square</a>
+        <a class="town-link" href="https://www.tripadvisor.com/Attraction_Review-g34552-d109400-Reviews-Worth_Avenue-Palm_Beach_Florida.html" target="_blank">Fotos TripAdvisor</a>
+      </div>
     </div>
     <div>
-      <a href="https://www.google.com/search?tbm=isch&q=Clematis+Street+West+Palm+Florida" target="_blank"><img class="town-img" src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/52/ClematisStWPB500block.JPG/600px-ClematisStWPB500block.JPG" alt="Clematis Street West Palm"></a>
+      <a class="town-img-fallback" href="https://www.google.com/search?tbm=isch&q=Clematis Street West Palm Beach+Florida" target="_blank">Ver fotos de este lugar en Google</a>
       <h3>Clematis Street, West Palm Beach</h3>
       <div class="town-loc">30 min del Opal Grand</div>
       <div class="town-desc">Centro historico de West Palm Beach (National Register of Historic Places). Restaurantes, tiendas vintage, murales, arquitectura de principios del siglo XX. Waterfront park con muelles publicos, fuentes danzantes y vista a Palm Beach Island. Los jueves "Clematis by Night" (musica en vivo gratis + food trucks, 6-9pm).</div>
       <div class="town-tips"><strong>Tip:</strong> Si van un jueves, Clematis by Night es gratis y los chicos lo disfrutan.</div>
+      <div class="town-links">
+        <a class="town-link" href="https://maps.google.com/?q=Clematis+Street+West+Palm+Beach+FL" target="_blank">Google Maps</a>
+        <a class="town-link" href="https://clematisstreet.org/" target="_blank">Sitio oficial</a>
+        <a class="town-link" href="https://maps.google.com/?q=Waterfront+Commons+West+Palm+Beach" target="_blank">Waterfront Park</a>
+        <a class="town-link" href="https://www.tripadvisor.com/Attraction_Review-g34731-d207766-Reviews-Clematis_Street-West_Palm_Beach_Florida.html" target="_blank">Fotos TripAdvisor</a>
+      </div>
     </div>
   </div>
 
   <div class="town-card">
     <div>
-      <a href="https://www.google.com/search?tbm=isch&q=Mizner+Park+Boca+Raton+Florida" target="_blank"><img class="town-img" src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/Mizner_Park_Boca_June_2010_Fountain.jpg/600px-Mizner_Park_Boca_June_2010_Fountain.jpg" alt="Mizner Park Boca Raton"></a>
+      <a class="town-img-fallback" href="https://www.google.com/search?tbm=isch&q=Mizner Park Boca Raton fountain+Florida" target="_blank">Ver fotos de este lugar en Google</a>
       <h3>Mizner Park, Boca Raton</h3>
       <div class="town-loc">15 min del Opal Grand</div>
       <div class="town-desc">Centro al aire libre con arquitectura estilo mediterraneo. Restaurantes, tiendas, cine iPic (luxury). El Boca Raton Museum of Art esta ahi. Ambiente relajado para caminar, especialmente de noche con las luces. Fountains donde los chicos pueden jugar.</div>
     </div>
     <div>
-      <a href="https://www.google.com/search?tbm=isch&q=Lake+Worth+Beach+Florida" target="_blank"><img class="town-img" src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/67/Lake_Worth_Beach_Street_Painting_Festival.jpg/600px-Lake_Worth_Beach_Street_Painting_Festival.jpg" alt="Lake Worth Beach"></a>
+      <a class="town-img-fallback" href="https://www.google.com/search?tbm=isch&q=Lake Worth Beach Street Painting Festival+Florida" target="_blank">Ver fotos de este lugar en Google</a>
       <h3>Lake Worth Beach / Downtown</h3>
       <div class="town-loc">20 min del Opal Grand</div>
       <div class="town-desc">Pueblo bohemio con murales, galerias, cafes independientes, tiendas vintage. El downtown tiene un ambiente artistico y alternativo unico en South Florida. Mas "quirky" y autentico. El pier y la playa municipal son lindos. Mucho menos turistico que Delray o Palm Beach.</div>
@@ -1530,6 +1533,30 @@
   </div>
 </div>
 
+<!-- =================== TRIVIA GAME =================== -->
+<div id="trivia" class="section">
+  <h2 style="color:#fff; margin-bottom:0.5rem;">Trivia: Cuanto Saben de Florida?</h2>
+  <p style="color:#94a3b8; margin-bottom:1.5rem;">Jueguen en familia antes o durante el viaje. Click en la respuesta que crean correcta!</p>
+
+  <style>
+    .trivia-card { background:#1e293b; border-radius:12px; padding:1.5rem; margin-bottom:1rem; }
+    .trivia-card h3 { color:#22d3ee; font-size:1rem; margin-bottom:1rem; }
+    .trivia-card .q-num { color:#a78bfa; font-weight:800; font-size:0.85rem; }
+    .trivia-btn { display:block; width:100%; text-align:left; padding:10px 16px; margin:4px 0; background:#334155; border:2px solid #475569; border-radius:8px; color:#e2e8f0; cursor:pointer; font-size:0.9rem; transition: all 0.3s; }
+    .trivia-btn:hover { border-color:#22d3ee; background:#1e3a5f; }
+    .trivia-btn.correct { background:#065f46; border-color:#4ade80; color:#4ade80; }
+    .trivia-btn.wrong { background:#7c2d12; border-color:#f87171; color:#f87171; }
+    .trivia-fact { display:none; background:#164e63; padding:12px; border-radius:8px; margin-top:8px; color:#e2e8f0; font-size:0.85rem; }
+    .trivia-fact.show { display:block; }
+    .trivia-score { background:linear-gradient(135deg,#1e3a5f,#164e63); padding:1.5rem; border-radius:12px; text-align:center; margin-bottom:1.5rem; }
+    .trivia-score .score-num { font-size:2.5rem; font-weight:800; color:#22d3ee; }
+    .trivia-score .score-label { color:#94a3b8; }
+  </style>
+
+  <div class="trivia-score">
+    <div class="score-label">Puntaje</div>
+    <div class="score-num" id="trivia-score">0 / 10</div>
+    <button onclick="resetTrivia()" style="margin-top:10px; padding:8px 20px; background:#22d3ee; color:#0f172a; border:none; border-radius:8px; font-weight:700; cursor:pointer;">Reiniciar</button>
   </div>
 
   <div class="trivia-card" data-q="1">
