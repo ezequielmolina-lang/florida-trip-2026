@@ -4,15 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Florida Family Trip - Hotel Comparison Dashboard</title>
-<script>
-(function(){
-  var p = prompt("Password:");
-  if(p && p.replace(/s/g,"").toLowerCase() !== "florida2026") {
-    document.body.innerHTML = "<div style=\"display:flex;align-items:center;justify-content:center;height:100vh;background:#0f172a;color:#f87171;font-family:sans-serif;font-size:1.5rem;\">Acceso denegado</div>";
-    throw new Error("wrong password");
-  }
-})();
-</script>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background: #0f172a; color: #e2e8f0; line-height: 1.6; }
@@ -91,8 +82,70 @@
     .comparison-table td, .comparison-table th { padding: 6px 4px; }
   }
 </style>
+<style>
+#password-gate {
+    position:fixed;inset:0;z-index:9999;
+    display:flex;align-items:center;justify-content:center;
+    background:linear-gradient(135deg,#0c4a6e 0%,#0f172a 60%,#164e63 100%);
+    font-family:'Segoe UI',system-ui,sans-serif;
+}
+#password-gate .gate-box {
+    background:white;border-radius:1.5rem;padding:3rem;max-width:420px;width:90%;
+    box-shadow:0 25px 50px rgba(0,0,0,0.3);text-align:center;
+}
+#password-gate h1{color:#0c4a6e;font-size:1.5rem;font-weight:800;margin-bottom:0.5rem;}
+#password-gate p{color:#6b7280;font-size:0.875rem;margin-bottom:1.5rem;}
+#password-gate input{
+    width:100%;padding:0.75rem 1rem;border:2px solid #e5e7eb;border-radius:0.75rem;
+    font-size:1rem;text-align:center;letter-spacing:0.1em;outline:none;transition:border-color 0.2s;
+}
+#password-gate input:focus{border-color:#0c4a6e;}
+#password-gate input.error{border-color:#ef4444;animation:shake 0.5s;}
+#password-gate button{
+    margin-top:1rem;width:100%;padding:0.75rem;background:#22d3ee;
+    color:#0f172a;font-weight:700;border:none;border-radius:0.75rem;
+    font-size:1rem;cursor:pointer;transition:background 0.2s;
+}
+#password-gate button:hover{background:#06b6d4;}
+#password-gate .error-msg{color:#ef4444;font-size:0.8rem;margin-top:0.5rem;display:none;}
+@keyframes shake{0%,100%{transform:translateX(0);}25%{transform:translateX(-8px);}75%{transform:translateX(8px);}}
+body.locked > *:not(#password-gate){display:none !important;}
+</style>
+<script>
+document.addEventListener('DOMContentLoaded',function(){
+    if(sessionStorage.getItem('florida-trip-auth')==='true'){
+        document.getElementById('password-gate').remove();
+        document.body.classList.remove('locked');
+        return;
+    }
+    document.body.classList.add('locked');
+});
+function checkPassword(){
+    var input=document.getElementById('gate-input');
+    var errMsg=document.getElementById('gate-error');
+    var val=input.value.replace(/\s/g,'').toLowerCase();
+    if(val==='florida2026'){
+        sessionStorage.setItem('florida-trip-auth','true');
+        document.getElementById('password-gate').remove();
+        document.body.classList.remove('locked');
+    }else{
+        input.classList.add('error');
+        errMsg.style.display='block';
+        setTimeout(function(){input.classList.remove('error');},500);
+    }
+}
+</script>
 </head>
 <body>
+<div id="password-gate">
+<div class="gate-box">
+<h1>Florida Family Trip 2026</h1>
+<p>Esta pagina esta protegida. Ingresa el password para continuar.</p>
+<input type="password" id="gate-input" placeholder="Password" onkeydown="if(event.key==='Enter')checkPassword()">
+<button onclick="checkPassword()">Entrar</button>
+<div class="error-msg" id="gate-error">Password incorrecto. Intenta de nuevo.</div>
+</div>
+</div>
 
 <div class="header">
   <h1>Viaje Familiar a Florida 2026</h1>
@@ -739,16 +792,7 @@
   <h2 style="color:#fff; margin-bottom:0.5rem;">Itinerario Dia por Dia</h2>
   <p style="color:#94a3b8; margin-bottom:1.5rem;">Flexible - ajustar segun clima y energia. Tip: actividades outdoor por la manana, shopping/indoor por la tarde (lluvias 3-5 PM).</p>
 
-  <script>
-(function(){
-  var p = prompt("Password:");
-  if(p && p.replace(/s/g,"").toLowerCase() !== "florida2026") {
-    document.body.innerHTML = "<div style=\"display:flex;align-items:center;justify-content:center;height:100vh;background:#0f172a;color:#f87171;font-family:sans-serif;font-size:1.5rem;\">Acceso denegado</div>";
-    throw new Error("wrong password");
-  }
-})();
-</script>
-<style>
+  <style>
     .day-card { background:#1e293b; border-radius:12px; padding:1.5rem; margin-bottom:1rem; border-left:4px solid #22d3ee; }
     .day-card h3 { color:#22d3ee; font-size:1.1rem; margin-bottom:0.3rem; }
     .day-card .date { color:#94a3b8; font-size:0.85rem; margin-bottom:0.8rem; }
@@ -935,16 +979,7 @@
 <div id="links" class="section">
   <h2 style="color:#fff; margin-bottom:1.5rem;">Links Utiles + Tips para el Viaje</h2>
 
-  <script>
-(function(){
-  var p = prompt("Password:");
-  if(p && p.replace(/s/g,"").toLowerCase() !== "florida2026") {
-    document.body.innerHTML = "<div style=\"display:flex;align-items:center;justify-content:center;height:100vh;background:#0f172a;color:#f87171;font-family:sans-serif;font-size:1.5rem;\">Acceso denegado</div>";
-    throw new Error("wrong password");
-  }
-})();
-</script>
-<style>
+  <style>
     .link-section { background:#1e293b; border-radius:12px; padding:1.5rem; margin-bottom:1rem; }
     .link-section h3 { color:#22d3ee; margin-bottom:1rem; font-size:1rem; }
     .link-item { display:flex; justify-content:space-between; align-items:center; padding:8px 0; border-bottom:1px solid #334155; flex-wrap:wrap; gap:0.5rem; }
@@ -1043,16 +1078,7 @@
   <h2 style="color:#fff; margin-bottom:0.5rem;">Restaurantes Family-Friendly</h2>
   <p style="color:#94a3b8; margin-bottom:1rem;">Basados en tu gusto: Zaytinia (mediterraneo/mezze), Buca di Beppo (italiano familiar), Playa Bowls. Ratings de Google/TripAdvisor. Distancias desde el hotel.</p>
 
-  <script>
-(function(){
-  var p = prompt("Password:");
-  if(p && p.replace(/s/g,"").toLowerCase() !== "florida2026") {
-    document.body.innerHTML = "<div style=\"display:flex;align-items:center;justify-content:center;height:100vh;background:#0f172a;color:#f87171;font-family:sans-serif;font-size:1.5rem;\">Acceso denegado</div>";
-    throw new Error("wrong password");
-  }
-})();
-</script>
-<style>
+  <style>
     .resto-card { background:#1e293b; border-radius:12px; padding:1.2rem; margin-bottom:0.8rem; display:grid; grid-template-columns:1fr auto; gap:1rem; align-items:center; border-left:4px solid #fb923c; }
     .resto-card h4 { color:#fb923c; font-size:1rem; margin-bottom:0.2rem; }
     .resto-card img.resto-photo { width:150px; height:110px; object-fit:cover; border-radius:8px; float:right; margin-left:12px; margin-bottom:5px; }
@@ -1380,16 +1406,7 @@
   <h2 style="color:#fff; margin-bottom:0.5rem;">Pueblitos y Barrios Lindos para Pasear</h2>
   <p style="color:#94a3b8; margin-bottom:1.5rem;">No todo es shopping y playa. Estos lugares son lindos para caminar, conocer y sacar fotos. Todos accesibles en auto desde sus hoteles.</p>
 
-  <script>
-(function(){
-  var p = prompt("Password:");
-  if(p && p.replace(/s/g,"").toLowerCase() !== "florida2026") {
-    document.body.innerHTML = "<div style=\"display:flex;align-items:center;justify-content:center;height:100vh;background:#0f172a;color:#f87171;font-family:sans-serif;font-size:1.5rem;\">Acceso denegado</div>";
-    throw new Error("wrong password");
-  }
-})();
-</script>
-<style>
+  <style>
     .town-card { background:#1e293b; border-radius:12px; padding:1.5rem; margin-bottom:1rem; border-left:4px solid #a78bfa; display:grid; grid-template-columns: 1fr 1fr; gap:1.5rem; }
     .town-card h3 { color:#a78bfa; font-size:1.1rem; margin-bottom:0.3rem; }
     .town-card .town-loc { color:#94a3b8; font-size:0.85rem; margin-bottom:0.5rem; }
@@ -1540,16 +1557,7 @@
   <h2 style="color:#fff; margin-bottom:0.5rem;">Trivia: Cuanto Saben de Florida?</h2>
   <p style="color:#94a3b8; margin-bottom:1.5rem;">Jueguen en familia antes o durante el viaje. Click en la respuesta que crean correcta!</p>
 
-  <script>
-(function(){
-  var p = prompt("Password:");
-  if(p && p.replace(/s/g,"").toLowerCase() !== "florida2026") {
-    document.body.innerHTML = "<div style=\"display:flex;align-items:center;justify-content:center;height:100vh;background:#0f172a;color:#f87171;font-family:sans-serif;font-size:1.5rem;\">Acceso denegado</div>";
-    throw new Error("wrong password");
-  }
-})();
-</script>
-<style>
+  <style>
     .trivia-card { background:#1e293b; border-radius:12px; padding:1.5rem; margin-bottom:1rem; }
     .trivia-card h3 { color:#22d3ee; font-size:1rem; margin-bottom:1rem; }
     .trivia-card .q-num { color:#a78bfa; font-weight:800; font-size:0.85rem; }
