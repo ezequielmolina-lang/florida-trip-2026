@@ -1841,169 +1841,66 @@ function startExploring() {
 
 <!-- =================== TRIVIA GAME =================== -->
 <div id="trivia" class="section">
-  <h2 style="color:#fff; margin-bottom:0.5rem;">Trivia: Cuanto Saben de Florida?</h2>
-  <p style="color:#94a3b8; margin-bottom:1.5rem;">Jueguen en familia antes o durante el viaje. Click en la respuesta que crean correcta!</p>
+  <h2 style="color:#fff;margin-bottom:0.5rem;">Trivia: Cuanto Saben de Florida?</h2>
+  <p style="color:#94a3b8;margin-bottom:1rem;">3 niveles. Necesitas 7/10 para desbloquear el siguiente!</p>
 
-  <style>
-    .trivia-card { background:#1e293b; border-radius:12px; padding:1.5rem; margin-bottom:1rem; }
-    .trivia-card h3 { color:#22d3ee; font-size:1rem; margin-bottom:1rem; }
-    .trivia-card .q-num { color:#a78bfa; font-weight:800; font-size:0.85rem; }
-    .trivia-btn { display:block; width:100%; text-align:left; padding:10px 16px; margin:4px 0; background:#334155; border:2px solid #475569; border-radius:8px; color:#e2e8f0; cursor:pointer; font-size:0.9rem; transition: all 0.3s; }
-    .trivia-btn:hover { border-color:#22d3ee; background:#1e3a5f; }
-    .trivia-btn.correct { background:#065f46; border-color:#4ade80; color:#4ade80; }
-    .trivia-btn.wrong { background:#7c2d12; border-color:#f87171; color:#f87171; }
-    .trivia-fact { display:none; background:#164e63; padding:12px; border-radius:8px; margin-top:8px; color:#e2e8f0; font-size:0.85rem; }
-    .trivia-fact.show { display:block; }
-    .trivia-score { background:linear-gradient(135deg,#1e3a5f,#164e63); padding:1.5rem; border-radius:12px; text-align:center; margin-bottom:1.5rem; }
-    .trivia-score .score-num { font-size:2.5rem; font-weight:800; color:#22d3ee; }
-    .trivia-score .score-label { color:#94a3b8; }
-  </style>
-
-  <div class="trivia-score">
-    <div class="score-label">Puntaje</div>
-    <div class="score-num" id="trivia-score">0 / 10</div>
-    <button onclick="resetTrivia()" style="margin-top:10px; padding:8px 20px; background:#22d3ee; color:#0f172a; border:none; border-radius:8px; font-weight:700; cursor:pointer;">Reiniciar</button>
+  <div style="background:linear-gradient(135deg,#1e3a5f,#164e63);padding:1.2rem;border-radius:12px;text-align:center;margin-bottom:1rem;">
+    <div style="display:flex;justify-content:center;gap:0.8rem;flex-wrap:wrap;margin-bottom:1rem;">
+      <button id="bl" onclick="showLvl('b')" style="padding:8px 20px;background:#22d3ee;color:#0f172a;border:none;border-radius:8px;font-weight:700;cursor:pointer;">Basico</button>
+      <button id="il" onclick="showLvl('i')" style="padding:8px 20px;background:#334155;color:#94a3b8;border:2px solid #475569;border-radius:8px;font-weight:700;cursor:pointer;" disabled>Intermedio 🔒</button>
+      <button id="al" onclick="showLvl('a')" style="padding:8px 20px;background:#334155;color:#94a3b8;border:2px solid #475569;border-radius:8px;font-weight:700;cursor:pointer;" disabled>Avanzado 🔒</button>
+    </div>
+    <div id="tsc" style="color:#22d3ee;font-size:1.5rem;font-weight:800;">0 / 10</div>
+    <div id="tmsg" style="color:#94a3b8;font-size:0.85rem;margin-top:0.3rem;">Basico - 7/10 para desbloquear Intermedio</div>
+    <button onclick="resetT()" style="margin-top:6px;padding:5px 14px;background:#334155;color:#94a3b8;border:none;border-radius:6px;font-size:0.75rem;cursor:pointer;">Reiniciar</button>
   </div>
 
-  <div class="trivia-card" data-q="1">
-    <span class="q-num">PREGUNTA 1</span>
-    <h3>Que animal es el simbolo oficial de Florida?</h3>
-    <button class="trivia-btn" onclick="checkAnswer(this,false)">A) El pelicano</button>
-    <button class="trivia-btn" onclick="checkAnswer(this,false)">B) El delfin</button>
-    <button class="trivia-btn" onclick="checkAnswer(this,true)">C) La pantera de Florida</button>
-    <div class="trivia-fact">La Florida Panther es una subespecie del puma. Quedan menos de 200 en estado salvaje, viven en los Everglades y el suroeste de Florida, cerca de donde van a estar en Naples!</div>
+  <div id="lvl-b">
+    <div class="trivia-card" data-l="b"><h3 style="color:#22d3ee;">Que animal es el simbolo oficial de Florida?</h3><button class="trivia-btn" onclick="chk(this,0)">A) El pelicano</button><button class="trivia-btn" onclick="chk(this,0)">B) El delfin</button><button class="trivia-btn" onclick="chk(this,1)">C) La pantera de Florida</button><div class="trivia-fact">La Florida Panther es subespecie del puma. Quedan menos de 200 en estado salvaje, cerca de Naples!</div></div>
+    <div class="trivia-card" data-l="b"><h3 style="color:#22d3ee;">Florida produce el 70% de algo en USA. Que?</h3><button class="trivia-btn" onclick="chk(this,1)">A) Naranjas</button><button class="trivia-btn" onclick="chk(this,0)">B) Camarones</button><button class="trivia-btn" onclick="chk(this,0)">C) Azucar</button><div class="trivia-fact">Florida = 70% de las naranjas de USA. Florida significa 'Tierra Florida' en espanol!</div></div>
+    <div class="trivia-card" data-l="b"><h3 style="color:#22d3ee;">Por que se llama 'Alligator Alley' a la I-75?</h3><button class="trivia-btn" onclick="chk(this,0)">A) Por una empresa</button><button class="trivia-btn" onclick="chk(this,1)">B) Cruza los Everglades con miles de aligators</button><button class="trivia-btn" onclick="chk(this,0)">C) Forma de cocodrilo</button><div class="trivia-fact">Cruza los Everglades con 200,000+ aligators. Van a manejar por ahi!</div></div>
+    <div class="trivia-card" data-l="b"><h3 style="color:#22d3ee;">Cuantos dias de sol tiene Florida por ano?</h3><button class="trivia-btn" onclick="chk(this,0)">A) 180</button><button class="trivia-btn" onclick="chk(this,0)">B) 220</button><button class="trivia-btn" onclick="chk(this,1)">C) Mas de 230</button><div class="trivia-fact">237 promedio, Naples tiene 264! The Sunshine State.</div></div>
+    <div class="trivia-card" data-l="b"><h3 style="color:#22d3ee;">Que animal peligroso NO existe en Florida?</h3><button class="trivia-btn" onclick="chk(this,0)">A) Aligators</button><button class="trivia-btn" onclick="chk(this,1)">B) Hipopotamos</button><button class="trivia-btn" onclick="chk(this,0)">C) Pitones gigantes</button><div class="trivia-fact">1.3 millones de aligators y pitones de 5m+ pero NO hipopotamos!</div></div>
+    <div class="trivia-card" data-l="b"><h3 style="color:#22d3ee;">Fort Lauderdale se conoce como...?</h3><button class="trivia-btn" onclick="chk(this,1)">A) La Venecia de America</button><button class="trivia-btn" onclick="chk(this,0)">B) La Atlantida del Sur</button><button class="trivia-btn" onclick="chk(this,0)">C) Capital del Surf</button><div class="trivia-fact">480 km de canales y 42,000 yates. Casas con yate en el patio!</div></div>
+    <div class="trivia-card" data-l="b"><h3 style="color:#22d3ee;">Playas Golfo (Naples) vs Atlantico (Delray)?</h3><button class="trivia-btn" onclick="chk(this,1)">A) Golfo mas calmo, arena mas blanca</button><button class="trivia-btn" onclick="chk(this,0)">B) Iguales</button><button class="trivia-btn" onclick="chk(this,0)">C) Atlantico mas calmo</button><div class="trivia-fact">Naples = agua calma, arena blanca. Delray = mas olas. Sunsets del Golfo espectaculares!</div></div>
+    <div class="trivia-card" data-l="b"><h3 style="color:#22d3ee;">Sanibel Island es famosa por?</h3><button class="trivia-btn" onclick="chk(this,1)">A) Shelling (conchas marinas)</button><button class="trivia-btn" onclick="chk(this,0)">B) Surf gigante</button><button class="trivia-btn" onclick="chk(this,0)">C) Tiburones</button><div class="trivia-fact">250+ especies de conchas. El 'Sanibel Stoop' = agacharse todo el tiempo!</div></div>
+    <div class="trivia-card" data-l="b"><h3 style="color:#22d3ee;">Cuantos restaurantes tiene Atlantic Ave en Delray?</h3><button class="trivia-btn" onclick="chk(this,0)">A) 20</button><button class="trivia-btn" onclick="chk(this,0)">B) 40</button><button class="trivia-btn" onclick="chk(this,1)">C) Mas de 80!</button><div class="trivia-fact">80+ restaurantes! Nombrada 'Most Fun Small Town in America'.</div></div>
+    <div class="trivia-card" data-l="b"><h3 style="color:#22d3ee;">Que tiene especial Sloan's Ice Cream en Delray?</h3><button class="trivia-btn" onclick="chk(this,1)">A) Puerta de vidrio que se vuelve opaca</button><button class="trivia-btn" onclick="chk(this,0)">B) Espejo que adelgaza</button><button class="trivia-btn" onclick="chk(this,0)">C) Musica al abrir</button><div class="trivia-fact">Vidrio electrocromatico + todo rosa con aranas de cristal y caramelos!</div></div>
   </div>
 
-  <div class="trivia-card" data-q="2">
-    <span class="q-num">PREGUNTA 2</span>
-    <h3>Florida produce el 70% de algo que se consume en todo USA. Que es?</h3>
-    <button class="trivia-btn" onclick="checkAnswer(this,true)">A) Naranjas</button>
-    <button class="trivia-btn" onclick="checkAnswer(this,false)">B) Camarones</button>
-    <button class="trivia-btn" onclick="checkAnswer(this,false)">C) Azucar</button>
-    <div class="trivia-fact">Florida produce el 70% de todas las naranjas de USA. El jugo de naranja es la bebida oficial del estado. Fun fact: Florida significa 'Tierra Florida' (tierra de flores) en espanol!</div>
+  <div id="lvl-i" style="display:none;">
+    <div class="trivia-card" data-l="i"><h3 style="color:#fbbf24;">Que significa 'Sawgrass' en Sawgrass Mills?</h3><button class="trivia-btn" onclick="chk(this,0)">A) Nombre del fundador</button><button class="trivia-btn" onclick="chk(this,1)">B) Pasto filoso de los Everglades</button><button class="trivia-btn" onclick="chk(this,0)">C) Pasto de seda</button><div class="trivia-fact">Pasto con bordes como sierra. Everglades = 'River of Grass'. El outlet era pantano!</div></div>
+    <div class="trivia-card" data-l="i"><h3 style="color:#fbbf24;">Quien diseno Palm Beach en los 1920?</h3><button class="trivia-btn" onclick="chk(this,0)">A) Walt Disney</button><button class="trivia-btn" onclick="chk(this,1)">B) Addison Mizner</button><button class="trivia-btn" onclick="chk(this,0)">C) Henry Ford</button><div class="trivia-fact">Mizner invento el 'Mediterranean Revival'. Worth Avenue y Mizner Park son obra suya!</div></div>
+    <div class="trivia-card" data-l="i"><h3 style="color:#fbbf24;">Velocidad de un airboat?</h3><button class="trivia-btn" onclick="chk(this,0)">A) 20 km/h</button><button class="trivia-btn" onclick="chk(this,0)">B) 50 km/h</button><button class="trivia-btn" onclick="chk(this,1)">C) Mas de 100 km/h!</button><div class="trivia-fact">Superan 100 km/h! Navegan en 15 cm de agua.</div></div>
+    <div class="trivia-card" data-l="i"><h3 style="color:#fbbf24;">Florida como pais, ranking economico?</h3><button class="trivia-btn" onclick="chk(this,0)">A) Top 50</button><button class="trivia-btn" onclick="chk(this,1)">B) Top 15 - mas que Mexico!</button><button class="trivia-btn" onclick="chk(this,0)">C) Top 30</button><div class="trivia-fact">15ta economia mundial. Poblacion similar a Australia en 50x menos territorio!</div></div>
+    <div class="trivia-card" data-l="i"><h3 style="color:#fbbf24;">Especies de tiburones en Florida?</h3><button class="trivia-btn" onclick="chk(this,0)">A) 5</button><button class="trivia-btn" onclick="chk(this,0)">B) 15</button><button class="trivia-btn" onclick="chk(this,1)">C) Mas de 40!</button><div class="trivia-fact">40+ especies! Mas chance de rayo que de mordida de tiburon.</div></div>
+    <div class="trivia-card" data-l="i"><h3 style="color:#fbbf24;">Casa mas cara vendida en Palm Beach?</h3><button class="trivia-btn" onclick="chk(this,0)">A) $50M</button><button class="trivia-btn" onclick="chk(this,0)">B) $95M</button><button class="trivia-btn" onclick="chk(this,1)">C) Mas de $170M</button><div class="trivia-fact">$170M en 2024. Ingreso promedio de residentes supera el millon anual!</div></div>
+    <div class="trivia-card" data-l="i"><h3 style="color:#fbbf24;">Diferencia aligator vs cocodrilo?</h3><button class="trivia-btn" onclick="chk(this,0)">A) Son iguales</button><button class="trivia-btn" onclick="chk(this,1)">B) Hocico U vs V. Florida tiene ambos!</button><button class="trivia-btn" onclick="chk(this,0)">C) Cocodrilos de agua dulce</button><div class="trivia-fact">Florida = UNICO lugar del planeta donde coexisten ambos!</div></div>
+    <div class="trivia-card" data-l="i"><h3 style="color:#fbbf24;">Cuanto queda de los Everglades originales?</h3><button class="trivia-btn" onclick="chk(this,1)">A) Solo 50%</button><button class="trivia-btn" onclick="chk(this,0)">B) 90%</button><button class="trivia-btn" onclick="chk(this,0)">C) 10%</button><div class="trivia-fact">La mitad se perdio. Patrimonio UNESCO.</div></div>
+    <div class="trivia-card" data-l="i"><h3 style="color:#fbbf24;">Naples se llama asi por...?</h3><button class="trivia-btn" onclick="chk(this,0)">A) Italianos de Napoles</button><button class="trivia-btn" onclick="chk(this,1)">B) La bahia parecia la de Napoles Italia</button><button class="trivia-btn" onclick="chk(this,0)">C) Palabra Seminole</button><div class="trivia-fact">Colonos del siglo XIX la compararon con Napoles. Destino de lujo desde 1886!</div></div>
+    <div class="trivia-card" data-l="i"><h3 style="color:#fbbf24;">Delray Beach fue nombrada como...?</h3><button class="trivia-btn" onclick="chk(this,0)">A) Playa mas limpia</button><button class="trivia-btn" onclick="chk(this,1)">B) Most Fun Small Town in America</button><button class="trivia-btn" onclick="chk(this,0)">C) Capital deportes acuaticos</button><div class="trivia-fact">Hace 30 anos era pueblo olvidado. Atlantic Avenue la transformo!</div></div>
   </div>
 
-  <div class="trivia-card" data-q="3">
-    <span class="q-num">PREGUNTA 3</span>
-    <h3>Por que las playas de Naples (Golfo) son diferentes a las de Delray Beach (Atlantico)?</h3>
-    <button class="trivia-btn" onclick="checkAnswer(this,true)">A) El Golfo es mas calmo, tibio y arena mas blanca</button>
-    <button class="trivia-btn" onclick="checkAnswer(this,false)">B) Son exactamente iguales</button>
-    <button class="trivia-btn" onclick="checkAnswer(this,false)">C) El Atlantico es mas calmo</button>
-    <div class="trivia-fact">En Naples (Golfo) el agua es calma como pileta y la arena blanca como azucar. En Delray (Atlantico) hay mas oleaje. Los sunsets en el Golfo son espectaculares porque el sol se pone sobre el agua!</div>
-  </div>
-
-  <div class="trivia-card" data-q="4">
-    <span class="q-num">PREGUNTA 4</span>
-    <h3>Que significa 'Sawgrass' en Sawgrass Mills?</h3>
-    <button class="trivia-btn" onclick="checkAnswer(this,false)">A) Es el nombre del fundador</button>
-    <button class="trivia-btn" onclick="checkAnswer(this,true)">B) Un pasto filoso que crece en los Everglades</button>
-    <button class="trivia-btn" onclick="checkAnswer(this,false)">C) Pasto de seda en ingles antiguo</button>
-    <div class="trivia-fact">Sawgrass es un pasto con bordes filosos como sierra que cubre los Everglades. El outlet esta construido en terreno que antes era pantano de sawgrass!</div>
-  </div>
-
-  <div class="trivia-card" data-q="5">
-    <span class="q-num">PREGUNTA 5</span>
-    <h3>Quien invento el estilo arquitectonico de Palm Beach y Boca Raton en los anos 1920?</h3>
-    <button class="trivia-btn" onclick="checkAnswer(this,false)">A) Walt Disney</button>
-    <button class="trivia-btn" onclick="checkAnswer(this,true)">B) Addison Mizner</button>
-    <button class="trivia-btn" onclick="checkAnswer(this,false)">C) Henry Ford</button>
-    <div class="trivia-fact">Addison Mizner invento el estilo 'Mediterranean Revival': techos de teja roja, paredes blancas, arcos, fuentes. Worth Avenue, Mizner Park en Boca Raton, todo es obra suya. Van a ver su estilo POR TODAS PARTES en el viaje!</div>
-  </div>
-
-  <div class="trivia-card" data-q="6">
-    <span class="q-num">PREGUNTA 6</span>
-    <h3>A que velocidad puede ir un airboat en los Everglades?</h3>
-    <button class="trivia-btn" onclick="checkAnswer(this,false)">A) 20 km/h</button>
-    <button class="trivia-btn" onclick="checkAnswer(this,false)">B) 50 km/h</button>
-    <button class="trivia-btn" onclick="checkAnswer(this,true)">C) Mas de 100 km/h!</button>
-    <div class="trivia-fact">Los airboats pueden superar los 100 km/h! En el tour iran mas lento (~40-50 km/h) para ver aligators. El airboat fue inventado en los Everglades porque es el unico vehiculo que navega por aguas de 15 cm de profundidad!</div>
-  </div>
-
-  <div class="trivia-card" data-q="7">
-    <span class="q-num">PREGUNTA 7</span>
-    <h3>Cuantas especies de tiburones viven en aguas de Florida?</h3>
-    <button class="trivia-btn" onclick="checkAnswer(this,false)">A) Solo 5</button>
-    <button class="trivia-btn" onclick="checkAnswer(this,false)">B) Unas 15</button>
-    <button class="trivia-btn" onclick="checkAnswer(this,true)">C) Mas de 40!</button>
-    <div class="trivia-fact">Florida tiene mas de 40 especies de tiburones! Pero tranquilos: los ataques son MUY raros. Hay mas chance de que les caiga un rayo que de que los muerda un tiburon en Florida!</div>
-  </div>
-
-  <div class="trivia-card" data-q="8">
-    <span class="q-num">PREGUNTA 8</span>
-    <h3>Si Florida fuera un pais, donde estaria en el ranking de economias mundiales?</h3>
-    <button class="trivia-btn" onclick="checkAnswer(this,false)">A) Top 50</button>
-    <button class="trivia-btn" onclick="checkAnswer(this,true)">B) Top 15 (mas grande que Mexico!)</button>
-    <button class="trivia-btn" onclick="checkAnswer(this,false)">C) Top 30</button>
-    <div class="trivia-fact">Florida seria la 15ta economia del mundo, mas grande que Mexico, Indonesia y Holanda! Tiene casi la misma poblacion que Australia (23M vs 26M) pero en un territorio 50 veces mas chico.</div>
-  </div>
-
-  <div class="trivia-card" data-q="9">
-    <span class="q-num">PREGUNTA 9</span>
-    <h3>Que tiene de especial la puerta del bano de Sloan's Ice Cream (la heladeria rosa de Delray)?</h3>
-    <button class="trivia-btn" onclick="checkAnswer(this,true)">A) Es de vidrio transparente que se vuelve opaco cuando cerras con llave</button>
-    <button class="trivia-btn" onclick="checkAnswer(this,false)">B) Tiene un espejo que te hace ver flaco</button>
-    <button class="trivia-btn" onclick="checkAnswer(this,false)">C) Suena musica cuando la abris</button>
-    <div class="trivia-fact">Sloan's tiene una puerta de bano de vidrio transparente que magicamente se vuelve opaca cuando giras la cerradura! Es tecnologia de vidrio electrocromatico. Los chicos van a querer ir al bano solo para verla. Ademas el local es TODO rosa con aranas de cristal, peluches gigantes y caramelos por kilo!</div>
-  </div>
-
-  <div class="trivia-card" data-q="10">
-    <span class="q-num">PREGUNTA 10</span>
-    <h3>Cuantos restaurantes tiene Atlantic Avenue en Delray Beach (la calle al lado de nuestro hotel)?</h3>
-    <button class="trivia-btn" onclick="checkAnswer(this,false)">A) Unos 20</button>
-    <button class="trivia-btn" onclick="checkAnswer(this,false)">B) Unos 40</button>
-    <button class="trivia-btn" onclick="checkAnswer(this,true)">C) Mas de 80!</button>
-    <div class="trivia-fact">Atlantic Avenue tiene mas de 80 restaurantes en solo unas cuadras! Delray Beach fue nombrada 'Most Fun Small Town in America'. Vamos a poder caminar a cenar todas las noches sin repetir restaurante. Playa Bowls esta a 5 minutos caminando del hotel!</div>
+  <div id="lvl-a" style="display:none;">
+    <div class="trivia-card" data-l="a"><h3 style="color:#f87171;">Que tribu nunca firmo paz con USA y vive en Florida?</h3><button class="trivia-btn" onclick="chk(this,0)">A) Cherokee</button><button class="trivia-btn" onclick="chk(this,1)">B) Seminole</button><button class="trivia-btn" onclick="chk(this,0)">C) Navajo</button><div class="trivia-fact">Los Seminole nunca se rindieron. Hoy son duenos de Hard Rock International!</div></div>
+    <div class="trivia-card" data-l="a"><h3 style="color:#f87171;">Inventor famoso con lab en Fort Myers?</h3><button class="trivia-btn" onclick="chk(this,0)">A) Tesla</button><button class="trivia-btn" onclick="chk(this,1)">B) Edison (vecino de Henry Ford)</button><button class="trivia-btn" onclick="chk(this,0)">C) Bell</button><div class="trivia-fact">Edison y Ford eran vecinos! Sus casas son museo. Edison planto el primer banyan tree de Florida.</div></div>
+    <div class="trivia-card" data-l="a"><h3 style="color:#f87171;">Primer europeo en Florida y cuando?</h3><button class="trivia-btn" onclick="chk(this,1)">A) 1513 - Ponce de Leon (espanol)</button><button class="trivia-btn" onclick="chk(this,0)">B) 1620 - Pilgrims</button><button class="trivia-btn" onclick="chk(this,0)">C) 1492 - Colon</button><div class="trivia-fact">Ponce de Leon buscaba la Fuente de la Juventud. Florida fue espanola 300 anos!</div></div>
+    <div class="trivia-card" data-l="a"><h3 style="color:#f87171;">Especie invasora destruyendo los Everglades?</h3><button class="trivia-btn" onclick="chk(this,0)">A) Ratas gigantes</button><button class="trivia-btn" onclick="chk(this,1)">B) Pitones birmanas (ex mascotas)</button><button class="trivia-btn" onclick="chk(this,0)">C) Cerdos europeos</button><div class="trivia-fact">Miles de pitones de 5m+. Florida paga cazadores para capturarlas!</div></div>
+    <div class="trivia-card" data-l="a"><h3 style="color:#f87171;">Fenomeno diario en verano en Florida?</h3><button class="trivia-btn" onclick="chk(this,0)">A) Terremotos leves</button><button class="trivia-btn" onclick="chk(this,1)">B) Tormentas a las 3-5 PM como reloj</button><button class="trivia-btn" onclick="chk(this,0)">C) Aurora boreal</button><div class="trivia-fact">Sea breeze convergence causa tormentas diarias 3-5 PM. Fuertes pero 30 min. Planeen indoor!</div></div>
+    <div class="trivia-card" data-l="a"><h3 style="color:#f87171;">Por que Florida tiene tantos jubilados?</h3><button class="trivia-btn" onclick="chk(this,0)">A) Mejores hospitales</button><button class="trivia-btn" onclick="chk(this,1)">B) 0% impuesto estatal a ingresos</button><button class="trivia-btn" onclick="chk(this,0)">C) Casas gratis</button><div class="trivia-fact">0% state income tax + clima calido = paraiso jubilados. 3er estado mas poblado!</div></div>
+    <div class="trivia-card" data-l="a"><h3 style="color:#f87171;">Que es el Intracoastal Waterway de Delray?</h3><button class="trivia-btn" onclick="chk(this,0)">A) Rio natural</button><button class="trivia-btn" onclick="chk(this,1)">B) Canal artificial de 4,800 km Boston-Texas</button><button class="trivia-btn" onclick="chk(this,0)">C) Brazo del oceano</button><div class="trivia-fact">4,800 km de Boston a Texas! Construido para barcos protegidos del oceano abierto.</div></div>
+    <div class="trivia-card" data-l="a"><h3 style="color:#f87171;">Punto mas alto de Florida?</h3><button class="trivia-btn" onclick="chk(this,1)">A) Solo 105 metros - estado mas plano</button><button class="trivia-btn" onclick="chk(this,0)">B) 500m montana</button><button class="trivia-btn" onclick="chk(this,0)">C) Bajo nivel del mar</button><div class="trivia-fact">Britton Hill = 105m. Si el mar sube 2m, 15% de Florida desaparece!</div></div>
+    <div class="trivia-card" data-l="a"><h3 style="color:#f87171;">Key West esta mas cerca de que pais que de Miami?</h3><button class="trivia-btn" onclick="chk(this,1)">A) Cuba (145 km)</button><button class="trivia-btn" onclick="chk(this,0)">B) Mexico</button><button class="trivia-btn" onclick="chk(this,0)">C) Bahamas</button><div class="trivia-fact">145 km a Cuba, 260 km a Miami. En dias claros casi se ve Cuba!</div></div>
+    <div class="trivia-card" data-l="a"><h3 style="color:#f87171;">Naples es una de las ciudades mas ricas de USA por?</h3><button class="trivia-btn" onclick="chk(this,0)">A) Turismo masivo</button><button class="trivia-btn" onclick="chk(this,0)">B) Petroleo</button><button class="trivia-btn" onclick="chk(this,1)">C) CEOs y billonarios viven ahi (Arthrex $16B tiene sede)</button><div class="trivia-fact">Arthrex ($16B) tiene sede en Naples. Muchos CEOs y billonarios = una de las mas ricas per capita de USA!</div></div>
   </div>
 </div>
 
-</div>
 <script>
-let triviaScore = 0;
-let triviaAnswered = 0;
-
-function checkAnswer(btn, isCorrect) {
-  const card = btn.closest('.trivia-card');
-  if (card.dataset.answered) return;
-  card.dataset.answered = 'true';
-  triviaAnswered++;
-
-  const buttons = card.querySelectorAll('.trivia-btn');
-  buttons.forEach(b => {
-    b.style.pointerEvents = 'none';
-    if (b === btn) {
-      b.classList.add(isCorrect ? 'correct' : 'wrong');
-    }
-  });
-
-  if (isCorrect) {
-    triviaScore++;
-    btn.textContent = '++ ' + btn.textContent;
-  } else {
-    btn.textContent = 'X ' + btn.textContent;
-    buttons.forEach(b => {
-      if (b !== btn) b.style.opacity = '0.5';
-    });
-  }
-
-  card.querySelector('.trivia-fact').classList.add('show');
-  document.getElementById('trivia-score').textContent = triviaScore + ' / 10';
-}
-
-function resetTrivia() {
-  triviaScore = 0;
-  triviaAnswered = 0;
-  document.getElementById('trivia-score').textContent = '0 / 10';
-  document.querySelectorAll('.trivia-card').forEach(card => {
-    delete card.dataset.answered;
-    card.querySelectorAll('.trivia-btn').forEach(btn => {
-      btn.classList.remove('correct', 'wrong');
-      btn.style.pointerEvents = '';
-      btn.style.opacity = '1';
-      btn.textContent = btn.textContent.replace(/^(\+\+ |X )/, '');
-    });
-    card.querySelector('.trivia-fact').classList.remove('show');
-  });
-}
+var sc={b:0,i:0,a:0},an={b:0,i:0,a:0},cl='b';
+function chk(btn,ok){var c=btn.closest('.trivia-card');if(c.dataset.d)return;c.dataset.d='1';var l=c.dataset.l;an[l]++;if(ok){sc[l]++;btn.classList.add('correct');btn.textContent='\u2713 '+btn.textContent;}else{btn.classList.add('wrong');btn.textContent='\u2717 '+btn.textContent;}c.querySelectorAll('.trivia-btn').forEach(function(b){b.style.pointerEvents='none';});c.querySelector('.trivia-fact').classList.add('show');upd();}
+function upd(){document.getElementById('tsc').textContent=sc[cl]+' / 10';if(an[cl]>=10){if(cl==='b'&&sc.b>=7){document.getElementById('il').disabled=false;document.getElementById('il').style.background='#fbbf24';document.getElementById('il').style.color='#0f172a';document.getElementById('il').textContent='Intermedio \u2713';document.getElementById('tmsg').textContent='Basico '+sc.b+'/10! Intermedio desbloqueado!';document.getElementById('tmsg').style.color='#4ade80';}else if(cl==='b'){document.getElementById('tmsg').textContent='Necesitas 7/10. Tenes '+sc.b+'/10. Reinicia!';document.getElementById('tmsg').style.color='#f87171';}if(cl==='i'&&sc.i>=7){document.getElementById('al').disabled=false;document.getElementById('al').style.background='#f87171';document.getElementById('al').style.color='#fff';document.getElementById('al').textContent='Avanzado \u2713';document.getElementById('tmsg').textContent='Intermedio '+sc.i+'/10! Avanzado desbloqueado!';document.getElementById('tmsg').style.color='#4ade80';}else if(cl==='i'&&an.i>=10){document.getElementById('tmsg').textContent='Necesitas 7/10. Tenes '+sc.i+'/10. Reinicia!';document.getElementById('tmsg').style.color='#f87171';}if(cl==='a'&&an.a>=10){document.getElementById('tmsg').textContent='Avanzado '+sc.a+'/10! Son expertos en Florida!';document.getElementById('tmsg').style.color='#4ade80';}}}
+function showLvl(l){cl=l;document.getElementById('lvl-b').style.display=l==='b'?'':'none';document.getElementById('lvl-i').style.display=l==='i'?'':'none';document.getElementById('lvl-a').style.display=l==='a'?'':'none';document.getElementById('bl').style.background=l==='b'?'#22d3ee':'#334155';document.getElementById('bl').style.color=l==='b'?'#0f172a':'#94a3b8';if(!document.getElementById('il').disabled){document.getElementById('il').style.background=l==='i'?'#fbbf24':'#334155';document.getElementById('il').style.color=l==='i'?'#0f172a':'#94a3b8';}if(!document.getElementById('al').disabled){document.getElementById('al').style.background=l==='a'?'#f87171':'#334155';document.getElementById('al').style.color=l==='a'?'#fff':'#94a3b8';}upd();var m={b:'Basico - 7/10 para Intermedio',i:'Intermedio - 7/10 para Avanzado',a:'Avanzado - Expertos!'};if(an[l]<10)document.getElementById('tmsg').textContent=m[l];}
+function resetT(){sc={b:0,i:0,a:0};an={b:0,i:0,a:0};cl='b';document.querySelectorAll('.trivia-card').forEach(function(c){delete c.dataset.d;c.querySelectorAll('.trivia-btn').forEach(function(b){b.classList.remove('correct','wrong');b.style.pointerEvents='';b.textContent=b.textContent.replace(/^[\u2713\u2717] /,'');});c.querySelector('.trivia-fact').classList.remove('show');});document.getElementById('il').disabled=true;document.getElementById('il').style.background='#334155';document.getElementById('il').style.color='#94a3b8';document.getElementById('il').textContent='Intermedio \ud83d\udd12';document.getElementById('al').disabled=true;document.getElementById('al').style.background='#334155';document.getElementById('al').style.color='#94a3b8';document.getElementById('al').textContent='Avanzado \ud83d\udd12';showLvl('b');}
 </script>
 
 <div class="lightbox" id="lightbox" onclick="this.classList.remove('show')">
