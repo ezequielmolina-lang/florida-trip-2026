@@ -11,21 +11,13 @@ document.addEventListener('DOMContentLoaded', function() {
     if (g) g.remove();
     var lp = document.getElementById('landing-page');
     if (lp) lp.remove();
-    return;
   }
-  document.querySelectorAll('body > *:not(#pw-gate):not(script):not(style):not(link)').forEach(function(el) { el.style.display = 'none'; });
 });
 function doPw() {
   var v = document.getElementById('pw-in').value.replace(/\s/g,'').toLowerCase();
   if (v === 'florida2026') {
     sessionStorage.setItem('fta','1');
     document.getElementById('pw-gate').remove();
-    document.querySelectorAll('body > *').forEach(function(el) { el.style.display = ''; });
-    var lp = document.getElementById('landing-page');
-    if (lp) {
-      lp.style.display = 'flex';
-      document.querySelectorAll('body > *:not(#landing-page):not(script):not(style):not(link)').forEach(function(el) { el.style.display = 'none'; });
-    }
   } else {
     document.getElementById('pw-in').style.borderColor = '#ef4444';
     document.getElementById('pw-err').style.display = 'block';
@@ -34,7 +26,6 @@ function doPw() {
 }
 function startExploring() {
   document.getElementById('landing-page').remove();
-  document.querySelectorAll('body > *').forEach(function(el) { el.style.display = ''; });
 }
 </script>
 <style>
@@ -45,7 +36,7 @@ function startExploring() {
 #pw-gate input{width:100%;padding:.75rem;border:2px solid #e5e7eb;border-radius:.75rem;font-size:1rem;text-align:center;outline:0}
 #pw-gate button{margin-top:1rem;width:100%;padding:.75rem;background:#22d3ee;color:#0f172a;font-weight:700;border:0;border-radius:.75rem;font-size:1rem;cursor:pointer}
 #pw-gate .err{color:#ef4444;font-size:.8rem;margin-top:.5rem;display:none}
-#landing-page{display:none;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;background:linear-gradient(135deg,#0c4a6e 0%,#0f172a 50%,#164e63 100%);text-align:center;padding:2rem;width:100%}
+#landing-page{display:flex;position:fixed;inset:0;z-index:9998;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;background:linear-gradient(135deg,#0c4a6e 0%,#0f172a 50%,#164e63 100%);text-align:center;padding:2rem;width:100%}
 @media(max-width:480px){#pw-gate>div{padding:2rem 1.5rem}#landing-page img{width:130px!important;height:130px!important}#landing-page h1{font-size:1.8rem!important}}
 </style>
 <style>
