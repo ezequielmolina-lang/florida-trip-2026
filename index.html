@@ -1,0 +1,1681 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Florida Family Trip - Hotel Comparison Dashboard</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background: #0f172a; color: #e2e8f0; line-height: 1.6; }
+  .header { background: linear-gradient(135deg, #1e3a5f 0%, #0c4a6e 50%, #164e63 100%); padding: 2rem; text-align: center; border-bottom: 3px solid #22d3ee; }
+  .header h1 { font-size: 2rem; color: #fff; margin-bottom: 0.3rem; }
+  .header p { color: #94a3b8; font-size: 0.95rem; }
+  .header .dates { color: #22d3ee; font-weight: 600; font-size: 1.1rem; margin-top: 0.5rem; }
+  .tabs { display: flex; justify-content: center; gap: 0.5rem; padding: 1rem; background: #1e293b; position: sticky; top: 0; z-index: 100; flex-wrap: wrap; }
+  .tab { padding: 0.7rem 1.5rem; border: 2px solid #334155; border-radius: 8px; cursor: pointer; transition: all 0.3s; font-weight: 600; color: #94a3b8; background: transparent; font-size: 0.95rem; }
+  .tab:hover { border-color: #22d3ee; color: #22d3ee; }
+  .tab.active { background: #22d3ee; color: #0f172a; border-color: #22d3ee; }
+  .section { display: none; padding: 1.5rem; max-width: 1400px; margin: 0 auto; }
+  .section.active { display: block; }
+  .comparison-table { width: 100%; border-collapse: collapse; margin: 1rem 0; font-size: 0.85rem; }
+  .comparison-table th { background: #1e3a5f; color: #22d3ee; padding: 12px 8px; text-align: left; position: sticky; top: 52px; z-index: 10; }
+  .comparison-table td { padding: 10px 8px; border-bottom: 1px solid #334155; vertical-align: top; }
+  .comparison-table tr:hover { background: #1e293b; }
+  .comparison-table .highlight { background: #164e63; }
+  .winner { color: #4ade80; font-weight: 700; }
+  .caution { color: #fbbf24; }
+  .no { color: #f87171; }
+  .yes { color: #4ade80; }
+  .hotel-grid { display: grid; grid-template-columns: 1fr; gap: 2rem; margin-top: 1rem; }
+  .hotel-card { background: #1e293b; border-radius: 16px; overflow: hidden; border: 1px solid #334155; }
+  .hotel-card.recommended { border: 2px solid #22d3ee; position: relative; }
+  .hotel-card.recommended::before { content: 'RECOMENDADO'; position: absolute; top: 16px; right: 16px; background: #22d3ee; color: #0f172a; padding: 4px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 700; z-index: 5; }
+  .hotel-header { padding: 1.5rem; border-bottom: 1px solid #334155; }
+  .hotel-header h2 { color: #fff; font-size: 1.4rem; margin-bottom: 0.3rem; }
+  .hotel-header .location { color: #94a3b8; font-size: 0.9rem; }
+  .type-badge { display: inline-block; padding: 3px 10px; border-radius: 12px; font-size: 0.75rem; font-weight: 600; margin-top: 0.5rem; }
+  .badge-independent { background: #065f46; color: #6ee7b7; }
+  .badge-chain { background: #7c2d12; color: #fed7aa; }
+  .hotel-photos { display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; padding: 4px; }
+  .hotel-photos img { width: 100%; height: 200px; object-fit: cover; border-radius: 4px; cursor: pointer; transition: transform 0.3s; background: #334155; }
+  .hotel-photos img:hover { transform: scale(1.03); }
+  .hotel-details { padding: 1.5rem; display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+  .detail-section h3 { color: #22d3ee; font-size: 0.9rem; margin-bottom: 0.8rem; text-transform: uppercase; letter-spacing: 1px; }
+  .detail-row { display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid #1e3a5f; font-size: 0.88rem; }
+  .detail-row .label { color: #94a3b8; }
+  .detail-row .value { color: #e2e8f0; font-weight: 600; text-align: right; max-width: 55%; }
+  .price-box { background: #0c4a6e; padding: 1.5rem; border-radius: 12px; text-align: center; margin: 1rem 1.5rem 1.5rem; }
+  .price-box .per-night { font-size: 2.2rem; font-weight: 800; color: #22d3ee; }
+  .price-box .per-night-label { color: #94a3b8; font-size: 0.85rem; }
+  .price-box .total { color: #fff; font-size: 1.1rem; margin-top: 0.5rem; font-weight: 600; }
+  .price-box .fees { color: #fbbf24; font-size: 0.8rem; margin-top: 0.3rem; }
+  .pros-cons { padding: 0 1.5rem 1.5rem; display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  .pros h4 { color: #4ade80; margin-bottom: 0.5rem; }
+  .cons h4 { color: #f87171; margin-bottom: 0.5rem; }
+  .pros li, .cons li { font-size: 0.85rem; margin-bottom: 0.3rem; padding-left: 0.5rem; list-style: none; }
+  .pros li::before { content: '+'; color: #4ade80; font-weight: 700; margin-right: 6px; }
+  .cons li::before { content: '-'; color: #f87171; font-weight: 700; margin-right: 6px; }
+  .book-btn { display: inline-block; background: #22d3ee; color: #0f172a; padding: 10px 24px; border-radius: 8px; text-decoration: none; font-weight: 700; margin: 0 1.5rem 1.5rem; transition: background 0.3s; }
+  .book-btn:hover { background: #06b6d4; }
+  .summary-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem; margin: 1rem 0; }
+  .summary-card { background: #1e293b; border-radius: 12px; padding: 1.5rem; border-left: 4px solid #22d3ee; }
+  .summary-card h3 { color: #22d3ee; margin-bottom: 0.5rem; font-size: 0.9rem; }
+  .summary-card .amount { font-size: 1.8rem; font-weight: 800; color: #fff; }
+  .summary-card p { color: #94a3b8; font-size: 0.85rem; }
+  .combo-box { background: linear-gradient(135deg, #164e63, #1e3a5f); border-radius: 16px; padding: 2rem; margin: 1.5rem 0; border: 1px solid #22d3ee; }
+  .combo-box h3 { color: #22d3ee; font-size: 1.2rem; margin-bottom: 1rem; }
+  .combo-row { display: flex; align-items: flex-start; gap: 1rem; margin: 0.8rem 0; }
+  .combo-arrow { color: #22d3ee; font-size: 1.5rem; font-weight: 800; min-width: 30px; }
+  .combo-hotel { color: #fff; font-weight: 600; font-size: 1.05rem; }
+  .combo-detail { color: #94a3b8; font-size: 0.85rem; }
+  .combo-total { font-size: 1.5rem; font-weight: 800; color: #4ade80; margin-top: 1rem; }
+  .note-box { background: #1e293b; border-radius: 12px; padding: 1.5rem; margin-top: 1.5rem; border-left: 4px solid #fbbf24; }
+  .note-box h3 { color: #fbbf24; margin-bottom: 0.5rem; }
+  .lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.92); z-index: 1000; justify-content: center; align-items: center; }
+  .lightbox.show { display: flex; }
+  .lightbox img { max-width: 92%; max-height: 92%; border-radius: 8px; }
+  .lightbox-close { position: absolute; top: 20px; right: 30px; color: #fff; font-size: 2.5rem; cursor: pointer; }
+  @media (max-width: 768px) {
+    .hotel-details, .pros-cons { grid-template-columns: 1fr; }
+    .hotel-photos { grid-template-columns: repeat(2, 1fr); }
+    .comparison-table { font-size: 0.7rem; }
+    .comparison-table td, .comparison-table th { padding: 6px 4px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>Viaje Familiar a Florida 2026</h1>
+  <p>2 adultos + 2 chicos (9 y 11) | Desde Lima, Peru</p>
+  <div class="dates">28 julio - 8 agosto 2026 | 11 noches total</div>
+</div>
+
+<div class="tabs">
+  <div class="tab active" onclick="showSection('comparison',this)">Comparativa</div>
+  <div class="tab" onclick="showSection('naples',this)">Naples (Base 1)</div>
+  <div class="tab" onclick="showSection('east',this)">Costa Este (Base 2)</div>
+  <div class="tab" onclick="showSection('combos',this)">Combos + Budget</div>
+  <div class="tab" onclick="showSection('itinerary',this)">Itinerario</div>
+  <div class="tab" onclick="showSection('restaurants',this)">Restaurantes</div>
+  <div class="tab" onclick="showSection('towns',this)">Pueblitos Lindos</div>
+  <div class="tab" onclick="showSection('trivia',this)">Trivia Game</div>
+  <div class="tab" onclick="showSection('links',this)">Links + Tips</div>
+</div>
+
+<!-- =================== COMPARISON TABLE =================== -->
+<div id="comparison" class="section active">
+  <h2 style="color:#fff; margin-bottom:0.5rem;">Comparacion Manzanas con Manzanas</h2>
+  <p style="color:#94a3b8; margin-bottom:1rem;">Datos verificados en paginas oficiales. Precios de KAYAK para Jul 28-Aug 2 (Naples) y Aug 2-8 (Costa Este). Todos con 2 adultos + 2 ninos.</p>
+
+  <div style="overflow-x:auto;">
+  <table class="comparison-table">
+    <thead>
+      <tr>
+        <th style="min-width:130px;">Metrica</th>
+        <th style="min-width:170px;">JW Marriott<br>Marco Island</th>
+        <th style="min-width:170px;">Edgewater Beach<br>Naples</th>
+        <th style="min-width:170px;">Naples Bay Resort<br>Cottages</th>
+        <th style="min-width:170px;">Lago Mar<br>Fort Lauderdale</th>
+        <th style="min-width:170px;">Opal Grand<br>Delray Beach</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td><strong>Base</strong></td><td>Marco Island (Naples)</td><td>Naples</td><td>Naples</td><td>Fort Lauderdale</td><td>Delray Beach</td></tr>
+      <tr><td><strong>Tipo</strong></td><td class="caution">Cadena (Marriott Bonvoy)</td><td class="yes">Independiente (Opal Collection)</td><td class="yes">Independiente</td><td class="winner">Family-owned 50+ anos</td><td class="yes">Independiente (Opal Collection)</td></tr>
+
+      <tr class="highlight"><td><strong>Habitacion recomendada</strong></td>
+        <td>Two-Bedroom Lanai Suite</td>
+        <td class="winner">Two Bedroom King/King Suite - Gulf View ($720)<br><em>o King/Queen Beachfront ($1,018)</em></td>
+        <td>Two-Bedroom Cottage</td>
+        <td>Two-Bedroom Suite with Views (Oceanfront)</td>
+        <td class="winner">South Tower Two Bedroom King/King Suite - Oceanfront</td>
+      </tr>
+      <tr><td><strong>Dormitorios</strong></td><td class="yes">2 separados</td><td class="yes">2 separados</td><td class="yes">2 separados (casita)</td><td class="yes">2 separados</td><td class="yes">2 separados</td></tr>
+      <tr><td><strong>Camas</strong></td><td>1K + 2Q + sofa</td><td>2 Kings + Queen sofa<br><em>Padres: 1 King | Chicos: 1 King</em></td><td>1K + 1Q</td><td>1K + Q/2T + sofa</td><td>2 Kings + sleeper sofas<br><em>Padres: 1 King | Chicos: 1 King</em></td></tr>
+      <tr><td><strong>Banos</strong></td><td class="winner">2.5</td><td>2</td><td>2 (en-suite)</td><td>2</td><td>2 en-suite</td></tr>
+      <tr><td><strong>Superficie</strong></td>
+        <td><strong>~111 m2</strong><br>(~1,200 sq ft)</td>
+        <td><strong>~102 m2</strong><br>(1,100 sq ft)</td>
+        <td><strong>~130-158 m2</strong><br>(1,400-1,700 sq ft)</td>
+        <td><strong>~84-102 m2</strong><br>(~900-1,100 sq ft est.)</td>
+        <td class="winner"><strong>~167 m2</strong><br>(1,800 sq ft) EL MAS GRANDE</td>
+      </tr>
+      <tr><td><strong>Cocina</strong></td>
+        <td class="caution">Kitchenette (micro, heladera)</td>
+        <td class="winner">Cocina completa (cooktop, dishwasher, heladera full)</td>
+        <td class="winner">Cocina gourmet completa</td>
+        <td class="caution">Kitchenette (Wolf micro, Miele 2-burner, heladera)</td>
+        <td class="caution">Verificar (villas si tienen cocina)</td>
+      </tr>
+      <tr><td><strong>Living separado</strong></td><td class="yes">Si (con pool table)</td><td class="yes">Si</td><td class="yes">Si + den</td><td class="yes">Si</td><td class="yes">Si</td></tr>
+      <tr><td><strong>Balcon/Terraza</strong></td><td class="yes">Si - wraparound, acceso directo playa</td><td class="yes">Si - vista Golfo</td><td class="yes">Si - lanai con mosquitero</td><td class="yes">Si - vista ocean/pool</td><td class="winner">Grand wrap-around con pergola + mesa 4 + balcon adicional en 1 BR</td></tr>
+
+      <tr class="highlight"><td colspan="6" style="color:#22d3ee; font-weight:700; text-align:center;">HOTEL / AMENITIES</td></tr>
+      <tr><td><strong>Total habitaciones</strong></td><td class="no">726 (mega-resort)</td><td class="yes">125 suites</td><td class="yes">~87 + cottages</td><td class="yes">204</td><td class="yes">~150 (boutique)</td></tr>
+      <tr><td><strong>Piletas</strong></td><td>4</td><td>2</td><td class="winner">5</td><td>2 (1 lagoon 9,000 sq ft)</td><td>1 oceanfront</td></tr>
+      <tr><td><strong>Lazy River</strong></td><td class="no">No</td><td class="no">No</td><td class="yes">Si</td><td class="yes">Si</td><td class="no">No</td></tr>
+      <tr><td><strong>Waterslide</strong></td><td class="yes">Si (Tiki Pool)</td><td class="no">No</td><td class="no">No (cascada 2 pisos)</td><td class="yes">Si (lagoon pool)</td><td class="no">No</td></tr>
+      <tr><td><strong>Playa</strong></td>
+        <td class="yes">Walk-out, Golfo, 3+ millas privada</td>
+        <td class="yes">Walk-out, Golfo, 7 millas</td>
+        <td class="no">NO beachfront (shuttle/auto)</td>
+        <td class="yes">Walk-out, Atlantico, 500 ft privada</td>
+        <td class="yes">Oceanfront directa, Atlantico</td>
+      </tr>
+      <tr><td><strong>Shuttle interno necesario</strong></td>
+        <td class="caution">No shuttle pero resort MUY grande (726 hab)</td>
+        <td class="winner">No - hotel compacto</td>
+        <td class="yes">No interno</td>
+        <td class="winner">No - hotel compacto</td>
+        <td class="winner">No - hotel compacto</td>
+      </tr>
+      <tr><td><strong>Desayuno</strong></td>
+        <td class="no">No incluido (12 restaurantes)</td>
+        <td class="no">No (buffet ~$4-24/pers)</td>
+        <td class="caution">No (pero cocina completa)</td>
+        <td class="caution">No (buffet ~$21 adulto / $10 nino)</td>
+        <td class="no">No (restaurante on-site)</td>
+      </tr>
+      <tr><td><strong>Resort Fee</strong></td>
+        <td class="no">$55-60/noche</td>
+        <td class="caution">$45/noche</td>
+        <td class="no">$50/noche + tax</td>
+        <td class="winner">$0 - SIN resort fee</td>
+        <td class="caution">~$45 est. (Opal Collection)</td>
+      </tr>
+      <tr><td><strong>Parking</strong></td>
+        <td class="no">Self $38 / Valet $48 por noche</td>
+        <td class="winner">Gratis (incluido)</td>
+        <td class="caution">$20/noche</td>
+        <td class="winner">Gratis (valet + self)</td>
+        <td class="caution">Verificar</td>
+      </tr>
+      <tr><td><strong>Rating</strong></td>
+        <td>8.8/10 KAYAK<br>4.3/5 Marriott</td>
+        <td>8.4/10 KAYAK</td>
+        <td>8.9/10 KAYAK</td>
+        <td class="winner">8.8/10 KAYAK<br>#1 Family Hotel USA</td>
+        <td>4/5 TripAdvisor</td>
+      </tr>
+      <tr><td><strong>Estilo</strong></td>
+        <td>Renovado 2023</td>
+        <td>Renovado, coastal</td>
+        <td>Residencial moderno</td>
+        <td class="caution">Classic/vintage (puede lucir anticuado)</td>
+        <td class="winner">RECIEN RENOVADO - coastal chic moderno</td>
+      </tr>
+      <tr><td><strong>Ubicacion extra</strong></td>
+        <td>Marco Island (tranquilo)</td>
+        <td>Gulf Shore Blvd (residencial)</td>
+        <td>5th Ave downtown Naples</td>
+        <td>S. Fort Lauderdale (residencial)</td>
+        <td class="winner">Delray Beach - caminable a Atlantic Ave (80+ restaurantes)</td>
+      </tr>
+
+      <tr class="highlight"><td colspan="6" style="color:#22d3ee; font-weight:700; text-align:center;">PRECIOS (verificados)</td></tr>
+      <tr>
+        <td><strong>Precio/noche hab. base</strong></td>
+        <td>$524<br><span style="color:#94a3b8;font-size:0.75rem;">Fuente: KAYAK Jul 28-Aug 2</span></td>
+        <td>$484<br><span style="color:#94a3b8;font-size:0.75rem;">Fuente: KAYAK Jul 28-Aug 2</span></td>
+        <td>$261<br><span style="color:#94a3b8;font-size:0.75rem;">Fuente: KAYAK Jul 28-Aug 2</span></td>
+        <td>$304<br><span style="color:#94a3b8;font-size:0.75rem;">Fuente: KAYAK Aug 2-8</span></td>
+        <td>$324<br><span style="color:#94a3b8;font-size:0.75rem;">Fuente: KAYAK</span><br>$279<br><span style="color:#4ade80;font-size:0.75rem;">VERIFICADO calendario sitio oficial Aug 2-8</span></td>
+      </tr>
+      <tr>
+        <td><strong>Precio hab. estandar sitio oficial</strong></td>
+        <td>$518-595<br><span style="color:#4ade80;font-size:0.75rem;">VERIFICADO en Marriott.com Jul 28-Aug 2, 2 adultos 2 ninos</span></td>
+        <td>$657 (1-BR Beachfront)<br><span style="color:#4ade80;font-size:0.75rem;">VERIFICADO en reservations.opalcollection.com Jul 28-Aug 1</span></td>
+        <td><span style="color:#fbbf24;font-size:0.75rem;">No encontre booking online para cottages. Llamar: (239) 530-1199</span></td>
+        <td><span style="color:#fbbf24;font-size:0.75rem;">Lagomar.com no tiene booking online. Llamar: (954) 523-6511 o reservations@lagomar.com</span></td>
+        <td>$279/noche base<br><span style="color:#4ade80;font-size:0.75rem;">VERIFICADO calendario sitio oficial Aug 2-8, 2ad+2ch</span></td>
+      </tr>
+      <tr class="highlight">
+        <td><strong>Precio Suite 2-BR/noche</strong></td>
+        <td><span style="color:#fbbf24;">No encontre online</span><br>Lanai 2-BR es categoria premium, no aparece en la web<br><span style="color:#fbbf24;font-size:0.75rem;">LLAMAR: (239) 394-2511<br>Estimado: ~$900-1,200+ (basado en que la estandar es $518-595)</span></td>
+        <td class="winner"><strong>$720</strong> King/King Gulf View<br><strong>$1,018</strong> King/Queen Beachfront<br><span style="color:#4ade80;font-size:0.75rem;">VERIFICADO en sitio oficial Jul 28-Aug 1, 2ad+2ch</span></td>
+        <td><span style="color:#fbbf24;">No encontre online</span><br><span style="color:#fbbf24;font-size:0.75rem;">LLAMAR: (239) 530-1199<br>Estimado: ~$450-650 (basado en KAYAK base $261 + premium cottage)</span></td>
+        <td><span style="color:#fbbf24;">No encontre online</span><br><span style="color:#fbbf24;font-size:0.75rem;">LLAMAR: (954) 523-6511<br>Estimado: ~$450-600 (basado en KAYAK base $304 + premium 2-BR)</span></td>
+        <td><span style="color:#fbbf24;">No encontre online</span><br><span style="color:#fbbf24;font-size:0.75rem;">LLAMAR: (561) 278-5755<br>Estimado: ~$600-900 (base $279, pero 2-BR 1800sqft es premium alto)</span></td>
+      </tr>
+      <tr>
+        <td><strong>Resort Fee/noche</strong></td>
+        <td class="no">$55-60<br><span style="color:#94a3b8;font-size:0.75rem;">Fuente: Marriott.com</span></td>
+        <td class="caution">$45<br><span style="color:#94a3b8;font-size:0.75rem;">Fuente: sitio oficial (incluido en precio mostrado)</span></td>
+        <td class="no">$50 + tax<br><span style="color:#94a3b8;font-size:0.75rem;">Fuente: web research</span></td>
+        <td class="winner">$0<br><span style="color:#4ade80;font-size:0.75rem;">VERIFICADO: SIN resort fee</span></td>
+        <td class="caution">~$45 est.<br><span style="color:#fbbf24;font-size:0.75rem;">Opal Collection tipico. Verificar al reservar.</span></td>
+      </tr>
+      <tr>
+        <td><strong>Parking/noche</strong></td>
+        <td class="no">Self $38 / Valet $48<br><span style="color:#94a3b8;font-size:0.75rem;">Fuente: Marriott.com</span></td>
+        <td class="winner">$0 (gratis)<br><span style="color:#94a3b8;font-size:0.75rem;">Fuente: sitio oficial</span></td>
+        <td class="caution">$20<br><span style="color:#94a3b8;font-size:0.75rem;">Fuente: web research</span></td>
+        <td class="winner">$0 (gratis, 1 auto)<br><span style="color:#4ade80;font-size:0.75rem;">VERIFICADO</span></td>
+        <td class="caution">Verificar<br><span style="color:#fbbf24;font-size:0.75rem;">Preguntar al reservar</span></td>
+      </tr>
+      <tr class="highlight">
+        <td><strong>TOTAL ESTIMADO ESTADIA</strong></td>
+        <td class="no">~$5,000-6,500+<br>(5 noches Lanai 2-BR + fees)<br><span style="color:#fbbf24;font-size:0.75rem;">ESTIMADO - llamar hotel para confirmar</span></td>
+        <td><strong>$3,825</strong> (King/King Gulf View)<br><strong>$5,315</strong> (King/Queen Beachfront)<br>(5 noches incl. resort fee)<br><span style="color:#4ade80;font-size:0.75rem;">VERIFICADO sitio oficial</span></td>
+        <td>~$2,600-3,600<br>(5 noches cottage + fees)<br><span style="color:#fbbf24;font-size:0.75rem;">ESTIMADO - llamar hotel</span></td>
+        <td class="winner">~$2,700-3,600<br>(6 noches 2-BR, $0 fees)<br><span style="color:#fbbf24;font-size:0.75rem;">ESTIMADO - llamar hotel</span></td>
+        <td>~$3,600-5,400+<br>(6 noches 2-BR + fees est.)<br><span style="color:#fbbf24;font-size:0.75rem;">ESTIMADO - llamar (561) 278-5755</span></td>
+      </tr>
+    </tbody>
+  </table>
+  </div>
+
+  <div class="note-box">
+    <h3>Nota sobre el JW Marriott</h3>
+    <p style="color:#e2e8f0; margin-top:0.5rem;">El JW Marriott SI tiene una <strong>Two-Bedroom Lanai Suite</strong> (111 m2, planta baja con acceso directo a playa, wraparound balcon). Es una suite premium excelente. Sin embargo: es el mas caro con diferencia (~$1,000-1,300/noche total con fees), el resort tiene 726 habitaciones (mega-resort), muchos huespedes con puntos Bonvoy, y los fees ocultos suman ~$100/noche. Para tu perfil (independiente, chico, sin loyalty inflation), las otras opciones encajan mejor.</p>
+  </div>
+</div>
+
+<!-- =================== NAPLES HOTELS =================== -->
+<div id="naples" class="section">
+  <h2 style="color:#fff; margin-bottom:0.5rem;">Base 1: Naples / SW Florida</h2>
+  <p style="color:#94a3b8; margin-bottom:1.5rem;">5 noches: 28 julio - 2 agosto 2026</p>
+
+  <div class="hotel-grid">
+    <!-- EDGEWATER -->
+    <div class="hotel-card recommended">
+      <div class="hotel-header">
+        <h2>Edgewater Beach Hotel</h2>
+        <div class="location">1901 Gulf Shore Blvd N, Naples, FL 34102</div>
+        <span class="type-badge badge-independent">Independiente - Opal Collection</span>
+      </div>
+      <div class="hotel-photos">
+        <img src="https://upload.opalcollection.com/app/uploads/sites/6/2022/06/13163227/Edgewater-Aerial-Shot-570x320.jpeg" alt="Edgewater aerial beach view" style="width:100%;height:200px;object-fit:cover;border-radius:4px;">
+        <img src="https://upload.opalcollection.com/app/uploads/sites/6/2022/06/05192921/gallery_kingocean-570x380.jpg" alt="Edgewater king bedroom ocean view" style="width:100%;height:200px;object-fit:cover;border-radius:4px;">
+        <img src="https://upload.opalcollection.com/app/uploads/sites/6/2022/06/23180247/0412_EdgewaterDronePhotos-005-Edit-570x428.jpg" alt="Edgewater pool aerial" style="width:100%;height:200px;object-fit:cover;border-radius:4px;">
+        <img src="https://upload.opalcollection.com/app/uploads/sites/6/2022/06/13163547/Edgewater-Kitchen--570x383.jpeg" alt="Edgewater full kitchen" style="width:100%;height:200px;object-fit:cover;border-radius:4px;">
+      </div>
+      <div style="display:flex;gap:6px;padding:4px 4px 0;flex-wrap:wrap;">
+        <a href="https://www.opalcollection.com/edgewater/gallery/" target="_blank" style="flex:1;text-align:center;padding:8px;background:#164e63;border-radius:4px;color:#22d3ee;text-decoration:none;font-size:0.8rem;font-weight:600;">Mas fotos</a>
+        <a href="https://www.tripadvisor.com/Hotel_Review-g34467-d115765-Reviews-Edgewater_Beach_Hotel-Naples_Florida.html" target="_blank" style="flex:1;text-align:center;padding:8px;background:#164e63;border-radius:4px;color:#22d3ee;text-decoration:none;font-size:0.8rem;font-weight:600;">TripAdvisor</a>
+        <a href="https://reservations.opalcollection.com/edgewater/availability.asp" target="_blank" style="flex:1;text-align:center;padding:8px;background:#065f46;border-radius:4px;color:#4ade80;text-decoration:none;font-size:0.8rem;font-weight:600;">Reservar directo</a>
+      </div>
+      <div class="hotel-details">
+        <div class="detail-section">
+          <h3>Two Bedroom King/King Suite - Gulf View</h3>
+          <div class="detail-row"><span class="label">Dormitorios</span><span class="value">2 separados</span></div>
+          <div class="detail-row"><span class="label">Camas</span><span class="value">2 Kings + 1 Queen Sleeper Sofa</span></div>
+          <div class="detail-row"><span class="label">Banos</span><span class="value">2 completos</span></div>
+          <div class="detail-row"><span class="label">Superficie</span><span class="value">102 m2 (1,100 sq ft)</span></div>
+          <div class="detail-row"><span class="label">Cocina</span><span class="value yes">Completa (cooktop, dishwasher, heladera full, granite counters, coffee maker)</span></div>
+          <div class="detail-row"><span class="label">Living separado</span><span class="value yes">Si - con Queen sleeper sofa</span></div>
+          <div class="detail-row"><span class="label">Balcon</span><span class="value yes">Si - Gulf View (pool deck + palmeras)</span></div>
+          <div class="detail-row"><span class="label">Max. ocupantes</span><span class="value">6</span></div>
+          <div class="detail-row"><span class="label" style="color:#22d3ee">Distribucion familia</span><span class="value" style="color:#22d3ee">Padres: 1 King | Chicos: 1 King (o 1 en sofa)</span></div>
+        </div>
+        <div class="detail-section">
+          <h3>Hotel y Amenities</h3>
+          <div class="detail-row"><span class="label">Total unidades</span><span class="value">125 suites (all-suite)</span></div>
+          <div class="detail-row"><span class="label">Piletas</span><span class="value">2 (leisure + lap pool)</span></div>
+          <div class="detail-row"><span class="label">Lazy River</span><span class="value no">No</span></div>
+          <div class="detail-row"><span class="label">Waterslide</span><span class="value no">No</span></div>
+          <div class="detail-row"><span class="label">Playa</span><span class="value yes">Walk-out Golfo, 7 millas</span></div>
+          <div class="detail-row"><span class="label">Kayak/Paddle</span><span class="value yes">Incluidos</span></div>
+          <div class="detail-row"><span class="label">Resort Fee</span><span class="value caution">$45/noche</span></div>
+          <div class="detail-row"><span class="label">Parking</span><span class="value yes">Gratis</span></div>
+        </div>
+      </div>
+      <div class="price-box">
+        <div class="per-night">$720/noche</div>
+        <div class="per-night-label">VERIFICADO sitio oficial (Jul 28-Aug 1, 4 noches). Resort fee INCLUIDO en el precio.</div>
+        <div class="total">5 noches (Jul 28-Aug 2): ~$3,600 total (resort fee incluido, parking gratis)</div>
+        <div class="fees">Opcion Beachfront: $1,018/noche (~$5,090 x 5 noches) | 1-BR: $657/noche<br><span style="color:#fbbf24;">NOTA: Tu screenshot era 4 noches (Jul 28-Aug 1). Para 5 noches (Aug 2 checkout) el precio puede variar ligeramente. Verificar en sitio oficial.</span></div>
+      </div>
+      <div class="pros-cons">
+        <div class="pros"><h4>A favor</h4><ul>
+          <li>Unico all-suites beachfront de Naples</li>
+          <li>2 dormitorios reales + cocina completa</li>
+          <li>2 piletas (leisure + lap pool)</li>
+          <li>Hotel chico (125), intimo, sin shuttle</li>
+          <li>Playa walk-out 7 millas, kayak incluido</li>
+          <li>Independiente, sin loyalty inflation</li>
+        </ul></div>
+        <div class="cons"><h4>En contra</h4><ul>
+          <li>Precio alto para 2-BR</li>
+          <li>Resort fee $45/noche</li>
+          <li>Algunas reviews mencionan areas datadas</li>
+          <li>Desayuno no incluido ($4-24/pers buffet)</li>
+        </ul></div>
+      </div>
+      <a href="https://www.opalcollection.com/edgewater/" target="_blank" class="book-btn">Reservar en sitio oficial</a>
+      <a href="https://www.opalcollection.com/edgewater/gallery/the-resort/" target="_blank" class="book-btn" style="background:#334155; color:#22d3ee;">Ver galeria de fotos</a>
+    </div>
+
+    <!-- NAPLES BAY -->
+    <div class="hotel-card">
+      <div class="hotel-header">
+        <h2>Naples Bay Resort - The Cottages</h2>
+        <div class="location">1500 5th Ave S, Naples, FL 34102</div>
+        <span class="type-badge badge-independent">Independiente</span>
+      </div>
+      <div class="hotel-photos">
+        <img src="https://symphony.cdn.tambourine.com/naples-bay-resort-marina-re/media/nbr-exterior-sunset_resized-62cdd6778ed05.jpg" alt="Naples Bay Resort sunset" style="width:100%;height:200px;object-fit:cover;border-radius:4px;">
+        <img src="https://symphony.cdn.tambourine.com/naples-bay-resort-marina-re/media/dsc05307-66747756a1cb5.jpg" alt="Naples Bay cottage interior" style="width:100%;height:200px;object-fit:cover;border-radius:4px;">
+        <img src="https://symphony.cdn.tambourine.com/naples-bay-resort-marina-re/media/nbr-gallery_9-61f7ff0025648.jpg" alt="Naples Bay pool waterfall" style="width:100%;height:200px;object-fit:cover;border-radius:4px;">
+        <img src="https://symphony.cdn.tambourine.com/naples-bay-resort-marina-re/media/dji_0339-66747515cf196.jpg" alt="Naples Bay aerial marina" style="width:100%;height:200px;object-fit:cover;border-radius:4px;">
+      </div>
+      <div style="display:flex;gap:6px;padding:4px 4px 0;flex-wrap:wrap;">
+        <a href="https://www.naplesbayresort.com/gallery" target="_blank" style="flex:1;text-align:center;padding:8px;background:#164e63;border-radius:4px;color:#22d3ee;text-decoration:none;font-size:0.8rem;font-weight:600;">Mas fotos</a>
+        <a href="https://www.tripadvisor.com/Hotel_Review-g34467-d1175368-Reviews-The_Cottages_at_Naples_Bay_Resort-Naples_Florida.html" target="_blank" style="flex:1;text-align:center;padding:8px;background:#164e63;border-radius:4px;color:#22d3ee;text-decoration:none;font-size:0.8rem;font-weight:600;">TripAdvisor</a>
+        <a href="https://www.naplesbayresort.com/" target="_blank" style="flex:1;text-align:center;padding:8px;background:#065f46;border-radius:4px;color:#4ade80;text-decoration:none;font-size:0.8rem;font-weight:600;">Reservar directo</a>
+      </div>
+      <div class="hotel-details">
+        <div class="detail-section">
+          <h3>Two-Bedroom Cottage</h3>
+          <div class="detail-row"><span class="label">Dormitorios</span><span class="value">2 separados (casita privada)</span></div>
+          <div class="detail-row"><span class="label">Camas</span><span class="value">1 King + 1 Queen</span></div>
+          <div class="detail-row"><span class="label">Banos</span><span class="value">2 en-suite privados</span></div>
+          <div class="detail-row"><span class="label">Superficie</span><span class="value winner">130-158 m2 (1,400-1,700 sq ft)</span></div>
+          <div class="detail-row"><span class="label">Cocina</span><span class="value yes">Gourmet completa (horno, anafe, heladera, granito)</span></div>
+          <div class="detail-row"><span class="label">Living + Den</span><span class="value yes">Si - living + den/comedor</span></div>
+          <div class="detail-row"><span class="label">Lanai privado</span><span class="value yes">Si - con mosquitero</span></div>
+          <div class="detail-row"><span class="label">Estadia minima</span><span class="value caution">6 noches</span></div>
+        </div>
+        <div class="detail-section">
+          <h3>Hotel y Amenities</h3>
+          <div class="detail-row"><span class="label">Total unidades</span><span class="value">87 + cottages</span></div>
+          <div class="detail-row"><span class="label">Piletas</span><span class="value winner">5 (incl. Family Pool)</span></div>
+          <div class="detail-row"><span class="label">Lazy River</span><span class="value yes">Si</span></div>
+          <div class="detail-row"><span class="label">Waterslide</span><span class="value no">No (cascada 2 pisos)</span></div>
+          <div class="detail-row"><span class="label">Playa</span><span class="value no">NO beachfront (shuttle/auto 5 min)</span></div>
+          <div class="detail-row"><span class="label">Downtown Naples</span><span class="value yes">Caminable (5th Ave)</span></div>
+          <div class="detail-row"><span class="label">Resort Fee</span><span class="value no">$50/noche + tax</span></div>
+          <div class="detail-row"><span class="label">Parking</span><span class="value caution">$20/noche</span></div>
+        </div>
+      </div>
+      <div class="price-box">
+        <div class="per-night">~$520-720</div>
+        <div class="per-night-label">USD por noche (Cottage 2-BR + fees)</div>
+        <div class="total">Total 5 noches: ~$2,600 - $3,600</div>
+        <div class="fees">Base KAYAK $261/noche (hab. estandar) | Min. 6 noches para cottage</div>
+      </div>
+      <div class="pros-cons">
+        <div class="pros"><h4>A favor</h4><ul>
+          <li>Mas espacio (130-158 m2, el mas grande)</li>
+          <li>Lazy river + 5 piletas</li>
+          <li>Cottages = maxima privacidad</li>
+          <li>Cocina gourmet completa</li>
+          <li>Downtown Naples caminable</li>
+          <li>Precio mas accesible</li>
+        </ul></div>
+        <div class="cons"><h4>En contra</h4><ul>
+          <li>NO beachfront (auto/shuttle para playa)</li>
+          <li>Resort fee $50 + parking $20 = $70/noche extras</li>
+          <li>Minimo 6 noches para cottages</li>
+          <li>Cottages via Vacasa (reviews mixtas)</li>
+        </ul></div>
+      </div>
+      <a href="https://www.naplesbayresort.com/" target="_blank" class="book-btn">Reservar en sitio oficial</a>
+    </div>
+
+    <!-- JW MARRIOTT -->
+    <div class="hotel-card">
+      <div class="hotel-header">
+        <h2>JW Marriott Marco Island Beach Resort</h2>
+        <div class="location">400 S Collier Blvd, Marco Island, FL 34145</div>
+        <span class="type-badge badge-chain">Cadena - Marriott Bonvoy</span>
+      </div>
+      <div class="hotel-photos">
+        <a href="https://www.marriott.com/en-us/hotels/mrkfl-jw-marriott-marco-island-beach-resort/photos/" target="_blank" style="width:100%;height:200px;display:flex;align-items:center;justify-content:center;background:#451a03;border-radius:4px;color:#fed7aa;font-weight:700;text-decoration:none;font-size:0.85rem;text-align:center;">Resort + Playa<br>VER FOTOS</a>
+        <a href="https://www.marriott.com/en-us/hotels/mrkfl-jw-marriott-marco-island-beach-resort/rooms/" target="_blank" style="width:100%;height:200px;display:flex;align-items:center;justify-content:center;background:#7c2d12;border-radius:4px;color:#fed7aa;font-weight:700;text-decoration:none;font-size:0.85rem;text-align:center;">Suites + Rooms<br>VER FOTOS</a>
+        <a href="https://www.tripadvisor.com/Hotel_Review-g34420-d209411-Reviews-JW_Marriott_Marco_Island_Beach_Resort-Marco_Island_Florida.html" target="_blank" style="width:100%;height:200px;display:flex;align-items:center;justify-content:center;background:#451a03;border-radius:4px;color:#fed7aa;font-weight:700;text-decoration:none;font-size:0.85rem;text-align:center;">636 fotos viajeros<br>TRIPADVISOR</a>
+        <a href="https://www.marriott.com/en-us/hotels/mrkfl-jw-marriott-marco-island-beach-resort/overview/" target="_blank" style="width:100%;height:200px;display:flex;align-items:center;justify-content:center;background:#7c2d12;border-radius:4px;color:#fed7aa;font-weight:700;text-decoration:none;font-size:0.85rem;text-align:center;">VER PRECIOS<br>MARRIOTT.COM</a>
+      </div>
+      <div style="display:flex;gap:6px;padding:4px 4px 0;flex-wrap:wrap;">
+        <a href="https://www.marriott.com/en-us/hotels/mrkfl-jw-marriott-marco-island-beach-resort/photos/" target="_blank" style="flex:1;text-align:center;padding:8px;background:#7c2d12;border-radius:4px;color:#fed7aa;text-decoration:none;font-size:0.8rem;font-weight:600;">Galeria Marriott</a>
+        <a href="https://www.tripadvisor.com/Hotel_Review-g34420-d209411-Reviews-JW_Marriott_Marco_Island_Beach_Resort-Marco_Island_Florida.html" target="_blank" style="flex:1;text-align:center;padding:8px;background:#7c2d12;border-radius:4px;color:#fed7aa;text-decoration:none;font-size:0.8rem;font-weight:600;">TripAdvisor</a>
+        <a href="https://www.marriott.com/en-us/hotels/mrkfl-jw-marriott-marco-island-beach-resort/overview/" target="_blank" style="flex:1;text-align:center;padding:8px;background:#451a03;border-radius:4px;color:#fed7aa;text-decoration:none;font-size:0.8rem;font-weight:600;">Reservar Marriott</a>
+      </div>
+      </div>
+      <div class="hotel-details">
+        <div class="detail-section">
+          <h3>Two-Bedroom Lanai Suite</h3>
+          <div class="detail-row"><span class="label">Dormitorios</span><span class="value">2 separados</span></div>
+          <div class="detail-row"><span class="label">Camas</span><span class="value">1K + 2Q + sofa cama</span></div>
+          <div class="detail-row"><span class="label">Banos</span><span class="value winner">2.5</span></div>
+          <div class="detail-row"><span class="label">Superficie</span><span class="value">~111 m2 (~1,200 sq ft)</span></div>
+          <div class="detail-row"><span class="label">Cocina</span><span class="value caution">Kitchenette (micro, heladera)</span></div>
+          <div class="detail-row"><span class="label">Living</span><span class="value yes">Si (pool table, comedor 6)</span></div>
+          <div class="detail-row"><span class="label">Balcon</span><span class="value winner">Wraparound + acceso directo playa</span></div>
+          <div class="detail-row"><span class="label">Max. ocupantes</span><span class="value">~8</span></div>
+        </div>
+        <div class="detail-section">
+          <h3>Hotel y Amenities</h3>
+          <div class="detail-row"><span class="label">Total habitaciones</span><span class="value no">726 (mega-resort)</span></div>
+          <div class="detail-row"><span class="label">Piletas</span><span class="value">4 (Quinn's, Tiki, South, Spa)</span></div>
+          <div class="detail-row"><span class="label">Waterslide</span><span class="value yes">Si (Tiki Pool)</span></div>
+          <div class="detail-row"><span class="label">Lazy River</span><span class="value no">No</span></div>
+          <div class="detail-row"><span class="label">Playa</span><span class="value yes">Walk-out Golfo, 3+ millas privada</span></div>
+          <div class="detail-row"><span class="label">Restaurantes</span><span class="value">12 on-site</span></div>
+          <div class="detail-row"><span class="label">Resort Fee</span><span class="value no">$55-60/noche</span></div>
+          <div class="detail-row"><span class="label">Parking</span><span class="value no">Self $38 / Valet $48/noche</span></div>
+        </div>
+      </div>
+      <div class="price-box" style="background:#7c2d12;">
+        <div class="per-night">~$1,000-1,308</div>
+        <div class="per-night-label">USD por noche (Lanai 2-BR + resort fee + parking)</div>
+        <div class="total">Total 5 noches: ~$5,000 - $6,540</div>
+        <div class="fees">Marriott.com: $518-595/noche solo hab. estandar | Lanai Suite es premium significativamente mas caro</div>
+      </div>
+      <div class="pros-cons">
+        <div class="pros"><h4>A favor</h4><ul>
+          <li>Lanai Suite espectacular con acceso directo playa</li>
+          <li>3+ millas de playa privada en Marco Island</li>
+          <li>12 restaurantes, spa, 2 golf courses</li>
+          <li>Waterslide en Tiki Pool</li>
+          <li>Marriott Bonvoy perks/upgrades</li>
+        </ul></div>
+        <div class="cons"><h4>En contra</h4><ul>
+          <li>El MAS caro con diferencia</li>
+          <li>726 habitaciones = mega-resort crowded</li>
+          <li>~$100/noche en fees ocultos (resort + parking)</li>
+          <li>Mucha gente con puntos Bonvoy</li>
+          <li>Solo kitchenette (no cocina completa)</li>
+        </ul></div>
+      </div>
+      <a href="https://www.marriott.com/en-us/hotels/mrkfl-jw-marriott-marco-island-beach-resort/overview/" target="_blank" class="book-btn" style="background:#334155; color:#fed7aa;">Ver en Marriott.com</a>
+      <a href="https://www.marriott.com/en-us/hotels/mrkfl-jw-marriott-marco-island-beach-resort/photos/" target="_blank" class="book-btn" style="background:#334155; color:#fed7aa;">Ver galeria de fotos</a>
+    </div>
+  </div>
+</div>
+
+<!-- =================== EAST COAST =================== -->
+<div id="east" class="section">
+  <h2 style="color:#fff; margin-bottom:0.5rem;">Base 2: Costa Este - Fort Lauderdale</h2>
+  <p style="color:#94a3b8; margin-bottom:1.5rem;">6 noches: 2 - 8 agosto 2026</p>
+
+  <div class="hotel-grid">
+    <div class="hotel-card recommended">
+      <div class="hotel-header">
+        <h2>Lago Mar Beach Resort & Club</h2>
+        <div class="location">1700 S Ocean Ln, Fort Lauderdale, FL 33316</div>
+        <span class="type-badge badge-independent">Family-owned 50+ anos - Familia Banks (3ra generacion)</span>
+      </div>
+      <div class="hotel-photos">
+        <img src="https://lagomar.com/wp-content/uploads/DJI_0004-Edit.jpg" alt="Lago Mar aerial view" onerror="this.parentElement.innerHTML='<a href=https://lagomar.com/gallery/ target=_blank style=background:#164e63;display:flex;align-items:center;justify-content:center;height:200px;border-radius:4px;color:#22d3ee;font-weight:700;text-decoration:none;padding:10px;text-align:center>Aerial View<br>VER GALERIA</a>'">
+        <img src="https://lagomar.com/wp-content/uploads/GR-20221128_140307.jpg" alt="Lago Mar suite interior" onerror="this.parentElement.innerHTML='<a href=https://lagomar.com/stay/ target=_blank style=background:#1e3a5f;display:flex;align-items:center;justify-content:center;height:200px;border-radius:4px;color:#22d3ee;font-weight:700;text-decoration:none;padding:10px;text-align:center>Suite Interior<br>VER FOTOS</a>'">
+        <img src="https://lagomar.com/wp-content/uploads/Lagoon-Pool-View.jpg" alt="Lago Mar lagoon pool 9000 sqft" onerror="this.parentElement.innerHTML='<a href=https://lagomar.com/gallery/ target=_blank style=background:#164e63;display:flex;align-items:center;justify-content:center;height:200px;border-radius:4px;color:#22d3ee;font-weight:700;text-decoration:none;padding:10px;text-align:center>Lagoon Pool<br>VER GALERIA</a>'">
+        <img src="https://lagomar.com/wp-content/uploads/Beach-Hammocks.jpg" alt="Lago Mar private beach hammocks" onerror="this.parentElement.innerHTML='<a href=https://lagomar.com/gallery/ target=_blank style=background:#164e63;display:flex;align-items:center;justify-content:center;height:200px;border-radius:4px;color:#22d3ee;font-weight:700;text-decoration:none;padding:10px;text-align:center>Beach + Hammocks<br>VER GALERIA</a>'">
+      </div>
+      <div style="display:flex;gap:6px;padding:4px 4px 0;flex-wrap:wrap;">
+        <a href="https://lagomar.com/gallery/" target="_blank" style="flex:1;text-align:center;padding:8px;background:#164e63;border-radius:4px;color:#22d3ee;text-decoration:none;font-size:0.8rem;font-weight:600;">Mas fotos</a>
+        <a href="https://www.tripadvisor.com/Hotel_Review-g34227-d84467-Reviews-Lago_Mar_Beach_Resort_Club-Fort_Lauderdale_Broward_County_Florida.html" target="_blank" style="flex:1;text-align:center;padding:8px;background:#164e63;border-radius:4px;color:#22d3ee;text-decoration:none;font-size:0.8rem;font-weight:600;">TripAdvisor (#1 Family)</a>
+        <a href="https://lagomar.com/" target="_blank" style="flex:1;text-align:center;padding:8px;background:#065f46;border-radius:4px;color:#4ade80;text-decoration:none;font-size:0.8rem;font-weight:600;">Reservar directo</a>
+      </div>
+      <div class="hotel-details">
+        <div class="detail-section">
+          <h3>Two-Bedroom Oceanfront Suite</h3>
+          <div class="detail-row"><span class="label">Dormitorios</span><span class="value">2 separados</span></div>
+          <div class="detail-row"><span class="label">Camas</span><span class="value">1K + Q/2T + sofa doble</span></div>
+          <div class="detail-row"><span class="label">Banos</span><span class="value">2 completos</span></div>
+          <div class="detail-row"><span class="label">Superficie</span><span class="value">~84-102 m2 (900-1,100 sq ft est.)</span></div>
+          <div class="detail-row"><span class="label">Cocina</span><span class="value">Kitchenette (Wolf micro, Miele cooktop, heladera)</span></div>
+          <div class="detail-row"><span class="label">Living separado</span><span class="value yes">Si + comedor</span></div>
+          <div class="detail-row"><span class="label">Balcon</span><span class="value yes">Si - vista oceanfront/pool</span></div>
+          <div class="detail-row"><span class="label">Max. ocupantes</span><span class="value">6</span></div>
+        </div>
+        <div class="detail-section">
+          <h3>Hotel y Amenities</h3>
+          <div class="detail-row"><span class="label">Total habitaciones</span><span class="value">204 (164 suites + 40 rooms)</span></div>
+          <div class="detail-row"><span class="label">Piletas</span><span class="value">2 (lagoon 9,000 sq ft con isla tropical)</span></div>
+          <div class="detail-row"><span class="label">Lazy River</span><span class="value yes">Si</span></div>
+          <div class="detail-row"><span class="label">Waterslide</span><span class="value yes">Si (lagoon pool)</span></div>
+          <div class="detail-row"><span class="label">Playa</span><span class="value yes">Walk-out, 500 ft privada, Atlantico</span></div>
+          <div class="detail-row"><span class="label">Deportes</span><span class="value">Basketball, volleyball, mini golf, shuffleboard</span></div>
+          <div class="detail-row"><span class="label">Resort Fee</span><span class="value winner">$0 - CERO</span></div>
+          <div class="detail-row"><span class="label">Parking</span><span class="value winner">Gratis (1 auto/habitacion)</span></div>
+        </div>
+      </div>
+      <div class="price-box">
+        <div class="per-night">~$450-600</div>
+        <div class="per-night-label">USD por noche (2-BR Suite, SIN fees extras)</div>
+        <div class="total">Total 6 noches: ~$2,700 - $3,600</div>
+        <div class="fees">KAYAK base: $304/noche | SIN resort fee | Parking GRATIS | Desayuno buffet: $21 adulto / $10 nino</div>
+      </div>
+      <div class="pros-cons">
+        <div class="pros"><h4>A favor</h4><ul>
+          <li>#1 Family Hotel in USA (TripAdvisor, Conde Nast, Travel+Leisure)</li>
+          <li>Family-owned 50+ anos = sin loyalty inflation</li>
+          <li>$0 resort fee + parking gratis = precio real</li>
+          <li>Lazy river + waterslide + lagoon 9,000 sq ft</li>
+          <li>500 ft playa privada walk-out</li>
+          <li>2 dormitorios reales + kitchenette</li>
+          <li>Hotel mediano, caminable, zona residencial tranquila</li>
+          <li>Basketball, volleyball, mini golf para chicos</li>
+        </ul></div>
+        <div class="cons"><h4>En contra</h4><ul>
+          <li>Estilo puede sentirse "vintage/classic"</li>
+          <li>~45 min a Palm Beach en auto</li>
+          <li>Kitchenette (no cocina completa)</li>
+          <li>Desayuno no incluido</li>
+        </ul></div>
+      </div>
+      <a href="https://lagomar.com/" target="_blank" class="book-btn">Reservar en sitio oficial</a>
+      <a href="https://lagomar.com/stay/" target="_blank" class="book-btn" style="background:#334155; color:#22d3ee;">Ver habitaciones</a>
+    </div>
+
+    <!-- OPAL GRAND -->
+    <div class="hotel-card recommended">
+      <div class="hotel-header">
+        <h2>Opal Grand Oceanfront Resort & Spa</h2>
+        <div class="location">10 N Ocean Blvd, Delray Beach, FL 33483</div>
+        <span class="type-badge badge-independent">Independiente - Opal Collection (mismo que Edgewater Naples!)</span>
+      </div>
+      <div class="hotel-photos">
+        <img src="https://upload.opalcollection.com/app/uploads/sites/3/2022/06/19193155/Opal-Grand-Oceanfront-Resort-Spa-Main-Pool-with-resort-view-570x380.jpg" alt="Opal Grand oceanfront pool" style="width:100%;height:200px;object-fit:cover;border-radius:4px;">
+        <img src="https://upload.opalcollection.com/app/uploads/sites/3/2022/06/19191237/Opal-Grand_469-QPOV-570x380.jpg" alt="Opal Grand suite bedroom" style="width:100%;height:200px;object-fit:cover;border-radius:4px;">
+        <img src="https://upload.opalcollection.com/app/uploads/sites/3/2022/06/19191239/Opal-Grand_573-1PKOF-3-Balcony-570x380.jpg" alt="Opal Grand balcony ocean view" style="width:100%;height:200px;object-fit:cover;border-radius:4px;">
+        <img src="https://upload.opalcollection.com/app/uploads/sites/3/2022/06/19191226/Opal-Grand_104-2VKQOV-2-First-Floor-Kitchen-570x380.jpg" alt="Opal Grand villa kitchen" style="width:100%;height:200px;object-fit:cover;border-radius:4px;">
+      </div>
+      <div style="display:flex;gap:6px;padding:4px 4px 0;flex-wrap:wrap;">
+        <a href="https://www.opalcollection.com/opal-grand/gallery/" target="_blank" style="flex:1;text-align:center;padding:8px;background:#164e63;border-radius:4px;color:#22d3ee;text-decoration:none;font-size:0.8rem;font-weight:600;">Mas fotos</a>
+        <a href="https://www.tripadvisor.com/Hotel_Review-g34179-d87533-Reviews-Opal_Grand_Resort_Spa-Delray_Beach_Florida.html" target="_blank" style="flex:1;text-align:center;padding:8px;background:#164e63;border-radius:4px;color:#22d3ee;text-decoration:none;font-size:0.8rem;font-weight:600;">TripAdvisor (4.6/5)</a>
+        <a href="https://reservations.opalcollection.com/opal-grand/availability.asp" target="_blank" style="flex:1;text-align:center;padding:8px;background:#065f46;border-radius:4px;color:#4ade80;text-decoration:none;font-size:0.8rem;font-weight:600;">Reservar directo</a>
+      </div>
+      <div class="hotel-details">
+        <div class="detail-section">
+          <h3>South Tower Two Bedroom King/King Suite - Oceanfront</h3>
+          <div class="detail-row"><span class="label">Dormitorios</span><span class="value">2 separados</span></div>
+          <div class="detail-row"><span class="label">Camas</span><span class="value">2 Kings + sleeper sofas</span></div>
+          <div class="detail-row"><span class="label">Banos</span><span class="value">2 en-suite</span></div>
+          <div class="detail-row"><span class="label">Superficie</span><span class="value winner">167 m2 (1,800 sq ft) - EL MAS GRANDE</span></div>
+          <div class="detail-row"><span class="label">Cocina</span><span class="value caution">No especificada (villas si tienen)</span></div>
+          <div class="detail-row"><span class="label">Living separado</span><span class="value yes">Si</span></div>
+          <div class="detail-row"><span class="label">Balcon</span><span class="value winner">Grand wrap-around con pergola + mesa 4, vista Atlantico + balcon privado adicional en 1 dormitorio</span></div>
+          <div class="detail-row"><span class="label">Max. ocupantes</span><span class="value">6+</span></div>
+          <div class="detail-row"><span class="label" style="color:#22d3ee">Distribucion familia</span><span class="value" style="color:#22d3ee">Padres: 1 King | Chicos: 1 King</span></div>
+          <div class="detail-row"><span class="label">Estilo</span><span class="value winner">RECIEN RENOVADO - coastal chic moderno</span></div>
+        </div>
+        <div class="detail-section">
+          <h3>Hotel y Amenities</h3>
+          <div class="detail-row"><span class="label">Total habitaciones</span><span class="value">~150 (boutique)</span></div>
+          <div class="detail-row"><span class="label">Pileta</span><span class="value">Oceanfront pool</span></div>
+          <div class="detail-row"><span class="label">Lazy River</span><span class="value no">No</span></div>
+          <div class="detail-row"><span class="label">Playa</span><span class="value yes">Oceanfront directa, Atlantico</span></div>
+          <div class="detail-row"><span class="label">Shuttle</span><span class="value yes">No necesario - hotel compacto</span></div>
+          <div class="detail-row"><span class="label">Spa</span><span class="value yes">Full-service spa on-site</span></div>
+          <div class="detail-row"><span class="label">Ubicacion</span><span class="value winner">Delray Beach! Caminable a Atlantic Avenue (80+ restaurantes)</span></div>
+          <div class="detail-row"><span class="label">Resort Fee</span><span class="value caution">Verificar (Opal Collection cobra ~$45)</span></div>
+          <div class="detail-row"><span class="label">Parking</span><span class="value">Verificar</span></div>
+        </div>
+      </div>
+      <div class="price-box" style="background:#065f46;">
+        <div class="per-night">Desde $324/noche (base)</div>
+        <div class="per-night-label">Fuente: KAYAK. Suite 2-BR Oceanfront sera mas alta - llamar hotel.</div>
+        <div class="total">Calendario oficial muestra $279/noche base para Aug 2-8. 2-BR suite: LLAMAR para precio exacto.</div>
+        <div class="fees">Sitio oficial: reservations.opalcollection.com/opal-grand | Tel: (561) 278-5755</div>
+      </div>
+      <div class="pros-cons">
+        <div class="pros"><h4>A favor</h4><ul>
+          <li>RECIEN RENOVADO - moderno, coastal chic</li>
+          <li>1,800 sq ft (167 m2) - la suite 2-BR mas grande de todas</li>
+          <li>Grand wrap-around balcony con pergola y vista oceano</li>
+          <li>Opal Collection (misma cadena que Edgewater = consistencia)</li>
+          <li>Oceanfront directa en Delray Beach</li>
+          <li>Caminable a Atlantic Avenue (80+ restaurantes, tiendas)</li>
+          <li>Independiente, sin loyalty points</li>
+          <li>Tienen villas, 1-BR, 2-BR y hasta 3-BR suites</li>
+        </ul></div>
+        <div class="cons"><h4>En contra</h4><ul>
+          <li>Sin lazy river ni waterslide</li>
+          <li>No pude verificar precio exacto de 2-BR online (llamar)</li>
+          <li>Resort fee no confirmado</li>
+          <li>~35 min a Fort Lauderdale, ~45 min a Palm Beach</li>
+        </ul></div>
+      </div>
+      <a href="https://www.opalcollection.com/opal-grand/" target="_blank" class="book-btn">Ver en sitio oficial</a>
+      <a href="https://reservations.opalcollection.com/opal-grand/availability.asp" target="_blank" class="book-btn" style="background:#334155; color:#22d3ee;">Reservar directo</a>
+      <a href="https://www.opalcollection.com/opal-grand/gallery/" target="_blank" class="book-btn" style="background:#334155; color:#22d3ee;">Ver galeria fotos</a>
+    </div>
+  </div>
+</div>
+
+<!-- =================== COMBOS =================== -->
+<div id="combos" class="section">
+  <h2 style="color:#fff; margin-bottom:1rem;">Combos + Presupuesto Total</h2>
+
+  <div class="combo-box">
+    <h3>COMBO 1: MEJOR EXPERIENCIA GLOBAL</h3>
+    <div class="combo-row">
+      <span class="combo-arrow">1</span>
+      <div><div class="combo-hotel">Edgewater Beach Hotel (Naples) - 5 noches</div>
+      <div class="combo-detail">Suite 2-BR | Beachfront Golfo + 2 piletas + cocina completa | Independiente | ~$720/noche (resort fee incl.)</div></div>
+    </div>
+    <div class="combo-row">
+      <span class="combo-arrow">+</span>
+      <div><div class="combo-hotel">Lago Mar Beach Resort (Fort Lauderdale) - 6 noches</div>
+      <div class="combo-detail">Suite 2-BR | Playa privada + lazy river + waterslide | Family-owned | ~$450-600/noche sin fees</div></div>
+    </div>
+    <div class="combo-total">Total hoteles: ~$6,525 - $6,925</div>
+    <p style="color:#94a3b8; margin-top:0.5rem;">Edgewater 2-BR King/King Gulf View $720/noche x 5 = $3,600 (resort fee incluido, VERIFICADO)<br>Lago Mar 2-BR ~$450-550/noche x 6 = $2,700-$3,300 + $0 fees (llamar para precio exacto)<br>Ambos beachfront walk-out. Ambos independientes. Ambos con 2 dormitorios. Lago Mar tiene lazy river + waterslide; Edgewater tiene playa del Golfo + kayak incluido.</p>
+  </div>
+
+  <div class="combo-box" style="border-color:#4ade80;">
+    <h3 style="color:#4ade80;">COMBO 2: MEJOR VALOR</h3>
+    <div class="combo-row">
+      <span class="combo-arrow">1</span>
+      <div><div class="combo-hotel">Naples Bay Resort Cottages (Naples) - 5 noches</div>
+      <div class="combo-detail">Cottage 2-BR (158 m2!) | Lazy river + 5 piletas | Independiente | ~$520-720/noche con fees</div></div>
+    </div>
+    <div class="combo-row">
+      <span class="combo-arrow">+</span>
+      <div><div class="combo-hotel">Lago Mar Beach Resort (Fort Lauderdale) - 6 noches</div>
+      <div class="combo-detail">Suite 2-BR | Playa privada + lazy river + waterslide | Family-owned | ~$450-600/noche sin fees</div></div>
+    </div>
+    <div class="combo-total" style="color:#4ade80;">Total hoteles: ~$5,300 - $7,200</div>
+    <p style="color:#94a3b8; margin-top:0.5rem;">Mas espacio (cottages 158m2). Lazy river en ambos. Mas economico. Pero Naples Bay no es beachfront (necesitas auto). OJO: cottages requieren minimo 6 noches.</p>
+  </div>
+
+  <div class="combo-box" style="border-color:#22d3ee;">
+    <h3 style="color:#22d3ee;">COMBO 3: MODERNO + OPAL COLLECTION (ambos hoteles misma cadena)</h3>
+    <div class="combo-row">
+      <span class="combo-arrow">1</span>
+      <div><div class="combo-hotel">Edgewater Beach Hotel (Naples) - 5 noches</div>
+      <div class="combo-detail">2-BR King/King Gulf View $720/noche | Opal Collection | Beachfront Golfo + cocina completa | VERIFICADO</div></div>
+    </div>
+    <div class="combo-row">
+      <span class="combo-arrow">+</span>
+      <div><div class="combo-hotel">Opal Grand Oceanfront (Delray Beach) - 6 noches</div>
+      <div class="combo-detail">2-BR King/King Oceanfront 1,800 sq ft | Opal Collection | MODERNO recien renovado | Llamar precio</div></div>
+    </div>
+    <div class="combo-total" style="color:#22d3ee;">Total hoteles: ~$7,425-$9,225 (estimado)</div>
+    <p style="color:#94a3b8; margin-top:0.5rem;">Ambos Opal Collection = consistencia de estilo y servicio. Edgewater tiene playa del Golfo + cocina completa + kayak incluido. Opal Grand es el mas moderno y grande (167m2). Delray Beach es la mejor ubicacion de la costa este (Atlantic Avenue caminable). Ninguno tiene lazy river, pero ambos tienen pileta y playa directa.</p>
+  </div>
+
+  <div class="combo-box" style="border-color:#fed7aa;">
+    <h3 style="color:#fed7aa;">COMBO 4: PREMIUM (con JW Marriott)</h3>
+    <div class="combo-row">
+      <span class="combo-arrow">1</span>
+      <div><div class="combo-hotel">JW Marriott Marco Island - Lanai Suite (5 noches)</div>
+      <div class="combo-detail">Lanai 2-BR (111m2) | Playa directa | Marriott Bonvoy | ~$1,000-1,308/noche con fees</div></div>
+    </div>
+    <div class="combo-row">
+      <span class="combo-arrow">+</span>
+      <div><div class="combo-hotel">Lago Mar Beach Resort (Fort Lauderdale) - 6 noches</div>
+      <div class="combo-detail">Suite 2-BR | Playa privada + lazy river + waterslide | ~$450-600/noche sin fees</div></div>
+    </div>
+    <div class="combo-total" style="color:#fed7aa;">Total hoteles: ~$7,700 - $10,140</div>
+    <p style="color:#94a3b8; margin-top:0.5rem;">La Lanai Suite es espectacular (acceso directo playa, 2.5 banos, wraparound balcon). Pero es cadena con loyalty, mega-resort (726 hab), y significativamente mas caro.</p>
+  </div>
+
+  <h3 style="color:#fff; margin:2rem 0 1rem;">Presupuesto Total del Viaje (11 dias)</h3>
+  <div class="summary-grid">
+    <div class="summary-card"><h3>Hoteles (Combo 1)</h3><div class="amount">~$6,400-8,300</div><p>Edgewater + Lago Mar</p></div>
+    <div class="summary-card"><h3>Hoteles (Combo 2)</h3><div class="amount">~$5,300-7,200</div><p>Naples Bay + Lago Mar</p></div>
+    <div class="summary-card"><h3>Auto Rental</h3><div class="amount">~$650-900</div><p>SUV mediano x 11 dias + SunPass</p></div>
+    <div class="summary-card"><h3>Comida</h3><div class="amount">~$1,500-2,200</div><p>~$150-200/dia x 4 personas</p></div>
+    <div class="summary-card"><h3>Actividades</h3><div class="amount">~$600-1,000</div><p>Naples Zoo, Lion Country Safari, ZWF Miami, Everglades</p></div>
+    <div class="summary-card" style="border-color:#4ade80;"><h3>TOTAL (sin shopping)</h3><div class="amount" style="color:#4ade80;">~$8,050-12,400</div><p>Rango entre Combo 2 y Combo 1</p></div>
+  </div>
+
+  <div style="background:#1e293b; border-radius:12px; padding:1.5rem; margin-top:1.5rem;">
+    <h3 style="color:#22d3ee; margin-bottom:1rem;">Links directos para reservar</h3>
+    <div style="display:grid; gap:0.8rem;">
+      <div><a href="https://www.opalcollection.com/edgewater/" target="_blank" style="color:#22d3ee; font-weight:600;">Edgewater Beach Hotel - Sitio Oficial</a><br><span style="color:#94a3b8; font-size:0.85rem;">Llamar: (239) 403-2000 para precios exactos de Tower 2-BR Suite</span></div>
+      <div><a href="https://www.naplesbayresort.com/" target="_blank" style="color:#22d3ee; font-weight:600;">Naples Bay Resort - Sitio Oficial</a><br><span style="color:#94a3b8; font-size:0.85rem;">Llamar: (239) 530-1199 para precios de Cottages 2-BR</span></div>
+      <div><a href="https://lagomar.com/" target="_blank" style="color:#22d3ee; font-weight:600;">Lago Mar Beach Resort - Sitio Oficial</a><br><span style="color:#94a3b8; font-size:0.85rem;">Llamar: (954) 523-6511 o reservations@lagomar.com</span></div>
+      <div><a href="https://www.marriott.com/en-us/hotels/mrkfl-jw-marriott-marco-island-beach-resort/overview/" target="_blank" style="color:#94a3b8;">JW Marriott Marco Island - Sitio Oficial</a><br><span style="color:#94a3b8; font-size:0.85rem;">Llamar: (239) 394-2511 para Lanai 2-BR Suite rate</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- =================== ITINERARY =================== -->
+<div id="itinerary" class="section">
+  <h2 style="color:#fff; margin-bottom:0.5rem;">Itinerario Dia por Dia</h2>
+  <p style="color:#94a3b8; margin-bottom:1.5rem;">Flexible - ajustar segun clima y energia. Tip: actividades outdoor por la manana, shopping/indoor por la tarde (lluvias 3-5 PM).</p>
+
+  <style>
+    .day-card { background:#1e293b; border-radius:12px; padding:1.5rem; margin-bottom:1rem; border-left:4px solid #22d3ee; }
+    .day-card h3 { color:#22d3ee; font-size:1.1rem; margin-bottom:0.3rem; }
+    .day-card .date { color:#94a3b8; font-size:0.85rem; margin-bottom:0.8rem; }
+    .day-card .activity { display:flex; gap:0.8rem; margin:0.5rem 0; align-items:flex-start; }
+    .day-card .time { color:#fbbf24; font-weight:700; min-width:70px; font-size:0.85rem; }
+    .day-card .desc { color:#e2e8f0; font-size:0.9rem; }
+    .day-card .desc a { color:#22d3ee; }
+    .day-card .drive { color:#94a3b8; font-size:0.8rem; font-style:italic; margin-top:0.3rem; }
+    .day-card .tag { display:inline-block; padding:2px 8px; border-radius:10px; font-size:0.7rem; font-weight:600; margin-right:4px; }
+    .tag-beach { background:#164e63; color:#22d3ee; }
+    .tag-shop { background:#4c1d95; color:#c4b5fd; }
+    .tag-activity { background:#065f46; color:#6ee7b7; }
+    .tag-food { background:#7c2d12; color:#fed7aa; }
+    .tag-animal { background:#713f12; color:#fde68a; }
+    .tag-drive { background:#334155; color:#94a3b8; }
+    .phase-header { background:linear-gradient(135deg,#164e63,#1e3a5f); padding:1rem 1.5rem; border-radius:12px; margin:1.5rem 0 1rem; }
+    .phase-header h2 { color:#22d3ee; font-size:1.2rem; }
+    .phase-header p { color:#94a3b8; font-size:0.9rem; }
+  </style>
+
+  <div class="phase-header">
+    <h2>FASE 1: EDGEWATER BEACH HOTEL, NAPLES</h2>
+    <p>5 noches | 1901 Gulf Shore Blvd N | Playa del Golfo + 2 piletas + cocina completa + kayak incluido</p>
+  </div>
+
+  <div class="day-card">
+    <h3>Dia 1: Llegada + Traslado a Naples</h3>
+    <div class="date">Martes 28 julio</div>
+    <span class="tag tag-drive">Drive</span> <span class="tag tag-shop">Shopping</span>
+    <div class="activity"><span class="time">Llegada</span><span class="desc">Aterrizan en <strong>Fort Lauderdale Airport (FLL)</strong>. Recogen SUV de alquiler.</span></div>
+    <div class="activity"><span class="time">Opcion</span><span class="desc">Si llegan temprano: parada en <a href="https://www.simon.com/mall/sawgrass-mills" target="_blank">Sawgrass Mills</a> (15 min del aeropuerto). El outlet mas grande de USA - Nike, Adidas, Sephora, Coach, Ralph Lauren. Si no, lo hacen en el traslado de vuelta (Dia 6).</span></div>
+    <div class="activity"><span class="time">Tarde</span><span class="desc">Manejan por <strong>I-75 West (Alligator Alley)</strong> hacia Naples.</span></div>
+    <div class="drive">FLL a Edgewater Beach Hotel: ~2 horas por I-75. Peaje ~$3.25 (SunPass del rental car).</div>
+    <div class="activity"><span class="time">Noche</span><span class="desc">Check-in <strong>Edgewater Beach Hotel</strong>. Suite 2-BR King/King Gulf View (1,100 sq ft). Primero a la pileta con los chicos. Despues comprar provisiones:<br>
+      - <a href="https://maps.google.com/?q=Publix+Naples+Plaza+Naples+FL" target="_blank" style="color:#22d3ee;"><strong>Publix - Naples Plaza</strong></a> (~8 min del hotel, 3rd St S &amp; US-41)<br>
+      - <a href="https://maps.google.com/?q=Whole+Foods+Market+Naples+FL" target="_blank" style="color:#22d3ee;"><strong>Whole Foods Market</strong></a> (~12 min, Mercato shopping center, 9101 Strada Pl)<br>
+      Cena liviana en la suite con lo que compraron.</span></div>
+  </div>
+
+  <div class="day-card">
+    <h3>Dia 2: Playa del Edgewater + Downtown Naples</h3>
+    <div class="date">Miercoles 29 julio</div>
+    <span class="tag tag-beach">Playa</span> <span class="tag tag-food">Comida</span> <span class="tag tag-shop">Shopping</span>
+    <div class="activity"><span class="time">Manana</span><span class="desc"><strong>Playa del Edgewater</strong> - 7 millas de arena blanca sobre el Golfo de Mexico. Agua calma y tibia, perfecta para los chicos. Kayak y paddleboard incluidos en la estadia.</span></div>
+    <div class="activity"><span class="time">Almuerzo</span><span class="desc"><a href="https://maps.google.com/?q=The+Dock+at+Crayton+Cove+Naples" target="_blank">The Dock at Crayton Cove</a> (mariscos, waterfront, ~15 min) o <a href="https://maps.google.com/?q=Brooks+Burgers+Naples" target="_blank">Brooks Burgers</a> downtown (casual, chicos lo aman).</span></div>
+    <div class="drive">Edgewater a downtown Naples: ~10 min.</div>
+    <div class="activity"><span class="time">Tarde</span><span class="desc">Caminar <a href="https://www.fifthavenuesouth.com/" target="_blank">5th Avenue South</a> + <a href="https://maps.google.com/?q=3rd+Street+South+Naples" target="_blank">3rd Street South</a> - tiendas, heladerias, galerias. Hay <strong>TJ Maxx y Marshalls</strong> en Tamiami Trail (~10 min).</span></div>
+    <div class="activity"><span class="time">Cena</span><span class="desc"><a href="https://maps.google.com/?q=Giuseppe+and+the+Lion+Naples" target="_blank">Giuseppe and the Lion</a> (italiano, family-friendly) o cocinar algo rico en la suite.</span></div>
+  </div>
+
+  <div class="day-card">
+    <h3>Dia 3: Naples Zoo + Marco Island + Shopping</h3>
+    <div class="date">Jueves 30 julio</div>
+    <span class="tag tag-animal">Animales</span> <span class="tag tag-beach">Playa</span> <span class="tag tag-shop">Shopping</span>
+    <div class="activity"><span class="time">Manana</span><span class="desc"><a href="https://www.napleszoo.org/" target="_blank">Naples Zoo at Caribbean Gardens</a> - <strong>giraffe feeding</strong> (alimentar jirafas a mano!), paseo en bote por islas de monos y lemures. ~2-3 horas es suficiente.</span></div>
+    <div class="drive">Edgewater a Naples Zoo: ~15 min.</div>
+    <div class="activity"><span class="time">Almuerzo</span><span class="desc">En ruta a Marco Island o en Naples.</span></div>
+    <div class="activity"><span class="time">Tarde opcion A</span><span class="desc"><a href="https://maps.google.com/?q=Tigertail+Beach+Marco+Island" target="_blank">Tigertail Beach</a>, Marco Island - lagoon natural + shelling (buscar conchas). Diferente a la playa del hotel.</span></div>
+    <div class="activity"><span class="time">Tarde opcion B</span><span class="desc">Shopping en Naples: <strong>TJ Maxx</strong> (1800 Tamiami Trail N, 10 min del hotel) + <strong>Ross Dress for Less</strong> (5054 Airport Pulling Rd N, 12 min) + <strong>Marshalls</strong> (Immokalee Rd, 15 min). Todos grandes y bien surtidos.</span></div>
+    <div class="drive">Edgewater a Marco Island: ~30 min. Edgewater a TJ Maxx Tamiami: ~10 min.</div>
+  </div>
+
+  <div class="day-card">
+    <h3>Dia 4: Everglades + Miromar Outlets</h3>
+    <div class="date">Viernes 31 julio</div>
+    <span class="tag tag-animal">Animales</span> <span class="tag tag-shop">Shopping</span>
+    <div class="activity"><span class="time">Manana</span><span class="desc"><a href="https://www.wootenseverglades.com/" target="_blank">Wooten's Airboat Tours</a> en Everglades - aerobote 30-60 min + show de cocodrilos + <strong>animal encounters</strong> (sostener animales nativos).</span></div>
+    <div class="drive">Edgewater a Wooten's: ~45 min por US-41.</div>
+    <div class="activity"><span class="time">Almuerzo</span><span class="desc">De vuelta en camino a Miromar.</span></div>
+    <div class="activity"><span class="time">Tarde</span><span class="desc"><a href="https://miromaroutlets.com/" target="_blank">Miromar Outlets</a> en Estero - 140+ tiendas: <strong>Nike Factory, Adidas Outlet, Saks OFF 5TH, Kate Spade, Michael Kors, Under Armour, Tommy Hilfiger, Calvin Klein</strong>. Descuentos hasta 70%.</span></div>
+    <div class="drive">Wooten's a Miromar: ~40 min. Miromar a Edgewater: ~25 min.</div>
+    <div class="activity"><span class="time">Cena</span><span class="desc"><a href="https://maps.google.com/?q=Ford's+Garage+Miromar+Outlets" target="_blank">Ford's Garage</a> en Miromar - hamburguesas gourmet, ambiente tipo garaje de Henry Ford, chicos lo aman.</span></div>
+  </div>
+
+  <div class="day-card">
+    <h3>Dia 5: Sanibel Island (excursion especial)</h3>
+    <div class="date">Sabado 1 agosto</div>
+    <span class="tag tag-beach">Playa</span> <span class="tag tag-activity">Actividad</span>
+    <div class="activity"><span class="time">Manana</span><span class="desc">Manejar a <a href="https://maps.google.com/?q=Sanibel+Island+FL" target="_blank">Sanibel Island</a> - famosa mundial por <strong>shelling</strong>. Playa en <a href="https://maps.google.com/?q=Bowman's+Beach+Sanibel" target="_blank">Bowman's Beach</a> (una de las mejores de Florida, vale la pena ir aunque tengan playa en el hotel).</span></div>
+    <div class="drive">Edgewater a Sanibel: ~50 min (incluye puente, peaje ~$6).</div>
+    <div class="activity"><span class="time">Actividad</span><span class="desc"><a href="https://www.shellmuseum.org/" target="_blank">Bailey-Matthews National Shell Museum</a> - interactivo, touch tanks. Genial para 9 y 11 anos.</span></div>
+    <div class="activity"><span class="time">Almuerzo</span><span class="desc"><strong>The Island Cow</strong> en Sanibel - muy family-friendly, porciones grandes.</span></div>
+    <div class="activity"><span class="time">Tarde</span><span class="desc">Volver al Edgewater para pileta y playa. Aprovechar la playa del Golfo al atardecer (los sunsets del Golfo son espectaculares).</span></div>
+    <div class="activity"><span class="time">Cena</span><span class="desc">Ultima noche en Naples. <a href="https://maps.google.com/?q=USS+Nemo+Naples+FL" target="_blank">USS Nemo</a> (seafood upscale kid-friendly) o cena especial en la suite con lo que quedo en la heladera.</span></div>
+  </div>
+
+  <div class="phase-header">
+    <h2>TRASLADO A DELRAY BEACH</h2>
+    <p>Domingo 2 agosto | Edgewater Naples → Opal Grand Delray Beach | ~2.5 hrs con parada shopping</p>
+  </div>
+
+  <div class="day-card">
+    <h3>Dia 6: Traslado + Sawgrass Mills</h3>
+    <div class="date">Domingo 2 agosto</div>
+    <span class="tag tag-drive">Drive</span> <span class="tag tag-shop">Shopping</span>
+    <div class="activity"><span class="time">Manana</span><span class="desc">Check-out <strong>Edgewater Beach Hotel</strong>. Manejan por I-75 East (Alligator Alley) hacia costa este.</span></div>
+    <div class="drive">Edgewater a Sawgrass Mills: ~1h45. Sawgrass a Opal Grand: ~40 min.</div>
+    <div class="activity"><span class="time">Mediodia</span><span class="desc"><a href="https://www.simon.com/mall/sawgrass-mills" target="_blank">Sawgrass Mills</a> - 350+ tiendas! <strong>The Colonnade Outlets</strong> (marcas premium), <strong>The Oasis</strong> (al aire libre). Nike, Adidas, Sephora, Coach, Tommy, Ralph Lauren, Puma. Planear 3-4 horas.</span></div>
+    <div class="activity"><span class="time">Almuerzo</span><span class="desc"><a href="https://maps.google.com/?q=Rainforest+Cafe+Sawgrass+Mills" target="_blank">Rainforest Cafe</a> dentro de Sawgrass (chicos lo aman) o <strong>Seasons 52</strong>.</span></div>
+    <div class="activity"><span class="time">Tarde</span><span class="desc">Check-in <strong>Opal Grand Oceanfront Resort</strong>, Delray Beach. Suite 2-BR King/King Oceanfront (1,800 sq ft!). Pileta oceanfront. Comprar provisiones si la suite tiene cocina:<br>
+      - <a href="https://maps.google.com/?q=Publix+1538+S+Federal+Hwy+Delray+Beach+FL" target="_blank" style="color:#22d3ee;"><strong>Publix</strong></a> - 1538 S Federal Hwy (~7 min del hotel)<br>
+      - <a href="https://maps.google.com/?q=Whole+Foods+680+Linton+Blvd+Delray+Beach+FL" target="_blank" style="color:#22d3ee;"><strong>Whole Foods Market</strong></a> - 680 Linton Blvd (~10 min del hotel, abierto 8am-10pm)<br>
+      Pasear <a href="https://downtowndelraybeach.com/" target="_blank">Atlantic Avenue</a> que esta caminable desde el hotel.</span></div>
+    <div class="activity"><span class="time">Cena</span><span class="desc">Cenar en Atlantic Avenue - esta a pasos del hotel. Opciones para todos los gustos.</span></div>
+  </div>
+
+  <div class="phase-header">
+    <h2>FASE 2: OPAL GRAND OCEANFRONT, DELRAY BEACH</h2>
+    <p>6 noches | 10 N Ocean Blvd | Oceanfront Atlantico + moderno + Atlantic Avenue caminable</p>
+  </div>
+
+  <div class="day-card">
+    <h3>Dia 7: Playa del hotel + Atlantic Avenue</h3>
+    <div class="date">Lunes 3 agosto</div>
+    <span class="tag tag-beach">Playa</span> <span class="tag tag-food">Comida</span>
+    <div class="activity"><span class="time">Manana</span><span class="desc"><strong>Playa del Opal Grand</strong> - oceanfront directo sobre el Atlantico. Pileta oceanfront. Dia tranquilo despues del viaje y shopping de ayer.</span></div>
+    <div class="activity"><span class="time">Almuerzo</span><span class="desc"><a href="https://downtowndelraybeach.com/" target="_blank">Atlantic Avenue</a> - caminable desde el hotel. 80+ opciones. Boston's on the Beach (ocean view, family-friendly) o explorar.</span></div>
+    <div class="activity"><span class="time">Tarde</span><span class="desc">Seguir paseando Atlantic Avenue - heladerias (Icy Bean, Hawaiian shave ice), boutiques, tiendas locales. O volver a la pileta/playa del hotel. Disfrutar el wrap-around balcony de la suite con vista al oceano.</span></div>
+  </div>
+
+  <div class="day-card">
+    <h3>Dia 8: Palm Beach + Shopping Boca Raton</h3>
+    <div class="date">Martes 4 agosto</div>
+    <span class="tag tag-shop">Shopping</span> <span class="tag tag-activity">Actividad</span>
+    <div class="activity"><span class="time">Manana</span><span class="desc">Manejar a <a href="https://maps.google.com/?q=Worth+Avenue+Palm+Beach" target="_blank">Worth Avenue</a> en Palm Beach - la "Rodeo Drive" de Florida. Pasear, ver vitrinas, arquitectura. <strong>Palm Beach Lake Trail</strong> con vista a mansiones.</span></div>
+    <div class="drive">Opal Grand a Palm Beach: ~25 min.</div>
+    <div class="activity"><span class="time">Almuerzo</span><span class="desc"><a href="https://maps.google.com/?q=Rosemary+Square+West+Palm+Beach" target="_blank">Rosemary Square</a> en West Palm Beach - restaurantes family-friendly, ambiente lindo.</span></div>
+    <div class="activity"><span class="time">Tarde</span><span class="desc">Shopping en <strong>Boca Raton</strong> (15 min del hotel):<br>
+      - <strong>TJ Maxx + HomeGoods</strong> (combinados, Glades Rd - el mejor TJ Maxx de la zona, gran seleccion, 3 pisos)<br>
+      - <strong>Marshalls</strong> (Boca, gran seleccion, buenos precios)<br>
+      - <strong>Ross Dress for Less</strong> (varias ubicaciones en Boca)<br>
+      - <a href="https://www.simon.com/mall/town-center-at-boca-raton" target="_blank">Town Center at Boca Raton</a> si quieren mall premium (Nordstrom, Saks, Neiman Marcus, 220+ tiendas)</span></div>
+    <div class="drive">Opal Grand a Boca Raton (Glades Rd): ~15 min.</div>
+  </div>
+
+  <div class="day-card" style="border-color:#fde68a;">
+    <h3>Dia 9: Zoological Wildlife Foundation (ANIMAL ENCOUNTERS!)</h3>
+    <div class="date">Miercoles 5 agosto</div>
+    <span class="tag tag-animal">Animales</span> <span class="tag tag-shop">Shopping</span>
+    <div class="activity"><span class="time">Manana</span><span class="desc"><a href="https://zoologicalwildlifefoundation.com/" target="_blank">Zoological Wildlife Foundation (ZWF)</a> en Miami - zoo privado, tours intimos. <strong>CACHORROS DE FELINOS GRANDES</strong> (lion cubs, tiger cubs segun disponibilidad), ligers, chimpances, perezosos, lemures, jaguares. RESERVAR CON ANTICIPACION (min 24 hrs).</span></div>
+    <div class="drive">Opal Grand a ZWF Miami: ~1 hora.</div>
+    <div class="activity"><span class="time">IMPORTANTE</span><span class="desc">Menores de 17 con adulto. Tours martes a domingo 10am-6pm. Solo por reserva. Verificar disponibilidad de cub encounters.</span></div>
+    <div class="activity"><span class="time">Tarde</span><span class="desc">Opcion A: <a href="https://maps.google.com/?q=Aventura+Mall+Miami" target="_blank">Aventura Mall</a> de camino de vuelta (mall grande, 20 min de ZWF).<br>Opcion B: Volver al Opal Grand para playa y Atlantic Avenue.</span></div>
+  </div>
+
+  <div class="day-card">
+    <h3>Dia 10: Playa + Shopping Delray Beach (dia tranquilo)</h3>
+    <div class="date">Jueves 6 agosto</div>
+    <span class="tag tag-beach">Playa</span> <span class="tag tag-shop">Shopping</span>
+    <div class="activity"><span class="time">Manana</span><span class="desc"><strong>Playa y pileta del Opal Grand</strong> - ultimo dia full de playa, aprovechenlo! Atlantico oceanfront.</span></div>
+    <div class="activity"><span class="time">Almuerzo</span><span class="desc">Atlantic Avenue (caminable desde el hotel) - ya van a tener sus favoritos.</span></div>
+    <div class="activity"><span class="time">Tarde</span><span class="desc">Shopping en <strong>Delray Beach</strong> (todo cerca del hotel):<br>
+      - <strong>TJ Maxx + HomeGoods</strong> (Plaza at Delray, 1100 Linton Blvd, ~8 min del hotel - limpio, bien organizado, buena seleccion)<br>
+      - <strong>Marshalls</strong> (Plaza at Delray, al lado del TJ Maxx - quedan juntos!)<br>
+      - <strong>Ross Dress for Less</strong> (Delray Marketplace, ~10 min)<br>
+      - Boutiques de Atlantic Avenue (caminable, tiendas unicas locales)</span></div>
+    <div class="drive">Opal Grand a Plaza at Delray (TJ Maxx + Marshalls): ~8 min.</div>
+    <div class="activity"><span class="time">Cena</span><span class="desc">Atlantic Avenue - cena de despedida casi. Prueben algo nuevo.</span></div>
+  </div>
+
+  <div class="day-card">
+    <h3>Dia 11: Sawgrass Mills (2da ronda) + Empacar</h3>
+    <div class="date">Viernes 7 agosto</div>
+    <span class="tag tag-shop">Shopping</span>
+    <div class="activity"><span class="time">Manana</span><span class="desc">Ultima manana tranquila. Playa o pileta del Opal Grand si quieren. O salir temprano a shopping.</span></div>
+    <div class="activity"><span class="time">Mediodia</span><span class="desc">Segunda ronda en <a href="https://www.simon.com/mall/sawgrass-mills" target="_blank">Sawgrass Mills</a> (~40 min del hotel) - completar lo que no pudieron el Dia 6. 350+ tiendas, es imposible verlo todo en una visita. O si ya fueron suficiente, hacer una ronda final por los <strong>TJ Maxx / Marshalls / Ross</strong> de Delray o Boca donde hayan visto cosas que les gustaron.</span></div>
+    <div class="drive">Opal Grand a Sawgrass Mills: ~40 min por I-95.</div>
+    <div class="activity"><span class="time">Tarde</span><span class="desc"><strong>EMPACAR MALETAS</strong> - con Miromar, Sawgrass, Town Center Boca, TJ Maxx y Ross van a necesitar tiempo serio para organizar. Tip: si compraron mucho, consideren una maleta extra (se puede comprar en Marshalls o Ross por $30-50).</span></div>
+    <div class="activity"><span class="time">Cena</span><span class="desc">Ultima cena del viaje en Atlantic Avenue - algo especial para cerrar. Caminable desde el hotel.</span></div>
+  </div>
+
+  <div class="day-card" style="border-color:#f87171;">
+    <h3>Dia 12: Salida</h3>
+    <div class="date">Sabado 8 agosto</div>
+    <span class="tag tag-drive">Drive</span>
+    <div class="activity"><span class="time">Manana</span><span class="desc">Check-out <strong>Opal Grand</strong>. Si el vuelo sale tarde: ultima manana de playa o compras rapidas camino al aeropuerto.</span></div>
+    <div class="activity"><span class="time">Devolucion</span><span class="desc">Devolver auto en <strong>Fort Lauderdale Airport (FLL)</strong>.</span></div>
+    <div class="drive">Opal Grand Delray Beach a FLL Airport: ~35 min por I-95.</div>
+    <div class="activity"><span class="time">Vuelo</span><span class="desc">De vuelta a Lima!</span></div>
+  </div>
+</div>
+
+<!-- =================== LINKS + TIPS =================== -->
+<div id="links" class="section">
+  <h2 style="color:#fff; margin-bottom:1.5rem;">Links Utiles + Tips para el Viaje</h2>
+
+  <style>
+    .link-section { background:#1e293b; border-radius:12px; padding:1.5rem; margin-bottom:1rem; }
+    .link-section h3 { color:#22d3ee; margin-bottom:1rem; font-size:1rem; }
+    .link-item { display:flex; justify-content:space-between; align-items:center; padding:8px 0; border-bottom:1px solid #334155; flex-wrap:wrap; gap:0.5rem; }
+    .link-item:last-child { border-bottom:none; }
+    .link-item .name { color:#e2e8f0; font-weight:600; font-size:0.9rem; }
+    .link-item .detail { color:#94a3b8; font-size:0.8rem; }
+    .link-item a { color:#22d3ee; font-size:0.85rem; text-decoration:none; }
+    .link-item a:hover { text-decoration:underline; }
+    .tip-box { background:#164e63; border-radius:8px; padding:1rem; margin:0.5rem 0; }
+    .tip-box strong { color:#22d3ee; }
+  </style>
+
+  <div class="link-section">
+    <h3>Hoteles (reservar directo)</h3>
+    <div class="link-item"><div><span class="name">Edgewater Beach Hotel</span><br><span class="detail">Naples | (239) 403-2000 | Pedir Tower 2-BR Suite</span></div><a href="https://www.opalcollection.com/edgewater/" target="_blank">Sitio oficial</a></div>
+    <div class="link-item"><div><span class="name">Naples Bay Resort - Cottages</span><br><span class="detail">Naples | (239) 530-1199 | Pedir Cottage 2-BR</span></div><a href="https://www.naplesbayresort.com/" target="_blank">Sitio oficial</a></div>
+    <div class="link-item"><div><span class="name">Lago Mar Beach Resort</span><br><span class="detail">Fort Lauderdale | (954) 523-6511 | reservations@lagomar.com</span></div><a href="https://lagomar.com/" target="_blank">Sitio oficial</a></div>
+    <div class="link-item"><div><span class="name">Opal Grand Oceanfront Resort & Spa</span><br><span class="detail">Delray Beach | (561) 278-5755 | Pedir South Tower 2-BR King/King Oceanfront</span></div><a href="https://www.opalcollection.com/opal-grand/" target="_blank">Sitio oficial</a></div>
+    <div class="link-item"><div><span class="name">JW Marriott Marco Island</span><br><span class="detail">Marco Island | (239) 394-2511 | Pedir Lanai 2-BR Suite</span></div><a href="https://www.marriott.com/en-us/hotels/mrkfl-jw-marriott-marco-island-beach-resort/overview/" target="_blank">Sitio oficial</a></div>
+  </div>
+
+  <div class="link-section">
+    <h3>Animal Encounters (RESERVAR CON TIEMPO)</h3>
+    <div class="link-item"><div><span class="name">Naples Zoo at Caribbean Gardens</span><br><span class="detail">Naples | Giraffe feeding, isla de monos, keeper chats</span></div><a href="https://www.napleszoo.org/" target="_blank">Comprar tickets</a></div>
+    <div class="link-item"><div><span class="name">Zoological Wildlife Foundation (ZWF)</span><br><span class="detail">Miami | Cachorros de felinos, lemures, perezosos | SOLO POR RESERVA min 24hrs</span></div><a href="https://zoologicalwildlifefoundation.com/visit/tours/" target="_blank">Reservar tour</a></div>
+    <div class="link-item"><div><span class="name">Lion Country Safari</span><br><span class="detail">West Palm Beach | Drive-through safari 600 acres + parque</span></div><a href="https://www.lioncountrysafari.com/" target="_blank">Comprar tickets</a></div>
+    <div class="link-item"><div><span class="name">Wooten's Airboat Tours (Everglades)</span><br><span class="detail">Ochopee | Airboat + animal encounters + show cocodrilos</span></div><a href="https://www.wootenseverglades.com/" target="_blank">Reservar</a></div>
+    <div class="link-item"><div><span class="name">Everglades Holiday Park</span><br><span class="detail">Fort Lauderdale | Airboat + animal encounters nativos</span></div><a href="https://www.evergladesholidaypark.com/" target="_blank">Reservar</a></div>
+    <div class="link-item"><div><span class="name">Kowiachobee Animal Preserve</span><br><span class="detail">Naples | Santuario con tigres, lemures - tours privados</span></div><a href="https://www.tripadvisor.com/Attraction_Review-g34467-d10092420-Reviews-Kowiachobee_Animal_Preserve-Naples_Florida.html" target="_blank">Info</a></div>
+  </div>
+
+  <div class="link-section">
+    <h3>Shopping - Outlets y Malls</h3>
+    <div class="link-item"><div><span class="name">Sawgrass Mills</span><br><span class="detail">Sunrise (FLL) | 350+ tiendas | EL outlet mas grande de USA</span></div><a href="https://www.simon.com/mall/sawgrass-mills" target="_blank">Directorio tiendas</a></div>
+    <div class="link-item"><div><span class="name">Miromar Outlets</span><br><span class="detail">Estero (Naples) | 140+ tiendas | Nike, Adidas, Saks OFF 5TH</span></div><a href="https://miromaroutlets.com/stores/" target="_blank">Directorio tiendas</a></div>
+    <div class="link-item"><div><span class="name">Town Center at Boca Raton</span><br><span class="detail">Boca Raton | 220+ tiendas | Nordstrom, Saks, Neiman Marcus</span></div><a href="https://www.simon.com/mall/town-center-at-boca-raton" target="_blank">Directorio tiendas</a></div>
+    <div class="tip-box"><strong>Tip:</strong> Para TJ Maxx, Marshalls, y Ross, buscar en Google Maps "TJ Maxx near me" cuando esten en cada zona. Hay multiples ubicaciones en Naples, Fort Lauderdale y Boca Raton.</div>
+  </div>
+
+  <div class="link-section">
+    <h3>Playas Recomendadas</h3>
+    <div class="link-item"><div><span class="name">Lowdermilk Park Beach</span><br><span class="detail">Naples | Arena blanca, agua calma, banos, playground</span></div><a href="https://maps.google.com/?q=Lowdermilk+Park+Naples+FL" target="_blank">Google Maps</a></div>
+    <div class="link-item"><div><span class="name">Vanderbilt Beach</span><br><span class="detail">North Naples | Menos crowded, hermosa</span></div><a href="https://maps.google.com/?q=Vanderbilt+Beach+Naples+FL" target="_blank">Google Maps</a></div>
+    <div class="link-item"><div><span class="name">Tigertail Beach</span><br><span class="detail">Marco Island | Shelling, lagoon, family-friendly</span></div><a href="https://maps.google.com/?q=Tigertail+Beach+Marco+Island" target="_blank">Google Maps</a></div>
+    <div class="link-item"><div><span class="name">Bowman's Beach</span><br><span class="detail">Sanibel Island | Top beach Florida, shelling mundial</span></div><a href="https://maps.google.com/?q=Bowman's+Beach+Sanibel+FL" target="_blank">Google Maps</a></div>
+    <div class="link-item"><div><span class="name">Red Reef Park</span><br><span class="detail">Boca Raton | Snorkeling, parque natural</span></div><a href="https://maps.google.com/?q=Red+Reef+Park+Boca+Raton" target="_blank">Google Maps</a></div>
+    <div class="link-item"><div><span class="name">Delray Beach</span><br><span class="detail">Delray | Excelente, menos crowded + Atlantic Ave</span></div><a href="https://maps.google.com/?q=Delray+Beach+FL" target="_blank">Google Maps</a></div>
+  </div>
+
+  <div class="link-section">
+    <h3>Restaurantes Family-Friendly</h3>
+    <div class="link-item"><div><span class="name">Brooks Burgers</span><span class="detail"> - Naples downtown, casual</span></div><a href="https://maps.google.com/?q=Brooks+Burgers+Naples+FL" target="_blank">Maps</a></div>
+    <div class="link-item"><div><span class="name">The Dock at Crayton Cove</span><span class="detail"> - Naples, mariscos, waterfront</span></div><a href="https://maps.google.com/?q=The+Dock+at+Crayton+Cove+Naples" target="_blank">Maps</a></div>
+    <div class="link-item"><div><span class="name">Giuseppe and the Lion</span><span class="detail"> - Naples, italiano</span></div><a href="https://maps.google.com/?q=Giuseppe+and+the+Lion+Naples" target="_blank">Maps</a></div>
+    <div class="link-item"><div><span class="name">Ford's Garage</span><span class="detail"> - Miromar Outlets, burgers tematico</span></div><a href="https://maps.google.com/?q=Ford's+Garage+Miromar+Estero" target="_blank">Maps</a></div>
+    <div class="link-item"><div><span class="name">The Island Cow</span><span class="detail"> - Sanibel, family favorite</span></div><a href="https://maps.google.com/?q=The+Island+Cow+Sanibel" target="_blank">Maps</a></div>
+    <div class="link-item"><div><span class="name">Rainforest Cafe</span><span class="detail"> - Sawgrass Mills, chicos lo aman</span></div><a href="https://maps.google.com/?q=Rainforest+Cafe+Sawgrass+Mills" target="_blank">Maps</a></div>
+  </div>
+
+  <div class="link-section">
+    <h3>Tips Practicos</h3>
+    <div class="tip-box"><strong>Clima Jul-Ago:</strong> 30-35C (90-95F) + humedad 80-90%. Tormentas casi diarias entre 3-5 PM (fuertes pero breves, 30-60 min). Planear outdoor por la manana, shopping por la tarde.</div>
+    <div class="tip-box"><strong>Proteccion solar:</strong> SPF 50+ obligatorio. Reaplicar cada 2 horas. El sol de Florida es brutal. Llevar sombrero y lentes.</div>
+    <div class="tip-box"><strong>Mosquitos:</strong> Muchos, especialmente en Everglades y al atardecer. Llevar repelente (OFF Deep Woods o similar).</div>
+    <div class="tip-box"><strong>Auto:</strong> SUV mediano (RAV4, Equinox, Edge). Contratar SunPass/toll pass del rental. Hay peajes en Alligator Alley y toda Florida. Enterprise, National, Hertz son confiables.</div>
+    <div class="tip-box"><strong>Huracanes:</strong> Julio riesgo bajo (~10%), agosto moderado (~20%). Contratar seguro de viaje. Descargar app NOAA o Weather Channel. Poco probable que afecte, pero estar preparados.</div>
+    <div class="tip-box"><strong>Agua:</strong> Golfo (Naples) ~30C, calma = perfecta para chicos. Atlantico (FLL) ~29C, mas oleaje.</div>
+    <div class="tip-box"><strong>Apps utiles:</strong> Google Maps (navegacion), Weather Channel (clima), Waze (trafico), Yelp (restaurantes).</div>
+  </div>
+
+  <div class="link-section">
+    <h3>Distancias y Tiempos de Manejo</h3>
+    <div style="overflow-x:auto;">
+    <table class="comparison-table" style="font-size:0.85rem;">
+      <tr><th>Desde</th><th>Hasta</th><th>Distancia</th><th>Tiempo</th></tr>
+      <tr><td>FLL Airport</td><td>Naples (hotel)</td><td>~170 km</td><td>~2 hrs</td></tr>
+      <tr><td>FLL Airport</td><td>Sawgrass Mills</td><td>~15 km</td><td>~15 min</td></tr>
+      <tr><td>Naples</td><td>Marco Island</td><td>~30 km</td><td>~20 min</td></tr>
+      <tr><td>Naples</td><td>Sanibel Island</td><td>~65 km</td><td>~50 min</td></tr>
+      <tr><td>Naples</td><td>Miromar Outlets</td><td>~25 km</td><td>~20 min</td></tr>
+      <tr><td>Naples</td><td>Everglades (Wooten's)</td><td>~55 km</td><td>~45 min</td></tr>
+      <tr><td>Naples</td><td>Fort Lauderdale</td><td>~200 km</td><td>~2 hrs</td></tr>
+      <tr><td>Lago Mar</td><td>Palm Beach / Worth Ave</td><td>~65 km</td><td>~45 min</td></tr>
+      <tr><td>Lago Mar</td><td>Boca Raton / Town Center</td><td>~35 km</td><td>~25 min</td></tr>
+      <tr><td>Lago Mar</td><td>Delray Beach</td><td>~45 km</td><td>~35 min</td></tr>
+      <tr><td>Lago Mar</td><td>ZWF Miami</td><td>~60 km</td><td>~50 min</td></tr>
+      <tr><td>Lago Mar</td><td>Lion Country Safari</td><td>~80 km</td><td>~1 hr</td></tr>
+      <tr><td>Lago Mar</td><td>FLL Airport</td><td>~10 km</td><td>~15 min</td></tr>
+    </table>
+    </div>
+  </div>
+</div>
+
+<!-- =================== RESTAURANTES =================== -->
+<div id="restaurants" class="section">
+  <h2 style="color:#fff; margin-bottom:0.5rem;">Restaurantes Family-Friendly</h2>
+  <p style="color:#94a3b8; margin-bottom:1rem;">Basados en tu gusto: Zaytinia (mediterraneo/mezze), Buca di Beppo (italiano familiar), Playa Bowls. Ratings de Google/TripAdvisor. Distancias desde el hotel.</p>
+
+  <style>
+    .resto-card { background:#1e293b; border-radius:12px; padding:1.2rem; margin-bottom:0.8rem; display:grid; grid-template-columns:1fr auto; gap:1rem; align-items:center; border-left:4px solid #fb923c; }
+    .resto-card h4 { color:#fb923c; font-size:1rem; margin-bottom:0.2rem; }
+    .resto-card img.resto-photo { width:150px; height:110px; object-fit:cover; border-radius:8px; float:right; margin-left:12px; margin-bottom:5px; }
+    .resto-type { color:#94a3b8; font-size:0.8rem; }
+    .resto-desc { color:#e2e8f0; font-size:0.85rem; margin-top:0.4rem; }
+    .resto-meta { display:flex; gap:0.8rem; flex-wrap:wrap; margin-top:0.4rem; }
+    .resto-tag { display:inline-block; padding:2px 8px; border-radius:10px; font-size:0.7rem; font-weight:600; }
+    .tag-rating { background:#065f46; color:#4ade80; }
+    .tag-price { background:#7c2d12; color:#fed7aa; }
+    .tag-dist { background:#1e3a5f; color:#93c5fd; }
+    .tag-fav { background:#4c1d95; color:#c4b5fd; }
+    .resto-links { display:flex; gap:4px; flex-wrap:wrap; margin-top:0.5rem; }
+    .resto-link { padding:4px 8px; background:#334155; border-radius:6px; color:#fb923c; font-size:0.7rem; text-decoration:none; }
+    .resto-link:hover { background:#475569; }
+    .resto-right { text-align:right; min-width:80px; }
+    .resto-phase { background:linear-gradient(135deg,#7c2d12,#1e293b); padding:1rem 1.5rem; border-radius:12px; margin:1.5rem 0 1rem; }
+    .resto-phase h2 { color:#fb923c; font-size:1.1rem; }
+    .resto-highlight { border-left-color:#4ade80; }
+    @media (max-width:768px) { .resto-card { grid-template-columns:1fr; } .resto-right { text-align:left; } }
+  </style>
+
+  <div style="background:#164e63;border-radius:12px;padding:1rem 1.5rem;margin-bottom:1rem;">
+    <strong style="color:#22d3ee;">Playa Bowls esta en AMBAS ciudades!</strong><br>
+    <span style="color:#e2e8f0;font-size:0.9rem;">Naples: 2355 Vanderbilt Beach Rd (~15 min del Edgewater) | Delray Beach: 1134 E Atlantic Ave (<strong>5 min CAMINANDO del Opal Grand!</strong>)</span>
+  </div>
+
+  <div class="resto-phase"><h2>NAPLES (cerca del Edgewater Beach Hotel)</h2></div>
+
+  <div class="resto-card resto-highlight">
+    <div>
+      <a href="https://www.google.com/search?tbm=isch&q=Mezze+platter+restaurant+interior+Florida" target="_blank" style="float:right;margin-left:12px;"><img class="resto-photo" src="https://upload.wikimedia.org/wikipedia/commons/c/c6/Meze_Platter%2C_grilled_deasonal_veg%2C_dips%2C_feta%2C_flatbread_-_Mange_Tout_2024-05-25.jpg" alt="Mezze platter" style="float:none;margin:0;"></a>
+      <h4>Mediterrano</h4>
+      <div class="resto-type">Mediterraneo / Mezze / Seafood - TU ZAYTINIA EN NAPLES</div>
+      <div class="resto-meta">
+        <span class="resto-tag tag-rating">4.8/5</span>
+        <span class="resto-tag tag-price">$$$</span>
+        <span class="resto-tag tag-dist">5 min del hotel</span>
+        <span class="resto-tag tag-fav">Tipo Zaytinia</span>
+      </div>
+      <div class="resto-desc">Ranked #1 en Naples en TripAdvisor. Mezze para compartir, paella, branzino, pulpo. Familias con chicos bienvenidas. Outdoor seating. RESERVAR.</div>
+      <div class="resto-links">
+        <a class="resto-link" href="https://maps.google.com/?q=Mediterrano+336+13th+Ave+S+Naples+FL" target="_blank">Google Maps</a>
+        <a class="resto-link" href="https://www.tripadvisor.com/Restaurant_Review-g34467-d7790843-Reviews-Mediterrano-Naples_Florida.html" target="_blank">TripAdvisor + Fotos</a>
+        <a class="resto-link" href="https://www.opentable.com/r/mediterrano-naples" target="_blank" style="background:#065f46;color:#4ade80;">RESERVAR OpenTable</a>
+        <a class="resto-link" href="https://www.mediterrano-naples.com/menus" target="_blank" style="background:#451a03;color:#fed7aa;">📋 Ver Menu</a>
+      </div>
+    </div>
+    <div class="resto-right"><span style="color:#4ade80;font-size:1.5rem;font-weight:800;">4.8</span><br><span style="color:#94a3b8;font-size:0.7rem;">10K+ reviews</span></div>
+  </div>
+
+  <div class="resto-card">
+    <div>
+      <a href="https://www.google.com/search?tbm=isch&q=Italian+pasta+restaurant+interior+Florida" target="_blank" style="float:right;margin-left:12px;"><img class="resto-photo" src="https://upload.wikimedia.org/wikipedia/commons/9/99/Cacio_e_pepe.jpg" alt="Italian pasta" style="float:none;margin:0;"></a>
+      <h4>Osteria Tulia</h4>
+      <div class="resto-type">Italiano - Pasta casera, pizza napolitana</div>
+      <div class="resto-meta">
+        <span class="resto-tag tag-rating">4.5/5</span>
+        <span class="resto-tag tag-price">$$$</span>
+        <span class="resto-tag tag-dist">5 min</span>
+      </div>
+      <div class="resto-desc">Mejor italiano de Naples. Pasta hecha a mano, pizza a la lena. Kids menu ($10-17). Ambiente ruidoso naturalmente = perfecto para familias. En 5th Avenue South. RESERVAR.</div>
+      <div class="resto-links">
+        <a class="resto-link" href="https://maps.google.com/?q=Osteria+Tulia+466+5th+Ave+S+Naples+FL" target="_blank">Google Maps</a>
+        <a class="resto-link" href="https://www.tripadvisor.com/Restaurant_Review-g34467-d3566490-Reviews-Osteria_Tulia-Naples_Florida.html" target="_blank">TripAdvisor + Fotos</a>
+        <a class="resto-link" href="https://resy.com/cities/naples-fl/venues/osteria-tulia" target="_blank" style="background:#065f46;color:#4ade80;">RESERVAR Resy</a>
+        <a class="resto-link" href="https://osteriatulia.com/menus/" target="_blank" style="background:#451a03;color:#fed7aa;">📋 Ver Menu</a>
+      </div>
+    </div>
+    <div class="resto-right"><span style="color:#4ade80;font-size:1.5rem;font-weight:800;">4.5</span></div>
+  </div>
+
+  <div class="resto-card">
+    <div>
+      <a href="https://www.google.com/search?tbm=isch&q=Seafood+platter+restaurant+interior+Florida" target="_blank" style="float:right;margin-left:12px;"><img class="resto-photo" src="https://upload.wikimedia.org/wikipedia/commons/8/82/Plateau_de_fruits_de_mer_001.jpg" alt="Seafood platter" style="float:none;margin:0;"></a>
+      <h4>The Dock at Crayton Cove</h4>
+      <div class="resto-type">Seafood casual / Waterfront</div>
+      <div class="resto-meta">
+        <span class="resto-tag tag-rating">4.3/5</span>
+        <span class="resto-tag tag-price">$$</span>
+        <span class="resto-tag tag-dist">3 min</span>
+      </div>
+      <div class="resto-desc">Waterfront sobre Naples Bay desde 1976. Casual, affordable. Seafood, sandwiches, ribs. Chicos miran botes mientras comen. Genial para almuerzo o sunset dinner.</div>
+      <div class="resto-links">
+        <a class="resto-link" href="https://maps.google.com/?q=The+Dock+at+Crayton+Cove+Naples+FL" target="_blank">Google Maps</a>
+        <a class="resto-link" href="https://www.tripadvisor.com/Restaurant_Review-g34467-d479085-Reviews-The_Dock_at_Crayton_Cove-Naples_Florida.html" target="_blank">TripAdvisor + Fotos</a>
+        <a class="resto-link" href="https://www.dockcraytoncove.com/menu" target="_blank" style="background:#451a03;color:#fed7aa;">📋 Ver Menu</a>
+      </div>
+    </div>
+    <div class="resto-right"><span style="color:#fbbf24;font-size:1.5rem;font-weight:800;">4.3</span></div>
+  </div>
+
+  <div class="resto-card">
+    <div>
+      <a href="https://www.google.com/search?tbm=isch&q=Turkish+simit+restaurant+interior+Florida" target="_blank" style="float:right;margin-left:12px;"><img class="resto-photo" src="https://upload.wikimedia.org/wikipedia/commons/9/9e/Simit_varieties_in_Ankara.jpg" alt="Turkish simit" style="float:none;margin:0;"></a>
+      <h4>Simit Fresh Mediterranean</h4>
+      <div class="resto-type">Mediterraneo / Middle Eastern (turco)</div>
+      <div class="resto-meta">
+        <span class="resto-tag tag-rating">4.8/5</span>
+        <span class="resto-tag tag-price">$$</span>
+        <span class="resto-tag tag-dist">10 min</span>
+        <span class="resto-tag tag-fav">Hidden gem</span>
+      </div>
+      <div class="resto-desc">Kebabs, hummus, falafel, pita. Casual y affordable. Hidden gem, uno de los mejores kid-friendly de Naples. Chico y acogedor, ir temprano.</div>
+      <div class="resto-links">
+        <a class="resto-link" href="https://maps.google.com/?q=Simit+Fresh+Mediterranean+1230+Airport+Pulling+Rd+Naples+FL" target="_blank">Google Maps</a>
+        <a class="resto-link" href="https://maps.google.com/?q=Simit+Fresh+Mediterranean+Naples+FL" target="_blank" style="background:#451a03;color:#fed7aa;">📋 Google Maps + Fotos</a>
+      </div>
+    </div>
+    <div class="resto-right"><span style="color:#4ade80;font-size:1.5rem;font-weight:800;">4.8</span></div>
+  </div>
+
+  <div class="resto-card">
+    <div>
+      <a href="https://www.google.com/search?tbm=isch&q=Tacos+al+pastor+restaurant+interior+Florida" target="_blank" style="float:right;margin-left:12px;"><img class="resto-photo" src="https://upload.wikimedia.org/wikipedia/commons/1/15/Tacos_al_pastor_con_pi%C3%B1a.jpg" alt="Tacos al pastor" style="float:none;margin:0;"></a>
+      <h4>Salsa Brava Mexican Grill</h4>
+      <div class="resto-type">Mexicano autentico</div>
+      <div class="resto-meta">
+        <span class="resto-tag tag-rating">4.4/5</span>
+        <span class="resto-tag tag-price">$$</span>
+        <span class="resto-tag tag-dist">15 min</span>
+      </div>
+      <div class="resto-desc">Chips y guacamole frescos, tortillas hechas a mano. Dueno visita las mesas. Chicos aman las quesadillas y tacos. Cerrado lunes.</div>
+      <div class="resto-links">
+        <a class="resto-link" href="https://maps.google.com/?q=Salsa+Brava+Mexican+Grill+Naples+FL" target="_blank">Google Maps</a>
+        <a class="resto-link" href="https://maps.google.com/?q=Salsa+Brava+Mexican+Grill+Naples+FL" target="_blank" style="background:#451a03;color:#fed7aa;">📋 Google Maps + Fotos</a>
+      </div>
+    </div>
+    <div class="resto-right"><span style="color:#fbbf24;font-size:1.5rem;font-weight:800;">4.4</span></div>
+  </div>
+
+  <div class="resto-card">
+    <div>
+      <a href="https://www.google.com/search?tbm=isch&q=Acai+bowl+restaurant+interior+Florida" target="_blank" style="float:right;margin-left:12px;"><img class="resto-photo" src="https://upload.wikimedia.org/wikipedia/commons/8/80/A%C3%A7a%C3%AD_na_tigela_-_Acai_bowl.jpg" alt="Acai bowl" style="float:none;margin:0;"></a>
+      <h4>Playa Bowls - Naples</h4>
+      <div class="resto-type">Acai bowls, smoothie bowls, pitaya</div>
+      <div class="resto-meta">
+        <span class="resto-tag tag-rating">4.5/5</span>
+        <span class="resto-tag tag-price">$</span>
+        <span class="resto-tag tag-dist">15 min</span>
+        <span class="resto-tag tag-fav">Ya lo conocen!</span>
+      </div>
+      <div class="resto-desc">2355 Vanderbilt Beach Rd, Suite 110. Perfecto para desayuno rapido o post-playa. Chicos pueden armar sus propios bowls.</div>
+      <div class="resto-links">
+        <a class="resto-link" href="https://maps.google.com/?q=Playa+Bowls+2355+Vanderbilt+Beach+Rd+Naples+FL" target="_blank">Google Maps</a>
+        <a class="resto-link" href="https://www.playabowls.com/menu" target="_blank" style="background:#451a03;color:#fed7aa;">📋 Ver Menu</a>
+      </div>
+    </div>
+    <div class="resto-right"><span style="color:#4ade80;font-size:1.5rem;font-weight:800;">4.5</span></div>
+  </div>
+
+  <div class="resto-phase"><h2>DELRAY BEACH (cerca del Opal Grand)</h2></div>
+
+  <div class="resto-card resto-highlight">
+    <div>
+      <h4>Caffe Luna Rosa</h4>
+      <div class="resto-type">Italiano oceanfront - Desayuno a cena</div>
+      <div class="resto-meta">
+        <span class="resto-tag tag-rating">4.5/5</span>
+        <span class="resto-tag tag-price">$$$</span>
+        <span class="resto-tag tag-dist">1 min caminando!</span>
+        <span class="resto-tag tag-fav">Al lado del hotel</span>
+      </div>
+      <div class="resto-desc">LITERALMENTE al lado del Opal Grand. Vista al oceano. Chefs italianos, pasta casera. Kids menu. Abierto 7AM-9:30PM. Restaurant of the Year Delray Beach x2. Perfecto para la primera noche sin manejar.</div>
+      <div class="resto-links">
+        <a class="resto-link" href="https://maps.google.com/?q=Caffe+Luna+Rosa+34+S+Ocean+Blvd+Delray+Beach+FL" target="_blank">Google Maps</a>
+        <a class="resto-link" href="https://www.tripadvisor.com/Restaurant_Review-g34179-d421703-Reviews-Caffe_Luna_Rosa-Delray_Beach_Florida.html" target="_blank">TripAdvisor + Fotos</a>
+        <a class="resto-link" href="tel:+15612749404" style="background:#065f46;color:#4ade80;">RESERVAR: (561) 274-9404</a>
+        <a class="resto-link" href="https://www.caffelunarosa.com/" target="_blank" style="background:#451a03;color:#fed7aa;">📋 Ver Menu</a>
+      </div>
+    </div>
+    <div class="resto-right"><span style="color:#4ade80;font-size:1.5rem;font-weight:800;">4.5</span><br><span style="color:#94a3b8;font-size:0.7rem;">#5 en Delray</span></div>
+  </div>
+
+  <div class="resto-card resto-highlight">
+    <div>
+      <h4>Amar Mediterranean Kitchen & Bar</h4>
+      <div class="resto-type">Mediterraneo / Middle Eastern - mezze, kebabs</div>
+      <div class="resto-meta">
+        <span class="resto-tag tag-rating">4.6/5</span>
+        <span class="resto-tag tag-price">$$$</span>
+        <span class="resto-tag tag-dist">5 min</span>
+        <span class="resto-tag tag-fav">Tipo Zaytinia</span>
+      </div>
+      <div class="resto-desc">TU ZAYTINIA EN DELRAY. Sharing plates, hummus fresco, naan, kebabs, salmon. Happy hour excelente. Decoracion linda. Genial para cena familiar especial.</div>
+      <div class="resto-links">
+        <a class="resto-link" href="https://maps.google.com/?q=Amar+Mediterranean+25+SE+6th+Ave+Delray+Beach+FL" target="_blank">Google Maps</a>
+        <a class="resto-link" href="https://www.opentable.com/r/amar-mediterranean-kitchen-and-bar-delray-beach" target="_blank" style="background:#065f46;color:#4ade80;">RESERVAR OpenTable</a>
+        <a class="resto-link" href="https://amardelray.com/" target="_blank" style="background:#451a03;color:#fed7aa;">📋 Ver Menu</a>
+      </div>
+    </div>
+    <div class="resto-right"><span style="color:#4ade80;font-size:1.5rem;font-weight:800;">4.6</span></div>
+  </div>
+
+  <div class="resto-card">
+    <div>
+      <h4>City Oyster & Sushi Bar</h4>
+      <div class="resto-type">Seafood / Raw bar / Sushi</div>
+      <div class="resto-meta">
+        <span class="resto-tag tag-rating">4.7/5</span>
+        <span class="resto-tag tag-price">$$$</span>
+        <span class="resto-tag tag-dist">5 min</span>
+      </div>
+      <div class="resto-desc">Top-rated seafood en Delray. Ostras, sushi, seafood fresco. Opciones de pescado frito y pasta para chicos. Outdoor seating en Atlantic Ave para people-watching.</div>
+      <div class="resto-links">
+        <a class="resto-link" href="https://maps.google.com/?q=City+Oyster+213+E+Atlantic+Ave+Delray+Beach+FL" target="_blank">Google Maps</a>
+        <a class="resto-link" href="https://www.tripadvisor.com/Restaurant_Review-g34179-d494697-Reviews-City_Oyster_Sushi_Bar-Delray_Beach_Florida.html" target="_blank">TripAdvisor + Fotos</a>
+        <a class="resto-link" href="https://www.opentable.com/r/city-oyster-and-sushi-bar-delray-beach" target="_blank" style="background:#065f46;color:#4ade80;">RESERVAR OpenTable</a>
+        <a class="resto-link" href="https://www.cityoysterdelray.com/dinner" target="_blank" style="background:#451a03;color:#fed7aa;">📋 Ver Menu</a>
+      </div>
+    </div>
+    <div class="resto-right"><span style="color:#4ade80;font-size:1.5rem;font-weight:800;">4.7</span><br><span style="color:#94a3b8;font-size:0.7rem;">4,800+ reviews</span></div>
+  </div>
+
+  <div class="resto-card">
+    <div>
+      <h4>El Camino Mexican Soul Food</h4>
+      <div class="resto-type">Mexicano - tortillas y salsas scratch</div>
+      <div class="resto-meta">
+        <span class="resto-tag tag-rating">4.5/5</span>
+        <span class="resto-tag tag-price">$$</span>
+        <span class="resto-tag tag-dist">5 min</span>
+      </div>
+      <div class="resto-desc">Todo hecho desde cero incluyendo tortillas. Tacos, quesadillas, chips/guac para chicos. Margaritas y fajitas para adultos. Vibra fun. Abierto hasta 2AM.</div>
+      <div class="resto-links">
+        <a class="resto-link" href="https://maps.google.com/?q=El+Camino+15+NE+2nd+Ave+Delray+Beach+FL" target="_blank">Google Maps</a>
+        <a class="resto-link" href="https://www.elcaminodelray.com/" target="_blank" style="background:#451a03;color:#fed7aa;">📋 Ver Menu</a>
+      </div>
+    </div>
+    <div class="resto-right"><span style="color:#4ade80;font-size:1.5rem;font-weight:800;">4.5</span></div>
+  </div>
+
+  <div class="resto-card">
+    <div>
+      <h4>Boston's on the Beach</h4>
+      <div class="resto-type">Casual American / Seafood oceanfront</div>
+      <div class="resto-meta">
+        <span class="resto-tag tag-rating">4.0/5</span>
+        <span class="resto-tag tag-price">$$</span>
+        <span class="resto-tag tag-dist">2 min caminando!</span>
+      </div>
+      <div class="resto-desc">Pasos del Opal Grand, sobre el oceano. Burgers, seafood, sandwiches con vista al mar. Super casual, chicos en malla bienvenidos. Live music. 35+ anos en Delray.</div>
+      <div class="resto-links">
+        <a class="resto-link" href="https://maps.google.com/?q=Boston's+on+the+Beach+40+S+Ocean+Blvd+Delray+Beach+FL" target="_blank">Google Maps</a></div>
+    </div>
+    <div class="resto-right"><span style="color:#fbbf24;font-size:1.5rem;font-weight:800;">4.0</span></div>
+  </div>
+
+  <div class="resto-card">
+    <div>
+      <h4>Deck 84</h4>
+      <div class="resto-type">Casual American / Seafood waterfront Intracoastal</div>
+      <div class="resto-meta">
+        <span class="resto-tag tag-rating">4.4/5</span>
+        <span class="resto-tag tag-price">$$</span>
+        <span class="resto-tag tag-dist">5 min</span>
+      </div>
+      <div class="resto-desc">Intracoastal waterfront. Burgers, wings, seafood, sushi. Chicos miran botes. Live music. Weekend brunch genial. Clasico familiar de Delray.</div>
+      <div class="resto-links">
+        <a class="resto-link" href="https://maps.google.com/?q=Deck+84+840+E+Atlantic+Ave+Delray+Beach+FL" target="_blank">Google Maps</a>
+        <a class="resto-link" href="https://www.deck84.com/menu" target="_blank" style="background:#451a03;color:#fed7aa;">📋 Ver Menu</a>
+      </div>
+    </div>
+    <div class="resto-right"><span style="color:#fbbf24;font-size:1.5rem;font-weight:800;">4.4</span></div>
+  </div>
+
+  <div class="resto-card resto-highlight">
+    <div>
+      <h4>PopStroke (Mini Golf + Dining)</h4>
+      <div class="resto-type">Casual American + Mini golf Tiger Woods</div>
+      <div class="resto-meta">
+        <span class="resto-tag tag-rating">4.0/5</span>
+        <span class="resto-tag tag-price">$$</span>
+        <span class="resto-tag tag-dist">8 min</span>
+        <span class="resto-tag tag-fav">Actividad + comida!</span>
+      </div>
+      <div class="resto-desc">Dos canchas de putting de 18 hoyos disenadas por Tiger Woods + burgers + heladeria. Chicos de 9 y 11 lo van a AMAR. Perfecto para noche de actividad familiar.</div>
+      <div class="resto-links">
+        <a class="resto-link" href="https://maps.google.com/?q=PopStroke+1314+N+Federal+Hwy+Delray+Beach+FL" target="_blank">Google Maps</a>
+        <a class="resto-link" href="https://www.popstroke.com/" target="_blank">Sitio oficial</a>
+        <a class="resto-link" href="https://www.popstroke.com/" target="_blank" style="background:#451a03;color:#fed7aa;">📋 Ver Menu + Info</a>
+      </div>
+    </div>
+    <div class="resto-right"><span style="color:#fbbf24;font-size:1.5rem;font-weight:800;">4.0</span><br><span style="color:#94a3b8;font-size:0.7rem;">Tiger Woods!</span></div>
+  </div>
+
+  <div class="resto-card">
+    <div>
+      <h4>Playa Bowls - Delray Beach</h4>
+      <div class="resto-type">Acai bowls, smoothie bowls, pitaya</div>
+      <div class="resto-meta">
+        <span class="resto-tag tag-price">$</span>
+        <span class="resto-tag tag-dist">5 min caminando!</span>
+        <span class="resto-tag tag-fav">Ya lo conocen!</span>
+      </div>
+      <div class="resto-desc">1134 E Atlantic Ave - sobre Atlantic Ave, caminable del Opal Grand. Perfecto para desayuno o post-playa. Abierto 8AM-8PM.</div>
+      <div class="resto-links">
+        <a class="resto-link" href="https://maps.google.com/?q=Playa+Bowls+1134+E+Atlantic+Ave+Delray+Beach+FL" target="_blank">Google Maps</a>
+        <a class="resto-link" href="https://www.playabowls.com/menu" target="_blank" style="background:#451a03;color:#fed7aa;">📋 Ver Menu</a>
+      </div>
+    </div>
+    <div class="resto-right"><span style="color:#fb923c;font-size:1.2rem;font-weight:800;">Fav!</span></div>
+  </div>
+
+  <div style="background:#1e293b;border-radius:12px;padding:1.5rem;margin-top:1rem;">
+    <h3 style="color:#fb923c;margin-bottom:0.5rem;">Referencia rapida por tipo</h3>
+    <div style="overflow-x:auto;">
+    <table class="comparison-table" style="font-size:0.85rem;">
+      <tr><th>Tipo</th><th>Naples</th><th>Delray Beach</th></tr>
+      <tr><td><strong>Mediterraneo (tipo Zaytinia)</strong></td><td class="winner">Mediterrano (4.8)</td><td>Amar Mediterranean (4.6)</td></tr>
+      <tr><td><strong>Italiano familiar</strong></td><td>Osteria Tulia (4.5)</td><td>Caffe Luna Rosa (4.5)</td></tr>
+      <tr><td><strong>Seafood casual</strong></td><td>The Dock (4.3)</td><td>Deck 84 (4.4)</td></tr>
+      <tr><td><strong>Seafood upscale</strong></td><td>Bayside Seafood (4.1)</td><td class="winner">City Oyster (4.7)</td></tr>
+      <tr><td><strong>Mexicano</strong></td><td>Salsa Brava (4.4)</td><td>El Camino (4.5)</td></tr>
+      <tr><td><strong>Bowls/Healthy</strong></td><td>Playa Bowls (15 min)</td><td class="winner">Playa Bowls (5 min walk!)</td></tr>
+      <tr><td><strong>Casual beach</strong></td><td>The Dock (4.3)</td><td>Boston's on the Beach (4.0)</td></tr>
+      <tr><td><strong>Fun con chicos</strong></td><td>Salsa Brava (4.4)</td><td class="winner">PopStroke - mini golf! (4.0)</td></tr>
+    </table>
+    </div>
+    <p style="color:#f87171;font-size:0.85rem;margin-top:0.8rem;"><strong>NOTA:</strong> Buca di Beppo Naples cerro permanentemente en 2022. El de Delray Beach (14820 S Military Trail, ~15 min) existe pero la cadena quebro en 2024 - llamar antes: (561) 455-4017.</p>
+  </div>
+</div>
+
+<!-- =================== PUEBLITOS LINDOS =================== -->
+<div id="towns" class="section">
+  <h2 style="color:#fff; margin-bottom:0.5rem;">Pueblitos y Barrios Lindos para Pasear</h2>
+  <p style="color:#94a3b8; margin-bottom:1.5rem;">No todo es shopping y playa. Estos lugares son lindos para caminar, conocer y sacar fotos. Todos accesibles en auto desde sus hoteles.</p>
+
+  <style>
+    .town-card { background:#1e293b; border-radius:12px; padding:1.5rem; margin-bottom:1rem; border-left:4px solid #a78bfa; display:grid; grid-template-columns: 1fr 1fr; gap:1.5rem; }
+    .town-card h3 { color:#a78bfa; font-size:1.1rem; margin-bottom:0.3rem; }
+    .town-card .town-loc { color:#94a3b8; font-size:0.85rem; margin-bottom:0.5rem; }
+    .town-card .town-desc { color:#e2e8f0; font-size:0.9rem; }
+    .town-card .town-tips { color:#94a3b8; font-size:0.85rem; margin-top:0.5rem; }
+    .town-card .town-tips strong { color:#22d3ee; }
+    .town-card a { color:#a78bfa; text-decoration:none; }
+    .town-card a:hover { text-decoration:underline; }
+    .town-links { margin-top:0.5rem; display:flex; gap:0.5rem; flex-wrap:wrap; }
+    .town-link { display:inline-block; padding:4px 10px; background:#334155; border-radius:6px; color:#a78bfa; font-size:0.75rem; text-decoration:none; }
+    .town-link:hover { background:#475569; }
+    .town-img { width:100%; height:150px; object-fit:cover; border-radius:8px; margin-bottom:0.8rem; background:#334155; cursor:pointer; }
+    .town-img-fallback { display:block; width:100%; height:150px; border-radius:8px; margin-bottom:0.8rem; background:linear-gradient(135deg,#1e3a5f,#164e63); display:flex; align-items:center; justify-content:center; text-decoration:none; color:#a78bfa; font-weight:600; font-size:0.8rem; text-align:center; }
+    .town-phase { background:linear-gradient(135deg,#2e1065,#1e293b); padding:1rem 1.5rem; border-radius:12px; margin:1.5rem 0 1rem; }
+    .town-phase h2 { color:#a78bfa; font-size:1.1rem; }
+    @media (max-width: 768px) { .town-card { grid-template-columns: 1fr; } }
+  </style>
+
+  <div class="town-phase"><h2>CERCA DEL EDGEWATER (Naples)</h2></div>
+
+  <div class="town-card">
+    <div>
+      <a class="town-img-fallback" href="https://www.google.com/search?tbm=isch&q=5th Avenue South Naples+Florida" target="_blank">Ver fotos de este lugar en Google</a>
+      <h3>5th Avenue South, Naples</h3>
+      <div class="town-loc">10 min del Edgewater</div>
+      <div class="town-desc">La calle principal de Naples. Arquitectura mediterranea, galerias de arte, boutiques, heladerias, restaurantes con mesas en la vereda. Ambiente elegante pero relajado. Los chicos pueden tomar helado mientras ustedes pasean. Hay un pier (muelle) al final donde se ven atardeceres increibles.</div>
+      <div class="town-tips"><strong>Tip:</strong> Ir al atardecer. El Naples Pier es imperdible para fotos del sunset.</div>
+      <div class="town-links">
+        <a class="town-link" href="https://maps.google.com/?q=5th+Avenue+South+Naples+FL" target="_blank">Google Maps</a>
+        <a class="town-link" href="https://www.fifthavenuesouth.com/" target="_blank">Sitio oficial</a>
+        <a class="town-link" href="https://maps.google.com/?q=Naples+Pier+FL" target="_blank">Naples Pier</a>
+        <a class="town-link" href="https://www.tripadvisor.com/Attraction_Review-g34467-d207643-Reviews-Fifth_Avenue_South-Naples_Florida.html" target="_blank">Fotos TripAdvisor</a>
+      </div>
+    </div>
+    <div>
+      <a class="town-img-fallback" href="https://www.google.com/search?tbm=isch&q=3rd Street South Naples+Florida" target="_blank">Ver fotos de este lugar en Google</a>
+      <h3>3rd Street South, Naples</h3>
+      <div class="town-loc">10 min del Edgewater</div>
+      <div class="town-desc">Mas intima que 5th Avenue. Tiendas de arte, joyerias artesanales, boutiques de ropa. Hay un farmers market los sabados por la manana. Calles arboladas con banyan trees enormes. Se siente como un pueblo chico dentro de la ciudad.</div>
+      <div class="town-tips"><strong>Tip:</strong> Farmers market sabado 7:30am-11:30am en invierno (verificar si funciona en julio).</div>
+      <div class="town-links">
+        <a class="town-link" href="https://maps.google.com/?q=3rd+Street+South+Naples+FL" target="_blank">Google Maps</a>
+        <a class="town-link" href="https://www.tripadvisor.com/Attraction_Review-g34467-d4890462-Reviews-Third_Street_South-Naples_Florida.html" target="_blank">Fotos TripAdvisor</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="town-card">
+    <div>
+      <a class="town-img-fallback" href="https://www.google.com/search?tbm=isch&q=Crayton Cove Naples waterfront+Florida" target="_blank">Ver fotos de este lugar en Google</a>
+      <h3>Crayton Cove, Naples</h3>
+      <div class="town-loc">12 min del Edgewater</div>
+      <div class="town-desc">Barrio de pescadores reconvertido en zona artistica. Galerias de arte, el restaurante The Dock con vista a la bahia, botes amarrados. Muy fotografico. Se siente autentico, no turistico. Pueden ver pelicanos y delfines desde el muelle.</div>
+      <div class="town-links">
+        <a class="town-link" href="https://maps.google.com/?q=Crayton+Cove+Naples+FL" target="_blank">Google Maps</a>
+        <a class="town-link" href="https://maps.google.com/?q=The+Dock+at+Crayton+Cove+Naples" target="_blank">The Dock restaurant</a>
+      </div>
+    </div>
+    <div>
+      <a class="town-img-fallback" href="https://www.google.com/search?tbm=isch&q=Old Naples Palm Cottage historic+Florida" target="_blank">Ver fotos de este lugar en Google</a>
+      <h3>Old Naples / Historic District</h3>
+      <div class="town-loc">10 min del Edgewater</div>
+      <div class="town-desc">Calles con casas estilo Florida de los anos 50-60 rodeadas de palmeras y buganvilias. Caminable, tranquilo, fotografico. Muy diferente a los mega-developments modernos. Se puede combinar con 5th Ave y el Pier en un mismo paseo.</div>
+      <div class="town-links">
+        <a class="town-link" href="https://maps.google.com/?q=Old+Naples+Historic+District+FL" target="_blank">Google Maps</a>
+        <a class="town-link" href="https://www.visitnaplesfl.com/downtown-naples" target="_blank">Visit Naples</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="town-phase"><h2>CERCA DEL OPAL GRAND (Delray Beach / Costa Este)</h2></div>
+
+  <div class="town-card">
+    <div>
+      <a class="town-img-fallback" href="https://www.google.com/search?tbm=isch&q=Atlantic Avenue Delray Beach+Florida" target="_blank">Ver fotos de este lugar en Google</a>
+      <h3>Atlantic Avenue, Delray Beach</h3>
+      <div class="town-loc">Caminable desde el Opal Grand!</div>
+      <div class="town-desc">La calle mas linda de la costa este de Florida. 80+ restaurantes, heladerias, boutiques, galerias. Se extiende desde el oceano hasta el Intracoastal. Ambiente vibrante pero no abrumador. Musicos callejeros los fines de semana. Los chicos pueden ir a Icy Bean (Hawaiian shave ice) o a las tiendas de souvenirs.</div>
+      <div class="town-tips"><strong>Tip:</strong> Van a pasar por aca todos los dias porque esta al lado del hotel. Prueben un restaurante diferente cada noche.</div>
+      <div class="town-links">
+        <a class="town-link" href="https://maps.google.com/?q=Atlantic+Avenue+Delray+Beach+FL" target="_blank">Google Maps</a>
+        <a class="town-link" href="https://downtowndelraybeach.com/" target="_blank">Sitio oficial</a>
+        <a class="town-link" href="https://downtowndelraybeach.com/dining" target="_blank">Restaurantes</a>
+        <a class="town-link" href="https://www.tripadvisor.com/Attraction_Review-g34179-d207642-Reviews-Delray_Beach_Downtown-Delray_Beach_Florida.html" target="_blank">Fotos TripAdvisor</a>
+      </div>
+    </div>
+    <div>
+      <a class="town-img-fallback" href="https://www.google.com/search?tbm=isch&q=Pineapple Grove Delray Beach+Florida" target="_blank">Ver fotos de este lugar en Google</a>
+      <h3>Pineapple Grove Arts District, Delray Beach</h3>
+      <div class="town-loc">Caminable desde el Opal Grand (~10 min)</div>
+      <div class="town-desc">Barrio artistico al norte de Atlantic Avenue. Murales enormes (no se pierdan "Dancing Pineapples" en 2 NE 2nd Ave), galerias, estudios de artistas, cafes independientes. Se siente como un mini Wynwood (Miami) pero mas tranquilo y familiar. Genial para fotos con los murales.</div>
+      <div class="town-links">
+        <a class="town-link" href="https://maps.google.com/?q=Pineapple+Grove+Arts+District+Delray+Beach" target="_blank">Google Maps</a>
+        <a class="town-link" href="https://www.visitdelraybeach.org/plays/pineapple-grove-arts-district/" target="_blank">Guia oficial</a>
+        <a class="town-link" href="https://www.thepalmbeaches.com/explore-cities/pineapple-arts-district" target="_blank">Palm Beaches</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="town-card">
+    <div>
+      <a class="town-img-fallback" href="https://www.google.com/search?tbm=isch&q=Worth Avenue Palm Beach+Florida" target="_blank">Ver fotos de este lugar en Google</a>
+      <h3>Worth Avenue + Palm Beach Island</h3>
+      <div class="town-loc">25 min del Opal Grand</div>
+      <div class="town-desc">La "Rodeo Drive" de Florida. Arquitectura estilo mediterraneo de los anos 20 disenada por Addison Mizner. Tiendas de ultra-lujo (Chanel, Gucci, Louis Vuitton) - no para comprar sino para pasear y ver. El <strong>Palm Beach Lake Trail</strong> tiene vistas a mansiones de millonarios (incluyendo Mar-a-Lago). Los chicos pueden contar yates.</div>
+      <div class="town-tips"><strong>Tip:</strong> Combinar con almuerzo en Rosemary Square al cruzar el puente.</div>
+      <div class="town-links">
+        <a class="town-link" href="https://maps.google.com/?q=Worth+Avenue+Palm+Beach+FL" target="_blank">Google Maps Worth Ave</a>
+        <a class="town-link" href="https://maps.google.com/?q=Palm+Beach+Lake+Trail" target="_blank">Lake Trail</a>
+        <a class="town-link" href="https://maps.google.com/?q=Rosemary+Square+West+Palm+Beach" target="_blank">Rosemary Square</a>
+        <a class="town-link" href="https://www.tripadvisor.com/Attraction_Review-g34552-d109400-Reviews-Worth_Avenue-Palm_Beach_Florida.html" target="_blank">Fotos TripAdvisor</a>
+      </div>
+    </div>
+    <div>
+      <a class="town-img-fallback" href="https://www.google.com/search?tbm=isch&q=Clematis Street West Palm Beach+Florida" target="_blank">Ver fotos de este lugar en Google</a>
+      <h3>Clematis Street, West Palm Beach</h3>
+      <div class="town-loc">30 min del Opal Grand</div>
+      <div class="town-desc">Centro historico de West Palm Beach (National Register of Historic Places). Restaurantes, tiendas vintage, murales, arquitectura de principios del siglo XX. Waterfront park con muelles publicos, fuentes danzantes y vista a Palm Beach Island. Los jueves "Clematis by Night" (musica en vivo gratis + food trucks, 6-9pm).</div>
+      <div class="town-tips"><strong>Tip:</strong> Si van un jueves, Clematis by Night es gratis y los chicos lo disfrutan.</div>
+      <div class="town-links">
+        <a class="town-link" href="https://maps.google.com/?q=Clematis+Street+West+Palm+Beach+FL" target="_blank">Google Maps</a>
+        <a class="town-link" href="https://clematisstreet.org/" target="_blank">Sitio oficial</a>
+        <a class="town-link" href="https://maps.google.com/?q=Waterfront+Commons+West+Palm+Beach" target="_blank">Waterfront Park</a>
+        <a class="town-link" href="https://www.tripadvisor.com/Attraction_Review-g34731-d207766-Reviews-Clematis_Street-West_Palm_Beach_Florida.html" target="_blank">Fotos TripAdvisor</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="town-card">
+    <div>
+      <a class="town-img-fallback" href="https://www.google.com/search?tbm=isch&q=Mizner Park Boca Raton fountain+Florida" target="_blank">Ver fotos de este lugar en Google</a>
+      <h3>Mizner Park, Boca Raton</h3>
+      <div class="town-loc">15 min del Opal Grand</div>
+      <div class="town-desc">Centro al aire libre con arquitectura estilo mediterraneo. Restaurantes, tiendas, cine iPic (luxury). El Boca Raton Museum of Art esta ahi. Ambiente relajado para caminar, especialmente de noche con las luces. Fountains donde los chicos pueden jugar.</div>
+    </div>
+    <div>
+      <a class="town-img-fallback" href="https://www.google.com/search?tbm=isch&q=Lake Worth Beach Street Painting Festival+Florida" target="_blank">Ver fotos de este lugar en Google</a>
+      <h3>Lake Worth Beach / Downtown</h3>
+      <div class="town-loc">20 min del Opal Grand</div>
+      <div class="town-desc">Pueblo bohemio con murales, galerias, cafes independientes, tiendas vintage. El downtown tiene un ambiente artistico y alternativo unico en South Florida. Mas "quirky" y autentico. El pier y la playa municipal son lindos. Mucho menos turistico que Delray o Palm Beach.</div>
+      <div class="town-tips"><strong>Tip:</strong> Buen lugar para encontrar souvenirs unicos y artesanias locales que no son "made in China".</div>
+    </div>
+  </div>
+</div>
+
+<!-- =================== TRIVIA GAME =================== -->
+<div id="trivia" class="section">
+  <h2 style="color:#fff; margin-bottom:0.5rem;">Trivia: Cuanto Saben de Florida?</h2>
+  <p style="color:#94a3b8; margin-bottom:1.5rem;">Jueguen en familia antes o durante el viaje. Click en la respuesta que crean correcta!</p>
+
+  <style>
+    .trivia-card { background:#1e293b; border-radius:12px; padding:1.5rem; margin-bottom:1rem; }
+    .trivia-card h3 { color:#22d3ee; font-size:1rem; margin-bottom:1rem; }
+    .trivia-card .q-num { color:#a78bfa; font-weight:800; font-size:0.85rem; }
+    .trivia-btn { display:block; width:100%; text-align:left; padding:10px 16px; margin:4px 0; background:#334155; border:2px solid #475569; border-radius:8px; color:#e2e8f0; cursor:pointer; font-size:0.9rem; transition: all 0.3s; }
+    .trivia-btn:hover { border-color:#22d3ee; background:#1e3a5f; }
+    .trivia-btn.correct { background:#065f46; border-color:#4ade80; color:#4ade80; }
+    .trivia-btn.wrong { background:#7c2d12; border-color:#f87171; color:#f87171; }
+    .trivia-fact { display:none; background:#164e63; padding:12px; border-radius:8px; margin-top:8px; color:#e2e8f0; font-size:0.85rem; }
+    .trivia-fact.show { display:block; }
+    .trivia-score { background:linear-gradient(135deg,#1e3a5f,#164e63); padding:1.5rem; border-radius:12px; text-align:center; margin-bottom:1.5rem; }
+    .trivia-score .score-num { font-size:2.5rem; font-weight:800; color:#22d3ee; }
+    .trivia-score .score-label { color:#94a3b8; }
+  </style>
+
+  <div class="trivia-score">
+    <div class="score-label">Puntaje</div>
+    <div class="score-num" id="trivia-score">0 / 10</div>
+    <button onclick="resetTrivia()" style="margin-top:10px; padding:8px 20px; background:#22d3ee; color:#0f172a; border:none; border-radius:8px; font-weight:700; cursor:pointer;">Reiniciar</button>
+  </div>
+
+  <div class="trivia-card" data-q="1">
+    <span class="q-num">PREGUNTA 1</span>
+    <h3>Que significa "Naples" (Napoles) en el contexto de Florida?</h3>
+    <button class="trivia-btn" onclick="checkAnswer(this,false)">A) Fue fundada por italianos de Napoles</button>
+    <button class="trivia-btn" onclick="checkAnswer(this,true)">B) La nombraron asi porque la bahia les recordaba a la bahia de Napoles, Italia</button>
+    <button class="trivia-btn" onclick="checkAnswer(this,false)">C) "Naples" es una palabra nativa Seminole</button>
+    <div class="trivia-fact">La bahia de Naples fue comparada con la de Napoles, Italia por colonos en el siglo XIX. La ciudad fue fundada oficialmente en 1886 y se promociono como un destino de lujo desde el principio.</div>
+  </div>
+
+  <div class="trivia-card" data-q="2">
+    <span class="q-num">PREGUNTA 2</span>
+    <h3>Por que se llama "Alligator Alley" a la I-75 entre Fort Lauderdale y Naples?</h3>
+    <button class="trivia-btn" onclick="checkAnswer(this,false)">A) Porque la construyo una empresa llamada Alligator Inc.</button>
+    <button class="trivia-btn" onclick="checkAnswer(this,false)">B) Porque tiene forma de cocodrilo visto desde el aire</button>
+    <button class="trivia-btn" onclick="checkAnswer(this,true)">C) Porque cruza los Everglades donde hay miles de aligators reales</button>
+    <div class="trivia-fact">La carretera cruza directamente por los Everglades, hogar de mas de 200,000 aligators. Antes de que pusieran las rejas, los aligators cruzaban la ruta regularmente. Si paran en las areas de descanso, pueden ver aligators en los canales al costado!</div>
+  </div>
+
+  <div class="trivia-card" data-q="3">
+    <span class="q-num">PREGUNTA 3</span>
+    <h3>Sanibel Island es mundialmente famosa por algo especifico. Que es?</h3>
+    <button class="trivia-btn" onclick="checkAnswer(this,true)">A) Recoleccion de caracoles y conchas marinas (shelling)</button>
+    <button class="trivia-btn" onclick="checkAnswer(this,false)">B) Surf de olas gigantes</button>
+    <button class="trivia-btn" onclick="checkAnswer(this,false)">C) Tiburones que se pueden ver desde la playa</button>
+    <div class="trivia-fact">Sanibel tiene una orientacion este-oeste unica que atrapa conchas del Golfo de Mexico como una pala. Tiene mas de 250 especies de conchas. Los recolectores hacen el "Sanibel Stoop" - agacharse constantemente para buscar conchas - que es tan comun que tiene nombre propio!</div>
+  </div>
+
+  <div class="trivia-card" data-q="4">
+    <span class="q-num">PREGUNTA 4</span>
+    <h3>Cuantos dias de sol tiene Florida por ano (aproximadamente)?</h3>
+    <button class="trivia-btn" onclick="checkAnswer(this,false)">A) 180 dias</button>
+    <button class="trivia-btn" onclick="checkAnswer(this,false)">B) 220 dias</button>
+    <button class="trivia-btn" onclick="checkAnswer(this,true)">C) Mas de 230 dias</button>
+    <div class="trivia-fact">Florida tiene en promedio 237 dias de sol al ano, por eso se llama "The Sunshine State". Naples en particular tiene mas de 264 dias de sol. Eso si, en julio-agosto llueve casi todas las tardes entre las 3-5 PM, pero son tormentas rapidas y despues vuelve el sol!</div>
+  </div>
+
+  <div class="trivia-card" data-q="5">
+    <span class="q-num">PREGUNTA 5</span>
+    <h3>Que animal peligroso NO existe en Florida?</h3>
+    <button class="trivia-btn" onclick="checkAnswer(this,false)">A) Aligators (cocodrilos americanos)</button>
+    <button class="trivia-btn" onclick="checkAnswer(this,true)">B) Hipopotamos</button>
+    <button class="trivia-btn" onclick="checkAnswer(this,false)">C) Pitones birmanas (serpientes gigantes)</button>
+    <div class="trivia-fact">Florida tiene aligators (mas de 1.3 millones!), cocodrilos americanos, pitones birmanas invasoras en los Everglades (algunas de mas de 5 metros), tiburones, medusas, y hasta osos negros. Pero no hay hipopotamos. Las pitones son un problema enorme - fueron mascotas liberadas que ahora se reproducen sin control en los Everglades.</div>
+  </div>
+
+  <div class="trivia-card" data-q="6">
+    <span class="q-num">PREGUNTA 6</span>
+    <h3>Fort Lauderdale tiene un apodo relacionado con el agua. Cual es?</h3>
+    <button class="trivia-btn" onclick="checkAnswer(this,true)">A) La Venecia de America</button>
+    <button class="trivia-btn" onclick="checkAnswer(this,false)">B) La Atlantida del Sur</button>
+    <button class="trivia-btn" onclick="checkAnswer(this,false)">C) La Capital del Surf</button>
+    <div class="trivia-fact">Fort Lauderdale tiene mas de 300 millas (480 km) de canales navegables, por eso la llaman "The Venice of America". Hay mas de 42,000 yates registrados y 100 marinas. Muchas casas tienen su yate estacionado en el patio trasero como si fuera un auto!</div>
+  </div>
+
+  <div class="trivia-card" data-q="7">
+    <span class="q-num">PREGUNTA 7</span>
+    <h3>Delray Beach (donde esta el Opal Grand) fue nombrada recientemente como que?</h3>
+    <button class="trivia-btn" onclick="checkAnswer(this,false)">A) La ciudad mas cara de Florida</button>
+    <button class="trivia-btn" onclick="checkAnswer(this,true)">B) "Most Fun Small Town in America"</button>
+    <button class="trivia-btn" onclick="checkAnswer(this,false)">C) Capital de los deportes acuaticos</button>
+    <div class="trivia-fact">Delray Beach fue nombrada "Most Fun Small Town in America" por Rand McNally y USA Today. Hace 30 anos era un pueblo olvidado, pero la revitalizacion de Atlantic Avenue la transformo en uno de los destinos mas vibrantes de South Florida. Tiene 80+ restaurantes en solo unas cuadras!</div>
+  </div>
+
+  <div class="trivia-card" data-q="8">
+    <span class="q-num">PREGUNTA 8</span>
+    <h3>Cual es la diferencia entre un aligator y un cocodrilo?</h3>
+    <button class="trivia-btn" onclick="checkAnswer(this,false)">A) Son exactamente el mismo animal con diferente nombre</button>
+    <button class="trivia-btn" onclick="checkAnswer(this,false)">B) Los cocodrilos son de agua dulce y los aligators de agua salada</button>
+    <button class="trivia-btn" onclick="checkAnswer(this,true)">C) El aligator tiene hocico ancho en U, el cocodrilo en V. Florida es el unico lugar del mundo donde conviven ambos</button>
+    <div class="trivia-fact">Florida es el UNICO lugar del planeta donde aligators y cocodrilos coexisten en la naturaleza. Los aligators prefieren agua dulce (Everglades, lagos) y los cocodrilos agua salada (costas, manglares). El aligator tiene hocico ancho y redondeado (forma de U), el cocodrilo lo tiene puntiagudo (forma de V). Van a ver aligators en los Everglades cuando hagan el airboat tour!</div>
+  </div>
+
+  <div class="trivia-card" data-q="9">
+    <span class="q-num">PREGUNTA 9</span>
+    <h3>Palm Beach es famosa por sus mansiones. Cuanto cuesta la casa mas cara vendida ahi?</h3>
+    <button class="trivia-btn" onclick="checkAnswer(this,false)">A) 50 millones de dolares</button>
+    <button class="trivia-btn" onclick="checkAnswer(this,false)">B) 95 millones de dolares</button>
+    <button class="trivia-btn" onclick="checkAnswer(this,true)">C) Mas de 170 millones de dolares</button>
+    <div class="trivia-fact">En 2024, una mansion en Palm Beach se vendio por $170 millones, y hubo otra que se listo por $200 millones. Palm Beach Island tiene solo 16 km de largo pero es una de las zonas mas caras del mundo. El ingreso promedio de sus residentes supera el millon de dolares anuales. Cuando paseen por Worth Avenue y el Lake Trail, van a ver ese nivel de riqueza de cerca!</div>
+  </div>
+
+  <div class="trivia-card" data-q="10">
+    <span class="q-num">PREGUNTA 10</span>
+    <h3>Que porcentaje de los Everglades originales queda hoy en dia?</h3>
+    <button class="trivia-btn" onclick="checkAnswer(this,true)">A) Solo el 50% - la mitad se perdio por desarrollo urbano y agricultura</button>
+    <button class="trivia-btn" onclick="checkAnswer(this,false)">B) El 90% - esta bien protegido</button>
+    <button class="trivia-btn" onclick="checkAnswer(this,false)">C) Solo el 10% - casi todo fue destruido</button>
+    <div class="trivia-fact">Los Everglades originales cubrian todo el sur de Florida, pero el desarrollo urbano, la agricultura (cana de azucar) y el drenaje de pantanos destruyeron aproximadamente la mitad. El Everglades National Park protege solo el 20% del ecosistema original. Es el tercer parque nacional mas grande de USA continental y Patrimonio de la Humanidad por la UNESCO. Cuando crucen por Alligator Alley, estan pasando por lo que queda de este ecosistema unico!</div>
+  </div>
+</div>
+
+<script>
+let triviaScore = 0;
+let triviaAnswered = 0;
+
+function checkAnswer(btn, isCorrect) {
+  const card = btn.closest('.trivia-card');
+  if (card.dataset.answered) return;
+  card.dataset.answered = 'true';
+  triviaAnswered++;
+
+  const buttons = card.querySelectorAll('.trivia-btn');
+  buttons.forEach(b => {
+    b.style.pointerEvents = 'none';
+    if (b === btn) {
+      b.classList.add(isCorrect ? 'correct' : 'wrong');
+    }
+  });
+
+  if (isCorrect) {
+    triviaScore++;
+    btn.textContent = '++ ' + btn.textContent;
+  } else {
+    btn.textContent = 'X ' + btn.textContent;
+    buttons.forEach(b => {
+      if (b !== btn) b.style.opacity = '0.5';
+    });
+  }
+
+  card.querySelector('.trivia-fact').classList.add('show');
+  document.getElementById('trivia-score').textContent = triviaScore + ' / 10';
+}
+
+function resetTrivia() {
+  triviaScore = 0;
+  triviaAnswered = 0;
+  document.getElementById('trivia-score').textContent = '0 / 10';
+  document.querySelectorAll('.trivia-card').forEach(card => {
+    delete card.dataset.answered;
+    card.querySelectorAll('.trivia-btn').forEach(btn => {
+      btn.classList.remove('correct', 'wrong');
+      btn.style.pointerEvents = '';
+      btn.style.opacity = '1';
+      btn.textContent = btn.textContent.replace(/^(\+\+ |X )/, '');
+    });
+    card.querySelector('.trivia-fact').classList.remove('show');
+  });
+}
+</script>
+
+<div class="lightbox" id="lightbox" onclick="this.classList.remove('show')">
+  <span class="lightbox-close">&times;</span>
+  <img id="lightbox-img" src="" alt="">
+</div>
+
+<script>
+function showSection(id, el) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  el.classList.add('active');
+  window.scrollTo({top: 0, behavior: 'smooth'});
+}
+document.querySelectorAll('.hotel-photos img').forEach(img => {
+  img.addEventListener('click', function(e) {
+    e.stopPropagation();
+    document.getElementById('lightbox-img').src = this.src;
+    document.getElementById('lightbox').classList.add('show');
+  });
+});
+</script>
+</body>
+</html>
