@@ -1015,12 +1015,17 @@
 
 <!-- =================== RESTAURANTES =================== -->
 <div id="restaurants" class="section">
-  <h2 style="color:#fff; margin-bottom:0.5rem;">Restaurantes Family-Friendly</h2>
+  <h2 style="color:#fff; margin-bottom:0.5rem;">Restaurantes Family-Friendly <span class="fav-filter" onclick="filterFavs(this)">♥ Solo favoritos</span></h2>
   <p style="color:#94a3b8; margin-bottom:1rem;">Basados en tu gusto: Zaytinia (mediterraneo/mezze), Buca di Beppo (italiano familiar), Playa Bowls. Ratings de Google/TripAdvisor. Distancias desde el hotel.</p>
 
   <style>
     .resto-card { background:#1e293b; border-radius:12px; padding:1.2rem; margin-bottom:0.8rem; display:grid; grid-template-columns:1fr auto; gap:1rem; align-items:center; border-left:4px solid #fb923c; }
     .resto-card h4 { color:#fb923c; font-size:1rem; margin-bottom:0.2rem; }
+    .fav-btn { background:none; border:none; font-size:1.4rem; cursor:pointer; opacity:0.4; transition:all 0.3s; float:right; margin-left:8px; }
+    .fav-btn:hover { opacity:0.8; transform:scale(1.2); }
+    .fav-btn.liked { opacity:1; transform:scale(1.1); }
+    .fav-filter { display:inline-block; padding:6px 14px; background:#334155; border:2px solid #fb923c; border-radius:8px; color:#fb923c; cursor:pointer; font-size:0.85rem; font-weight:600; margin-left:1rem; transition:all 0.3s; }
+    .fav-filter.active { background:#fb923c; color:#0f172a; }
     .resto-card img.resto-photo { width:150px; height:110px; object-fit:cover; border-radius:8px; float:right; margin-left:12px; margin-bottom:5px; }
     .resto-type { color:#94a3b8; font-size:0.8rem; }
     .resto-desc { color:#e2e8f0; font-size:0.85rem; margin-top:0.4rem; }
@@ -1328,6 +1333,32 @@
       </div>
     </div>
     <div class="resto-right"><span style="color:#fb923c;font-size:1.2rem;font-weight:800;">Fav!</span></div>
+  </div>
+
+
+  <div class="resto-phase" style="background:linear-gradient(135deg,#831843,#1e293b);"><h2 style="color:#f9a8d4;">HELADERIAS + DESAYUNOS + STARBUCKS</h2></div>
+  <div style="background:#1e293b;border-radius:12px;padding:1rem 1.5rem;margin-bottom:1rem;border-left:4px solid #f9a8d4;">
+    <h3 style="color:#f9a8d4;margin-bottom:0.8rem;">Heladerias - Naples</h3>
+    <div class="resto-card" style="border-left-color:#f9a8d4;"><div><h4 style="color:#f9a8d4;">Gelato &amp; Co. (5th Ave)</h4><div class="resto-meta"><span class="resto-tag tag-rating">4.5</span><span class="resto-tag tag-price">$$</span><span class="resto-tag tag-dist">5 min</span></div><div class="resto-desc">483 5th Ave S. Gelato italiano artesanal, 24+ sabores rotativos.</div><div class="resto-links"><a class="resto-link" href="https://maps.google.com/?q=Gelato+Co+483+5th+Ave+S+Naples+FL" target="_blank">Maps</a></div></div><div class="resto-right"><span style="color:#f9a8d4;font-size:1.3rem;font-weight:800;">4.5</span></div></div>
+    <div class="resto-card" style="border-left-color:#f9a8d4;"><div><h4 style="color:#f9a8d4;">Royal Scoop Homemade Ice Cream</h4><div class="resto-meta"><span class="resto-tag tag-rating">4.8</span><span class="resto-tag tag-price">$</span><span class="resto-tag tag-dist">4 min</span></div><div class="resto-desc">829 Vanderbilt Beach Rd. Helado casero old-fashioned. Muy kid-friendly.</div><div class="resto-links"><a class="resto-link" href="https://maps.google.com/?q=Royal+Scoop+Ice+Cream+Naples+FL" target="_blank">Maps</a></div></div><div class="resto-right"><span style="color:#f9a8d4;font-size:1.3rem;font-weight:800;">4.8</span></div></div>
+    <h3 style="color:#f9a8d4;margin:1rem 0 0.8rem;">Heladerias - Delray Beach</h3>
+    <div class="resto-card" style="border-left-color:#f9a8d4;"><div><h4 style="color:#f9a8d4;">Sloan's Ice Cream (IMPERDIBLE!)</h4><div class="resto-meta"><span class="resto-tag tag-rating">4.3</span><span class="resto-tag tag-price">$$</span><span class="resto-tag tag-dist">3 min caminando!</span><span class="resto-tag tag-fav">Kids wonderland</span></div><div class="resto-desc">111 E Atlantic Ave. Heladeria + candy shop. Caramelos, peluches + helado creativo. A PASOS del Opal Grand.</div><div class="resto-links"><a class="resto-link" href="https://maps.google.com/?q=Sloans+Ice+Cream+Delray+Beach" target="_blank">Maps</a><a class="resto-link" href="https://www.google.com/search?tbm=isch&q=Sloans+Ice+Cream+Delray+Beach+inside" target="_blank">Ver fotos</a></div></div><div class="resto-right"><span style="color:#f9a8d4;font-size:1.3rem;font-weight:800;">4.3</span></div></div>
+    <div class="resto-card" style="border-left-color:#f9a8d4;"><div><h4 style="color:#f9a8d4;">Gelato-Go (Atlantic Ave)</h4><div class="resto-meta"><span class="resto-tag tag-rating">4.3</span><span class="resto-tag tag-price">$$</span><span class="resto-tag tag-dist">5 min caminando</span></div><div class="resto-desc">411 E Atlantic Ave. Gelateria italiana. Te dejan probar antes de comprar.</div><div class="resto-links"><a class="resto-link" href="https://maps.google.com/?q=Gelato-Go+Delray+Beach" target="_blank">Maps</a></div></div><div class="resto-right"><span style="color:#f9a8d4;font-size:1.3rem;font-weight:800;">4.3</span></div></div>
+  </div>
+  <div style="background:#1e293b;border-radius:12px;padding:1rem 1.5rem;margin-bottom:1rem;border-left:4px solid #fbbf24;">
+    <h3 style="color:#fbbf24;margin-bottom:0.8rem;">Desayunos / Brunch</h3>
+    <div class="resto-card" style="border-left-color:#fbbf24;"><div><h4 style="color:#fbbf24;">Naples Brunch (Naples)</h4><div class="resto-meta"><span class="resto-tag tag-rating">4.8</span><span class="resto-tag tag-price">$$</span><span class="resto-tag tag-dist">3 min</span><span class="resto-tag tag-fav">Pancake flights!</span></div><div class="resto-desc">1575 Pine Ridge Rd. PANCAKE FLIGHTS - los chicos eligen sabores! Fluffy pancakes, avocado toast, skillets.</div><div class="resto-links"><a class="resto-link" href="https://maps.google.com/?q=Naples+Brunch+Pine+Ridge+Rd+Naples" target="_blank">Maps</a></div></div><div class="resto-right"><span style="color:#fbbf24;font-size:1.3rem;font-weight:800;">4.8</span></div></div>
+    <div class="resto-card" style="border-left-color:#fbbf24;"><div><h4 style="color:#fbbf24;">EJ's Bayfront Cafe (Naples)</h4><div class="resto-meta"><span class="resto-tag tag-rating">4.7</span><span class="resto-tag tag-price">$$</span><span class="resto-tag tag-dist">3 min</span></div><div class="resto-desc">469 Bayfront Pl. Desayuno waterfront, vista marina. 7:30am-3pm.</div><div class="resto-links"><a class="resto-link" href="https://maps.google.com/?q=EJs+Bayfront+Cafe+Naples" target="_blank">Maps</a></div></div><div class="resto-right"><span style="color:#fbbf24;font-size:1.3rem;font-weight:800;">4.7</span></div></div>
+    <div class="resto-card" style="border-left-color:#fbbf24;"><div><h4 style="color:#fbbf24;">Lulu's Cafe (Delray Beach)</h4><div class="resto-meta"><span class="resto-tag tag-rating">4.3</span><span class="resto-tag tag-price">$$</span><span class="resto-tag tag-dist">5 min</span></div><div class="resto-desc">189 NE 2nd Ave (Pineapple Grove). Featured PBS. Brunch 8am-3:30pm.</div><div class="resto-links"><a class="resto-link" href="https://maps.google.com/?q=Lulus+Cafe+Delray+Beach" target="_blank">Maps</a></div></div><div class="resto-right"><span style="color:#fbbf24;font-size:1.3rem;font-weight:800;">4.3</span></div></div>
+    <div class="resto-card" style="border-left-color:#fbbf24;"><div><h4 style="color:#fbbf24;">Caffe Luna Rosa (Delray - tambien desayuno!)</h4><div class="resto-meta"><span class="resto-tag tag-rating">4.5</span><span class="resto-tag tag-price">$$$</span><span class="resto-tag tag-dist">1 min caminando!</span></div><div class="resto-desc">Al lado del Opal Grand. Abre 7AM. Desayuno italiano con vista al oceano.</div><div class="resto-links"><a class="resto-link" href="https://maps.google.com/?q=Caffe+Luna+Rosa+Delray+Beach" target="_blank">Maps</a></div></div><div class="resto-right"><span style="color:#fbbf24;font-size:1.3rem;font-weight:800;">4.5</span></div></div>
+  </div>
+  <div style="background:#1e293b;border-radius:12px;padding:1rem 1.5rem;margin-bottom:1rem;border-left:4px solid #4ade80;">
+    <h3 style="color:#4ade80;margin-bottom:0.8rem;">Starbucks + Cafe Local</h3>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+      <div style="background:#164e63;padding:1rem;border-radius:8px;"><strong style="color:#4ade80;">Starbucks Naples</strong><br><span style="color:#e2e8f0;font-size:0.85rem;">Coastland Center, 1900 Tamiami Trail N (~5 min auto)</span><br><a href="https://maps.google.com/?q=Starbucks+Coastland+Center+Naples+FL" target="_blank" style="color:#4ade80;font-size:0.8rem;">Google Maps</a></div>
+      <div style="background:#164e63;padding:1rem;border-radius:8px;"><strong style="color:#4ade80;">Starbucks Delray Beach</strong><br><span style="color:#e2e8f0;font-size:0.85rem;">205 E Atlantic Ave (3 min CAMINANDO!)</span><br><a href="https://maps.google.com/?q=Starbucks+205+E+Atlantic+Ave+Delray+Beach" target="_blank" style="color:#4ade80;font-size:0.8rem;">Google Maps</a></div>
+    </div>
+    <p style="color:#94a3b8;font-size:0.8rem;margin-top:0.5rem;"><strong>Cafes locales:</strong> Narrative Coffee Roasters (Naples, Mercato) | Subculture Coffee (Delray, Pineapple Grove)</p>
   </div>
 
   <div style="background:#1e293b;border-radius:12px;padding:1.5rem;margin-top:1rem;">
@@ -1686,6 +1717,38 @@ document.querySelectorAll('.hotel-photos img').forEach(img => {
     document.getElementById('lightbox').classList.add('show');
   });
 });
+
+// Favorites system
+function toggleFav(btn, id) {
+  var favs = JSON.parse(localStorage.getItem('florida-favs') || '{}');
+  if (favs[id]) { delete favs[id]; btn.classList.remove('liked'); btn.textContent = '\u2661'; }
+  else { favs[id] = true; btn.classList.add('liked'); btn.textContent = '\u2665'; }
+  localStorage.setItem('florida-favs', JSON.stringify(favs));
+}
+function filterFavs(btn) {
+  btn.classList.toggle('active');
+  var favs = JSON.parse(localStorage.getItem('florida-favs') || '{}');
+  document.querySelectorAll('.resto-card,.town-card').forEach(function(c) {
+    var id = c.getAttribute('data-fav-id');
+    c.style.display = (btn.classList.contains('active') && !favs[id]) ? 'none' : '';
+  });
+}
+document.addEventListener('DOMContentLoaded', function() {
+  var favs = JSON.parse(localStorage.getItem('florida-favs') || '{}');
+  document.querySelectorAll('.resto-card, .town-card').forEach(function(card, i) {
+    var id = 'fav-' + i;
+    card.setAttribute('data-fav-id', id);
+    var h = card.querySelector('h4, h3');
+    if (h && !card.querySelector('.fav-btn')) {
+      var btn = document.createElement('button');
+      btn.className = 'fav-btn' + (favs[id] ? ' liked' : '');
+      btn.textContent = favs[id] ? '\u2665' : '\u2661';
+      btn.onclick = function() { toggleFav(this, id); };
+      h.parentNode.insertBefore(btn, h);
+    }
+  });
+});
+
 </script>
 </body>
 </html>
