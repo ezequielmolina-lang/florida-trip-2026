@@ -4,6 +4,23 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Florida Family Trip - Hotel Comparison Dashboard</title>
+<script>
+document.addEventListener("DOMContentLoaded",function(){if(sessionStorage.getItem("florida-trip-auth")==="true"){document.getElementById("password-gate").remove();document.body.classList.remove("locked");return;}document.body.classList.add("locked");});
+function checkPassword(){var i=document.getElementById("gate-input");var e=document.getElementById("gate-error");if(i.value.replace(/s/g,"").toLowerCase()==="florida2026"){sessionStorage.setItem("florida-trip-auth","true");document.getElementById("password-gate").remove();document.body.classList.remove("locked");}else{i.classList.add("error");e.style.display="block";setTimeout(function(){i.classList.remove("error");},500);}}
+</script>
+<style>
+#password-gate{position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#0c4a6e,#0f172a,#164e63);font-family:sans-serif;}
+#password-gate .gate-box{background:white;border-radius:1.5rem;padding:3rem;max-width:420px;width:90%;box-shadow:0 25px 50px rgba(0,0,0,0.3);text-align:center;}
+#password-gate h1{color:#0c4a6e;font-size:1.5rem;font-weight:800;margin-bottom:0.5rem;}
+#password-gate p{color:#6b7280;font-size:0.875rem;margin-bottom:1.5rem;}
+#password-gate input{width:100%;padding:0.75rem;border:2px solid #e5e7eb;border-radius:0.75rem;font-size:1rem;text-align:center;outline:none;}
+#password-gate input:focus{border-color:#0c4a6e;}
+#password-gate input.error{border-color:#ef4444;animation:shake 0.5s;}
+#password-gate button{margin-top:1rem;width:100%;padding:0.75rem;background:#22d3ee;color:#0f172a;font-weight:700;border:none;border-radius:0.75rem;font-size:1rem;cursor:pointer;}
+#password-gate .error-msg{color:#ef4444;font-size:0.8rem;margin-top:0.5rem;display:none;}
+@keyframes shake{0%,100%{transform:translateX(0);}25%{transform:translateX(-8px);}75%{transform:translateX(8px);}}
+body.locked > *:not(#password-gate){display:none !important;}
+</style>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background: #0f172a; color: #e2e8f0; line-height: 1.6; }
@@ -82,70 +99,9 @@
     .comparison-table td, .comparison-table th { padding: 6px 4px; }
   }
 </style>
-<style>
-#password-gate {
-    position:fixed;inset:0;z-index:9999;
-    display:flex;align-items:center;justify-content:center;
-    background:linear-gradient(135deg,#0c4a6e 0%,#0f172a 60%,#164e63 100%);
-    font-family:'Segoe UI',system-ui,sans-serif;
-}
-#password-gate .gate-box {
-    background:white;border-radius:1.5rem;padding:3rem;max-width:420px;width:90%;
-    box-shadow:0 25px 50px rgba(0,0,0,0.3);text-align:center;
-}
-#password-gate h1{color:#0c4a6e;font-size:1.5rem;font-weight:800;margin-bottom:0.5rem;}
-#password-gate p{color:#6b7280;font-size:0.875rem;margin-bottom:1.5rem;}
-#password-gate input{
-    width:100%;padding:0.75rem 1rem;border:2px solid #e5e7eb;border-radius:0.75rem;
-    font-size:1rem;text-align:center;letter-spacing:0.1em;outline:none;transition:border-color 0.2s;
-}
-#password-gate input:focus{border-color:#0c4a6e;}
-#password-gate input.error{border-color:#ef4444;animation:shake 0.5s;}
-#password-gate button{
-    margin-top:1rem;width:100%;padding:0.75rem;background:#22d3ee;
-    color:#0f172a;font-weight:700;border:none;border-radius:0.75rem;
-    font-size:1rem;cursor:pointer;transition:background 0.2s;
-}
-#password-gate button:hover{background:#06b6d4;}
-#password-gate .error-msg{color:#ef4444;font-size:0.8rem;margin-top:0.5rem;display:none;}
-@keyframes shake{0%,100%{transform:translateX(0);}25%{transform:translateX(-8px);}75%{transform:translateX(8px);}}
-body.locked > *:not(#password-gate){display:none !important;}
-</style>
-<script>
-document.addEventListener('DOMContentLoaded',function(){
-    if(sessionStorage.getItem('florida-trip-auth')==='true'){
-        document.getElementById('password-gate').remove();
-        document.body.classList.remove('locked');
-        return;
-    }
-    document.body.classList.add('locked');
-});
-function checkPassword(){
-    var input=document.getElementById('gate-input');
-    var errMsg=document.getElementById('gate-error');
-    var val=input.value.replace(/\s/g,'').toLowerCase();
-    if(val==='florida2026'){
-        sessionStorage.setItem('florida-trip-auth','true');
-        document.getElementById('password-gate').remove();
-        document.body.classList.remove('locked');
-    }else{
-        input.classList.add('error');
-        errMsg.style.display='block';
-        setTimeout(function(){input.classList.remove('error');},500);
-    }
-}
-</script>
 </head>
 <body>
-<div id="password-gate">
-<div class="gate-box">
-<h1>Florida Family Trip 2026</h1>
-<p>Esta pagina esta protegida. Ingresa el password para continuar.</p>
-<input type="password" id="gate-input" placeholder="Password" onkeydown="if(event.key==='Enter')checkPassword()">
-<button onclick="checkPassword()">Entrar</button>
-<div class="error-msg" id="gate-error">Password incorrecto. Intenta de nuevo.</div>
-</div>
-</div>
+<div id="password-gate"><div class="gate-box"><h1>Florida Family Trip 2026</h1><p>Ingresa el password para continuar</p><input type="password" id="gate-input" placeholder="Password" onkeydown="if(event.key==='Enter')checkPassword()"><button onclick="checkPassword()">Entrar</button><div class="error-msg" id="gate-error">Password incorrecto</div></div></div>
 
 <div class="header">
   <h1>Viaje Familiar a Florida 2026</h1>
@@ -840,7 +796,7 @@ function checkPassword(){
     <div class="activity"><span class="time">Almuerzo</span><span class="desc"><a href="https://maps.google.com/?q=The+Dock+at+Crayton+Cove+Naples" target="_blank">The Dock at Crayton Cove</a> (mariscos, waterfront, ~15 min) o <a href="https://maps.google.com/?q=Brooks+Burgers+Naples" target="_blank">Brooks Burgers</a> downtown (casual, chicos lo aman).</span></div>
     <div class="drive">Edgewater a downtown Naples: ~10 min.</div>
     <div class="activity"><span class="time">Tarde</span><span class="desc">Caminar <a href="https://www.fifthavenuesouth.com/" target="_blank">5th Avenue South</a> + <a href="https://maps.google.com/?q=3rd+Street+South+Naples" target="_blank">3rd Street South</a> - tiendas, heladerias, galerias. Hay <strong>TJ Maxx y Marshalls</strong> en Tamiami Trail (~10 min).</span></div>
-    <div class="activity"><span class="time">Cena</span><span class="desc"><a href="https://maps.google.com/?q=Giuseppe+and+the+Lion+Naples" target="_blank">Giuseppe and the Lion</a> (italiano, family-friendly) o cocinar algo rico en la suite.</span></div>
+    <div class="activity"><span class="time">Cena</span><span class="desc"><a href="https://www.opentable.com/r/mediterrano-naples" target="_blank">Mediterrano</a> (mediterraneo, #1 en Naples, RESERVAR) o <a href="https://resy.com/cities/naples-fl/venues/osteria-tulia" target="_blank">Osteria Tulia</a> (italiano, pasta casera, RESERVAR) o cocinar algo rico en la suite.</span></div>
   </div>
 
   <div class="day-card">
@@ -1033,7 +989,7 @@ function checkPassword(){
     <h3>Restaurantes Family-Friendly</h3>
     <div class="link-item"><div><span class="name">Brooks Burgers</span><span class="detail"> - Naples downtown, casual</span></div><a href="https://maps.google.com/?q=Brooks+Burgers+Naples+FL" target="_blank">Maps</a></div>
     <div class="link-item"><div><span class="name">The Dock at Crayton Cove</span><span class="detail"> - Naples, mariscos, waterfront</span></div><a href="https://maps.google.com/?q=The+Dock+at+Crayton+Cove+Naples" target="_blank">Maps</a></div>
-    <div class="link-item"><div><span class="name">Giuseppe and the Lion</span><span class="detail"> - Naples, italiano</span></div><a href="https://maps.google.com/?q=Giuseppe+and+the+Lion+Naples" target="_blank">Maps</a></div>
+    <div class="link-item"><div><span class="name">Mediterrano</span><span class="detail"> - Naples, mediterraneo #1 (tipo Zaytinia)</span></div><a href="https://www.opentable.com/r/mediterrano-naples" target="_blank">Reservar OpenTable</a></div>
     <div class="link-item"><div><span class="name">Ford's Garage</span><span class="detail"> - Miromar Outlets, burgers tematico</span></div><a href="https://maps.google.com/?q=Ford's+Garage+Miromar+Estero" target="_blank">Maps</a></div>
     <div class="link-item"><div><span class="name">The Island Cow</span><span class="detail"> - Sanibel, family favorite</span></div><a href="https://maps.google.com/?q=The+Island+Cow+Sanibel" target="_blank">Maps</a></div>
     <div class="link-item"><div><span class="name">Rainforest Cafe</span><span class="detail"> - Sawgrass Mills, chicos lo aman</span></div><a href="https://maps.google.com/?q=Rainforest+Cafe+Sawgrass+Mills" target="_blank">Maps</a></div>
@@ -1233,6 +1189,7 @@ function checkPassword(){
 
   <div class="resto-card resto-highlight">
     <div>
+      <a href="https://www.google.com/search?tbm=isch&q=Caffe+Luna+Rosa+Delray+Beach" target="_blank" style="float:right;margin-left:12px;"><img class="resto-photo" src="https://upload.wikimedia.org/wikipedia/commons/d/d3/Trattoria_osteria_Fontanella%2C_Lusiana_abc1.jpg" alt="food" style="float:none;margin:0;"></a>
       <h4>Caffe Luna Rosa</h4>
       <div class="resto-type">Italiano oceanfront - Desayuno a cena</div>
       <div class="resto-meta">
@@ -1254,6 +1211,7 @@ function checkPassword(){
 
   <div class="resto-card resto-highlight">
     <div>
+      <a href="https://www.google.com/search?tbm=isch&q=Amar+Mediterranean+Delray+Beach" target="_blank" style="float:right;margin-left:12px;"><img class="resto-photo" src="https://upload.wikimedia.org/wikipedia/commons/b/b9/Mezze_platter.jpg" alt="Mezze" style="float:none;margin:0;"></a>
       <h4>Amar Mediterranean Kitchen & Bar</h4>
       <div class="resto-type">Mediterraneo / Middle Eastern - mezze, kebabs</div>
       <div class="resto-meta">
@@ -1274,6 +1232,7 @@ function checkPassword(){
 
   <div class="resto-card">
     <div>
+      <a href="https://www.google.com/search?tbm=isch&q=City+Oyster+Delray+Beach" target="_blank" style="float:right;margin-left:12px;"><img class="resto-photo" src="https://upload.wikimedia.org/wikipedia/commons/0/06/Plate_of_oysters_with_lemon.jpg" alt="food" style="float:none;margin:0;"></a>
       <h4>City Oyster & Sushi Bar</h4>
       <div class="resto-type">Seafood / Raw bar / Sushi</div>
       <div class="resto-meta">
@@ -1294,6 +1253,7 @@ function checkPassword(){
 
   <div class="resto-card">
     <div>
+      <a href="https://www.google.com/search?tbm=isch&q=El+Camino+Delray+Beach" target="_blank" style="float:right;margin-left:12px;"><img class="resto-photo" src="https://upload.wikimedia.org/wikipedia/commons/1/15/Tacos_al_pastor_con_pi%C3%B1a.jpg" alt="food" style="float:none;margin:0;"></a>
       <h4>El Camino Mexican Soul Food</h4>
       <div class="resto-type">Mexicano - tortillas y salsas scratch</div>
       <div class="resto-meta">
@@ -1312,6 +1272,7 @@ function checkPassword(){
 
   <div class="resto-card">
     <div>
+      <a href="https://www.google.com/search?tbm=isch&q=Bostons+on+the+Beach+Delray" target="_blank" style="float:right;margin-left:12px;"><img class="resto-photo" src="https://upload.wikimedia.org/wikipedia/commons/1/10/Hamburger_i_restaurant.jpg" alt="Burger" style="float:none;margin:0;"></a>
       <h4>Boston's on the Beach</h4>
       <div class="resto-type">Casual American / Seafood oceanfront</div>
       <div class="resto-meta">
@@ -1328,6 +1289,7 @@ function checkPassword(){
 
   <div class="resto-card">
     <div>
+      <a href="https://www.google.com/search?tbm=isch&q=Deck+84+Delray" target="_blank" style="float:right;margin-left:12px;"><img class="resto-photo" src="https://upload.wikimedia.org/wikipedia/commons/8/82/Plateau_de_fruits_de_mer_001.jpg" alt="food" style="float:none;margin:0;"></a>
       <h4>Deck 84</h4>
       <div class="resto-type">Casual American / Seafood waterfront Intracoastal</div>
       <div class="resto-meta">
@@ -1346,6 +1308,7 @@ function checkPassword(){
 
   <div class="resto-card resto-highlight">
     <div>
+      <a href="https://www.google.com/search?tbm=isch&q=PopStroke+Delray" target="_blank" style="float:right;margin-left:12px;"><img class="resto-photo" src="https://upload.wikimedia.org/wikipedia/commons/9/9c/Sports_Force_Parks_at_Cedar_Point_Sports_Center_Putt-In-Bay_Mini_Golf_%2833495506743%29.jpg" alt="food" style="float:none;margin:0;"></a>
       <h4>PopStroke (Mini Golf + Dining)</h4>
       <div class="resto-type">Casual American + Mini golf Tiger Woods</div>
       <div class="resto-meta">
@@ -1366,6 +1329,7 @@ function checkPassword(){
 
   <div class="resto-card">
     <div>
+      <a href="https://www.google.com/search?tbm=isch&q=Playa+Bowls" target="_blank" style="float:right;margin-left:12px;"><img class="resto-photo" src="https://upload.wikimedia.org/wikipedia/commons/8/80/A%C3%A7a%C3%AD_na_tigela_-_Acai_bowl.jpg" alt="food" style="float:none;margin:0;"></a>
       <h4>Playa Bowls - Delray Beach</h4>
       <div class="resto-type">Acai bowls, smoothie bowls, pitaya</div>
       <div class="resto-meta">
